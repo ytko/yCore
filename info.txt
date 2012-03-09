@@ -1,0 +1,25 @@
+Контроллер создает (__construct)
+	_c->actions (
+		updateItem,
+		deleteItem,
+		addObjField,
+		deleteObjField,
+		deleteObj,
+		addObj )
+	_c->itemID
+	_c->objectID
+
+Модель обрабатывает _c->actions вызывая
+	_o->saveItem
+	_o->deleteItem
+	_o->_t->addField
+	_o->_t->dropFields
+	_o->deleteObject
+	_o->createObject
+
+Модель показывает _v->getPage в которую отправляются
+	_o->getObject($_c->objectID)
+	_o->getObjects
+	_o->getItem($_c->itemID)
+	_o->getItems
+2

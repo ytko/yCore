@@ -1,0 +1,136 @@
+﻿INFO ---------------------------------------------------------------------------------------------------------------------------------
+- Зарезервированные названия полей: uri, id
+
+_object
+	_ (_Class object)
+			__properties__
+				page
+				itemsPerPage
+				
+				fields (object)
+				item (object)
+				items (array of objects)
+				
+				objectClass
+				objectKey
+				objectID
+			___methods__
+				???	
+	db (_db object)
+			Query (dbQueryClass object)
+					__properties__
+						from
+						where
+						limit
+						counter
+				
+						last (debug: last sql reduest)
+					__protected__
+						db (Joomla db object)	
+								
+			__properties__
+			cms_prefix
+			com_prefix
+			isUser
+			isAdmin
+			filters
+			fields
+			from
+			where
+			groupby
+			orderby
+			limit
+			
+	__properties__
+		objectExists (?)
+		filters
+			?
+		flags
+			all, page, objectList, noItems, link, (todo:pagination?)		
+		isObjectLoaded (1/0)
+	__private__
+		className
+		objectID
+		objectKey
+		objectName
+		itemID
+		page
+		itemsPerPage
+		pagination (object)
+		objectFields
+	__methods__
+		???
+
+TODO ---------------------------------------------------------------------------------------------------------------------------------
+CORE:
+абстрактные классы?
+__set и __get (+__call?)
+try catch
+__clone (just to remember)
+
+Система уровней доступа, защита
+- 
+
+- MODEL:
+$objectClass ==> $modelClass (?)
+Получение списка объектов (таблиц) с определенным префиксом/типом (классом/категорией)
+resetFlags, reset, filters, pagination, page, link (+array), (data(_)?)
+$sqlModelClass(?) extends $modelClass: Получение данных по sql-запросу и генерация $_obj из него ($_)
+Объединение $_o и $_ (to think)
+
+- flags:
+link как array (для конкретного набора соединений)
+
+- DB:
+Новые типы полей: currency, list, html(?), color! (+color для таблицы, +color = inherit для деревьев)
+Параметры столбцов (в т.ч. color)
+Деревья
+Запросы к БД по fields ???
+--Проверка на ошибки:
+Дескриптор полей (таблица с полями) -> поля таблиц
+Поля таблиц -> Дескриптор полей (isLost)
+
+Пометка для релевантного поиска (и индексов)
+- Debug Mode (расширения классов?, абстрактные классы?, __call __set и __get)
+
+Создание (импорт/экспорт) таблиц по массиву заголовков.
+Проверка таблиц на соответствие заголовку.
+Далее инсталлятор через этот модуль (xml/csv->)
+
+Инсталлятор:
+- XML для инсталляции
+- конструктор плагинов
+
+Система событий
+- ytkoEventClass
+-- onUserProfileChanged
+-- onTableUpdate($tableName)
+
+Projects -------------------------------------------------------------------------------------------------------------------------------
+
+ytko Development Kit
+
+ytkoCore (CoreOnly, MVC mod, ) ytkoPlug for Joomla, ytkoPlug for WordPress
+ytkoCom (for Joomla, for WordPress, for Drupal, etc.)
+ytkoJet (ytkoMod Widgets / ytkoMod lite)
+ytko
+ytkoTools: ytkoCSV; ytkoXML(?); ytkoXLS; ytkoDOC; ytkoRTF; ytkoPDF
+ytkoFriends (for JomSocial, for CommunityBuilder, etc.)
+ytkoPacks (+Pro): ytkoBlog, ytkoShop, ytkoCat, ytkoForms, ytkoTrees, ytkoGallery
+ytkoCMS (+Pro)
+ytkoPro (all pro: ytkoCMS + ytkoMod + ytkoTools + ytkoFriends + ytkoPacks)
+
+ytkoMobile (отображение на мобильных устройствах), ytkoFlash(отображение контента при помощи флэш), ytkoAjax
+
+ytkoMarket (templates, plug-ins)
+
+IDEAS --------------------------------------------------------------------------------------------------------------------------------
+Вариант модуля для виджетов:
+под каждый виджет отдельная директория с controller.php, model.php, view.php, template.php (если нет - запрашивает виджет default)
+- возможность запросить извне alt.controller.php;
+- из контроллера (+вида для view) запросить alt.model.php, alt.view.php, alt.template.php и ../templates/(subFolder/)(alt.)widgetName.php
+
+Конструктор виджетов в три этапа:
+- описание XML-структуры таблицы (таблиц)
+- создание админской части (в т.ч., подключение стандартной и/или загрузка XML/CSV с данными)
+- создание клиентских model и view
