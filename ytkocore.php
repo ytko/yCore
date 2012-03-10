@@ -44,6 +44,13 @@ require_once(ySettings::$path.DS.'core'.DS.'db.php');
 yFactory::$basePath = JPATH_COMPONENT_SITE;
 
 $module = yFactory::getModule($_GET[ySettings::$mvc->module]);
-echo $module->getModule($cms);
+$result = $module->getModule($cms);
+
+__p($_POST);
+
+echo '<style>'.$result->style.'</style>';
+echo '<script>'.$result->script.'</script>';
+echo $result->title;
+echo $result->body;
 
 ?>

@@ -1,7 +1,7 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yHtml {
-	function getURI($base, $query, $modify = NULL) {
+	static function getURI($base, $query, $modify = NULL) {
 		$result = $base;
 
 		$query = (array)$query;

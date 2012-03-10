@@ -1,7 +1,13 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yViewClass {
-	private $style = '', $script = '';
+	public
+		$body,
+		$style,
+		$script,
+		$title,
+		$breadcrumbs;
+	
 	public $view, $defaultview = 'default';
 
 	function getStyle() {
@@ -12,39 +18,7 @@ class yViewClass {
 		return $this->script;
 	}
 
-	function inc($filename, &$_) {
-		//$result = '';
-		$style = '';
-		$script = '';
-		
-		$view = &$this;
-		$result = &$view->body; // убрать позже
-		
-		$errorReporting = error_reporting();
-		error_reporting(E_ERROR | E_PARSE);
-		if (!include(ySettings::$path.DS.'view'.DS.$this->view.DS.$filename)) {
-			error_reporting($errorReporting);
-			include(ySettings::$path.DS.'view'.DS.$this->defaultview.DS.$filename);
-		}
-		else error_reporting($errorReporting);
-		
-		//$this->html.= $result."\n";
-		$this->style.= $style."\n";
-		$this->script.= $script."\n";
-		
-		return $result;
-		
-		/*
-		return (object)array(
-			'result' => $result,
-			'style' => $style,
-			'script' => $script			
-		);*/
-	}
-	
-	function __construct($view = false) {
-		$this->view = ($view) ? $view : $this->defaultview;
-		
+	function __construct() {
 		$view->title = '';
 		$view->breadcrumbs = array();
 		$view->script = '';
@@ -52,14 +26,32 @@ class yViewClass {
 		$view->body = '';
 	}
 	
-	function getPage($filename, &$_ = NULL) {
-		/*
-		if (isset($_->items)) _cQuoteRecursive($_->items);
-		if (isset($_->item))  _cQuoteRecursive($_->item);
-		*/
-		$result = $this->inc($filename.'.php', $_);
+	function getPage($template, &$_ = NULL) {
+		$this->view = ($view) ? $view : $this->defaultview;
+
+		include_once ySettings::$path.DS.'modules/default/templates/defaultTemplate.php';
 		
-		return $result;
+		ob_start();
+		defaultTemplate::singleBody($_);
+		$this->body.= ob_get_contents();
+		ob_end_clean();
+		
+		ob_start();
+		defaultTemplate::loopBody($_);
+		$this->body.= ob_get_contents();
+		ob_end_clean();
+
+		ob_start();
+		defaultTemplate::script($_);
+		$this->script.= ob_get_contents();
+		ob_end_clean();		
+		
+		ob_start();
+		defaultTemplate::style($_);
+		$this->style.= ob_get_contents();
+		ob_end_clean();
+		
+		return $this;
 	}
 }
 
