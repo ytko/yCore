@@ -7,16 +7,16 @@ class defaultControllerClass extends yControllerClass {
 		parent::__construct($controllerName);
 		
 		$this->modelName =
-			strtolower(_cGetSafeName(
+			yFactory::safeName(
 					$this->get->mod,
 					$this->controllerName
-		));
+		);
 		
 		$this->viewName =
-			strtolower(_cGetSafeName(
+			yFactory::safeName(
 					$this->get->view,
 					$this->modelName
-			));
+			);
 	}
 }
 

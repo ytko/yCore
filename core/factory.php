@@ -11,7 +11,7 @@ class yFactory {
 	
 	public function getModule($moduleName) {
 		$moduleName = yFactory::safeName($moduleName, 'default', 'error');
-		include yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.$moduleName.'.php';
+		include_once yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.$moduleName.'.php';
 		$moduleClassName =  $moduleName.'Class';
 		return new $moduleClassName();
 	}
@@ -73,10 +73,23 @@ class yFactory {
 		$viewClassName = yFactory::linkView($moduleName, $viewName);
 		return new $viewClassName($controller);	
 	}
-
+	
+	public function linkTemplate($moduleName, $templateName = NULL) {
+		$moduleName = yFactory::safeName($moduleName, 'default', 'error');
+		$templateName = yFactory::safeName($templateName, $moduleName, 'error');
+		include_once yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.'templates'.DS.$templateName.'.php';
+		
+		return $templateName = $templateName.'Template';
+	}
+	
+	public function getTemplate($moduleName, $templateName = NULL) {
+		$templateClassName = yFactory::linkTemplate($moduleName, $templateName);
+		return new $templateClassName();
+	}
+	
 	// Функции проверки безопасности имен и путей
 	
-	private function safeName($name, $defaultName = NULL, $errorName = NULL) {
+	function safeName($name, $defaultName = NULL, $errorName = NULL) {
 		return strtolower(isset($name) && !empty($name)
 				? (
 						yFactory::isFileNameSafe($name)

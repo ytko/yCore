@@ -2,7 +2,7 @@
 
 yFactory::linkView();
 
-class defaultViewClass extends yViewClass {
+class mainViewClass extends yViewClass {
 	function __construct($controller) {
 		parent::__construct(false);
 		

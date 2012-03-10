@@ -3,10 +3,7 @@
 class yViewClass {
 	public
 		$body,
-		$style,
-		$script,
-		$title,
-		$breadcrumbs;
+		$head;
 	
 	public $view, $defaultview = 'default';
 
@@ -19,39 +16,37 @@ class yViewClass {
 	}
 
 	function __construct() {
-		$view->title = '';
-		$view->breadcrumbs = array();
-		$view->script = '';
-		$view->style = '';
 		$view->body = '';
+		$view->head = '';
+		$view->breadcrumbs = array();
 	}
-	
-	function getPage($template, &$_ = NULL) {
-		$this->view = ($view) ? $view : $this->defaultview;
-
-		include_once ySettings::$path.DS.'modules/default/templates/defaultTemplate.php';
 		
+	function getPage($templateClass, &$_ = NULL) {
 		ob_start();
-		defaultTemplate::singleBody($_);
+		$templateClass::body($_);
 		$this->body.= ob_get_contents();
 		ob_end_clean();
 		
 		ob_start();
-		defaultTemplate::loopBody($_);
-		$this->body.= ob_get_contents();
-		ob_end_clean();
-
-		ob_start();
-		defaultTemplate::script($_);
-		$this->script.= ob_get_contents();
-		ob_end_clean();		
-		
-		ob_start();
-		defaultTemplate::style($_);
-		$this->style.= ob_get_contents();
+		$templateClass::head($_);
+		$this->head.= ob_get_contents();
 		ob_end_clean();
 		
 		return $this;
+	}
+	
+	protected function quoteRecursive(&$data) {
+		// Рекурсивное преобразование всех строк в html-безопасные в объекте/массиве
+		if (is_array($data)||is_object($data)) {
+			foreach ($data as $key => &$value)
+				if (is_string($value))
+				$value = htmlspecialchars($value, ENT_QUOTES);
+			else
+				$this->quoteRecursive($value);
+		}
+		elseif (is_string($data)) {
+			$data = htmlspecialchars($data, ENT_QUOTES);
+		}
 	}
 }
 

@@ -89,31 +89,9 @@ function _cIsPathNameSafe() { //не должно быть возвратов
 
 }
 
-// yFactory::safeName()
-function _cGetSafeName($name, $defaultName = NULL, $errorName = NULL) {
-	return isset($name)
-	? (
-			_cIsFileNameSafe($name)
-			? $name
-			: $errorName
-	)
-	: $defaultName;
-}
-
 // VIEW -------------------------------------------------------------------------------------------
 
-function _cQuoteRecursive(&$data) {
-	if (is_array($data)||is_object($data)) {
-		foreach ($data as $key => &$value)
-			if (is_string($value))
-			$value = htmlspecialchars($value, ENT_QUOTES);
-		else
-			_cQuoteRecursive($value);
-	}
-	elseif (is_string($data)) {
-		$data = htmlspecialchars($data, ENT_QUOTES);
-	}
-}
+
 
 /*
 function _cGetURI($base, $query, $modify) {
