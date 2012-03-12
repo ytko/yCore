@@ -6,6 +6,7 @@ class yHtml {
 
 		$query = (array)$query;
 
+		if($modify)
 		foreach ($modify as $key => $value)
 			$query[$key] = $value;
 

@@ -38,6 +38,15 @@ class defaultTemplate {
 
 // ----- HEADER -----------------------------------------------------------------------------------
 	function header(&$_) { ?>
+
+<div style='float:right; background-color:#eeeeee'>
+<?php foreach($_->objectList->items as $i => $item): ?>
+	<div>
+		<a href='<?php echo yHtml::getURI($_->url, array('oid'=>$item->id)); ?>'><?php echo $item->name ?> (<?php echo $item->key ?>)</a>
+	</div>
+<?php endforeach; ?>
+</div>;
+	
 <form name='test' method='post' action=''>
 	<input type='hidden' name='_d[id]' value='<?php echo $_->item->id; ?>' />
 	<input type='hidden' name='oid' value='<?php echo $_->objectID; ?>' />

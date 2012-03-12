@@ -2,9 +2,17 @@
 
 class yDbQueryClass {
 	protected $db;
+	protected $link;
 	
 	function __construct(&$db) {
-		$this->db = &$db;	
+		$this->link = mysql_pconnect(ySettings::$db->host, ySettings::$db->user, ySettings::$db->password) OR DIE("Не могу создать соединение ");
+		mysql_select_db(ySettings::$db->name, $this->link) or die(mysql_error());
+		
+		$this->db = &$link;
+	}
+	
+	function __destruct() {
+		mysql_close();
 	}
 	
 	function quote($str) {
@@ -19,8 +27,12 @@ class yDbQueryClass {
 	function run($query) {
 		yDebug::query($query);		
 
-		$this->db->setQuery($query);
-		return $this->db->Query();
+		//$this->db->setQuery($query);
+		//return $this->db->Query();
+		
+		($result = mysql_query($query, $this->link)) or die(mysql_error());
+		
+		return $result;
 	}
 	
 	function getRow($query) {
