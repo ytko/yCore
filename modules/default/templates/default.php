@@ -29,7 +29,7 @@ class defaultTemplate {
 	function body(&$_) {
 		self::header($_);
 
-		if (!empty($_->items))
+		if (is_array($_->items))
 		foreach ($_->items as &$item)
 			self::loop($_, $item);
 			
@@ -45,7 +45,7 @@ class defaultTemplate {
 		<a href='<?php echo yHtml::getURI($_->url, array('oid'=>$item->id)); ?>'><?php echo $item->name ?> (<?php echo $item->key ?>)</a>
 	</div>
 <?php endforeach; ?>
-</div>;
+</div>
 	
 <form name='test' method='post' action=''>
 	<input type='hidden' name='_d[id]' value='<?php echo $_->item->id; ?>' />

@@ -9,9 +9,8 @@ class usersClass {
 		$model = yFactory::getModel($this->moduleName);
 		$_ = $model->getModel($controller);
 
-		$view = yFactory::getView($controller, 'default');
-		$view->templatePage = strtolower(_cGetSafeName($controller->get->showpage, 'default')); //!!!
-		return $view->getPage('login');
+		$view = yFactory::getView($controller, $this->moduleName, $controller->viewName);
+		return $view->getView($_, $this->moduleName);
 	}
 }
 

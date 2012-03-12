@@ -11,20 +11,6 @@ class objectsViewClass extends defaultViewClass {
 		$this->controller =  $controller;
 	}
 	
-	function getView(&$_, $template = 'default', $templatePage = NULL) {
-		$this->view = $template;
-		$this->_ = &$_;
-		$this->setURI();
-		
-		if (isset($_->items))
-			_cQuoteRecursive($_->items);
-		if (isset($_->item))
-			_cQuoteRecursive($_->item);
-
-		$result.= $this->getPage('objects', $_);
-	
-		return $result;
-	}
 }
 
 ?>

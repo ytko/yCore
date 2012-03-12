@@ -35,6 +35,16 @@ class yViewClass {
 		return $this;
 	}
 	
+	function getView(&$_, $template) {
+		if (isset($_->items))
+			$this->quoteRecursive($_->items);
+		if (isset($_->item))
+			$this->quoteRecursive($_->item);
+		
+		$templateClass = yFactory::linkTemplate($template);
+		return $this->getPage($templateClass, $_);
+	}
+	
 	protected function quoteRecursive(&$data) {
 		// Рекурсивное преобразование всех строк в html-безопасные в объекте/массиве
 		if (is_array($data)||is_object($data)) {
