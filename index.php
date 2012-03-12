@@ -21,7 +21,7 @@ class ySettings {
 $link = mysql_connect('localhost', 'j1', '12345');
 
 ySettings::$rootPath = $_SERVER['DOCUMENT_ROOT'];
-ySettings::$path = ySettings::$rootPath.'/components/com_ytkocore';	//Путь к корню фреймворка
+ySettings::$path = ySettings::$rootPath.'';	//Путь к корню фреймворка
 //ySettings::$path = JPATH_COMPONENT_SITE;						//Путь к корню фреймворка
 
 //ySettings::$rootPath = 
