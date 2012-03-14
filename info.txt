@@ -1,4 +1,4 @@
-Контроллер создает (__construct)
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (__construct)
 	_c->actions (
 		updateItem,
 		deleteItem,
@@ -9,7 +9,7 @@
 	_c->itemID
 	_c->objectID
 
-Модель обрабатывает _c->actions вызывая
+пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ _c->actions пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	_o->saveItem
 	_o->deleteItem
 	_o->_t->addField
@@ -17,9 +17,18 @@
 	_o->deleteObject
 	_o->createObject
 
-Модель показывает _v->getPage в которую отправляются
+пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ _v->getPage пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	_o->getObject($_c->objectID)
 	_o->getObjects
 	_o->getItem($_c->itemID)
 	_o->getItems
 2
+
+
+/*
+echo '<pre>';
+print_r (get_defined_constants());
+JPATH_COMPONENT
+JPATH_COMPONENT_SITE
+JPATH_COMPONENT_ADMINISTRATOR
+*/

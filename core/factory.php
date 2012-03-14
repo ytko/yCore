@@ -1,8 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yFactory {	
-	static $basePath = '';
-	
 	public function getDb($type = 'MySQL') {
 		if (strcasecmp($type, 'MySQL')) {
 	
@@ -11,20 +9,20 @@ class yFactory {
 	
 	public function getModule($moduleName) {
 		$moduleName = yFactory::safeName($moduleName, 'default', 'error');
-		include_once yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.$moduleName.'.php';
+		include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$moduleName.'.php';
 		$moduleClassName =  $moduleName.'Class';
 		return new $moduleClassName();
 	}
 	
 	public function linkController($moduleName = NULL, $controllerName = NULL) {
 		if (!isset($moduleName)) {
-			include_once yFactory::$basePath.DS.'core'.DS.'controller.php';
+			include_once ySettings::$path.DS.'core'.DS.'controller.php';
 			return 'yControllerClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$controllerName = yFactory::safeName($controllerName, $moduleName, 'error');
-			include_once yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.$controllerName.'Controller.php';
+			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$controllerName.'Controller.php';
 			return $controllerName.'ControllerClass';
 		}
 	}
@@ -36,14 +34,14 @@ class yFactory {
 		
 	public function linkModel($moduleName = NULL, $modelName = NULL) {
 		if (!isset($moduleName)) {
-			include_once yFactory::$basePath.DS.'core'.DS.'model.php';
+			include_once ySettings::$path.DS.'core'.DS.'model.php';
 			return 'yModelClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$modelName = yFactory::safeName($modelName, $moduleName, 'error');
 
-			include_once yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.$modelName.'Model.php';
+			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$modelName.'Model.php';
 			return $modelName.'ModelClass';
 		}
 	}	
@@ -58,13 +56,13 @@ class yFactory {
 	
 	public function linkView($moduleName = NULL, $viewName = NULL) {
 		if (!isset($moduleName)) {
-			include_once yFactory::$basePath.DS.'core'.DS.'view.php';
+			include_once ySettings::$path.DS.'core'.DS.'view.php';
 			return 'yViewClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$viewName = yFactory::safeName($viewName, $moduleName, 'error');
-			include_once yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.$viewName.'View.php';		
+			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$viewName.'View.php';		
 			return $viewClassName = $viewName.'ViewClass';
 		}
 	}
@@ -77,7 +75,7 @@ class yFactory {
 	public function linkTemplate($moduleName, $templateName = NULL) {
 		$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 		$templateName = yFactory::safeName($templateName, $moduleName, 'error');
-		include_once yFactory::$basePath.DS.'modules'.DS.$moduleName.DS.'templates'.DS.$templateName.'.php';
+		include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.'templates'.DS.$templateName.'.php';
 		
 		return $templateName = $templateName.'Template';
 	}

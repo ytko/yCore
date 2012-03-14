@@ -20,7 +20,13 @@ class mainTemplate {
 <a href='index.php?mod=objects'>Объекты</a>
 <a href='index.php?mod=users'>Login</a>
 </div>
-	<?php echo $_; ?>
+	<?php echo $_; 
+	
+	$module = yFactory::getModule($_GET[ySettings::$mvc->module]);	//Создание экземпляра модуля //TODO:безопасный запрос (как в factory)
+	$moduleResult = $module->getModule();							//Получение контента основного модуля
+	echo $moduleResult->body;
+	
+	?>
 </body></html>
 	<?php }	
 

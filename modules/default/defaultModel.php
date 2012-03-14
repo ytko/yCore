@@ -11,7 +11,7 @@ class defaultModelClass extends yModelClass {
 		$this->run($controller->actions);
 	
 		$this->set->objectList = true;
-	
+		
 		$this->setObjectID($controller->objectID);
 		$this->setItemID($controller->itemID);
 		$this->setPage($controller->page, 20);
