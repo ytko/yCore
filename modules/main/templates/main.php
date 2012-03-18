@@ -1,6 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-class mainTemplate {
+yFactory::linkTemplate();
+
+class mainTemplate extends yTemplate {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head(&$_) { ?>

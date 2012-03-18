@@ -72,17 +72,23 @@ class yFactory {
 		return new $viewClassName($controller);	
 	}
 	
-	public function linkTemplate($moduleName, $templateName = NULL) {
-		$moduleName = yFactory::safeName($moduleName, 'default', 'error');
-		$templateName = yFactory::safeName($templateName, $moduleName, 'error');
-		include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.'templates'.DS.$templateName.'.php';
+	public function linkTemplate($moduleName = NULL, $templateName = NULL) {
+		if (!isset($moduleName)) {
+			include_once ySettings::$path.DS.'core'.DS.'template.php';
+			return 'yTemplate';
+		}
+		else {
+			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
+			$templateName = yFactory::safeName($templateName, $moduleName, 'error');
+			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.'templates'.DS.$templateName.'.php';
 		
-		return $templateName = $templateName.'Template';
+			return $templateName = $templateName.'Template';
+		}
 	}
 	
-	public function getTemplate($moduleName, $templateName = NULL) {
-		$templateClassName = yFactory::linkTemplate($moduleName, $templateName);
-		return new $templateClassName();
+	public function getTemplate($moduleName = NULL, $templateName = NULL) {
+			$templateClassName = yFactory::linkTemplate($moduleName, $templateName);
+			return new $templateClassName();
 	}
 	
 	// Функции проверки безопасности имен и путей

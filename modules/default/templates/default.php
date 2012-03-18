@@ -1,6 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-class defaultTemplate {
+yFactory::linkTemplate();
+
+class defaultTemplate extends yTemplate {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head(&$_) { ?>
@@ -42,7 +44,7 @@ class defaultTemplate {
 <div style='float:right; background-color:#eeeeee'>
 <?php foreach($_->objectList->items as $i => $item): ?>
 	<div>
-		<a href='<?php echo yHtml::getURI($_->url, array('oid'=>$item->id)); ?>'><?php echo $item->name ?> (<?php echo $item->key ?>)</a>
+		<a href='<?php echo self::getURI($_->url, array('oid'=>$item->id)); ?>'><?php echo $item->name ?> (<?php echo $item->key ?>)</a>
 	</div>
 <?php endforeach; ?>
 </div>
@@ -59,7 +61,7 @@ class defaultTemplate {
 	<?php endforeach; ?>
 	</table>
 	<input type='submit' name='updateItem' value='Сохранить' /><br />
-	<div class='button'><a href='<?php echo yHtml::getURI($_->url, $_->get, array('id' => NULL)); ?>'>Создать</a></div>
+	<div class='button'><a href='<?php echo self::getURI($_->url, $_->get, array('id' => NULL)); ?>'>Создать</a></div>
 </form>
 <div>
 	<form name='test' method='post' action=''>
@@ -79,7 +81,7 @@ class defaultTemplate {
 // ----- LOOP -------------------------------------------------------------------------------------	
 	function loop(&$_, &$item) { ?>
 			<tr>
-				<td><a href='<?php echo yHtml::getURI($_->url, $_->get, array('id' => $item->id)); ?>'><?php echo $item->id; ?></a>
+				<td><a href='<?php echo self::getURI($_->url, $_->get, array('id' => $item->id)); ?>'><?php echo $item->id; ?></a>
 				</td>
 				
 			<?php foreach ($_->fields as $key => $value): ?>

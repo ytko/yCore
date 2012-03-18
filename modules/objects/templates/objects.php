@@ -1,6 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-class objectsTemplate {
+yFactory::linkTemplate();
+
+class objectsTemplate extends yTemplate {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head(&$_) { ?>
@@ -71,7 +73,7 @@ input.delete, input.clear
 // ----- LOOP -------------------------------------------------------------------------------------	
 	function loop(&$_, &$item) { ?>
 			<tr>
-				<td><a href='<?php echo yHtml::getURI($_->url, $_->get, array('oid' => $item->id)); ?>'><?php echo $item->key; ?></a></td>
+				<td><a href='<?php echo self::getURI($_->url, $_->get, array('oid' => $item->id)); ?>'><?php echo $item->key; ?></a></td>
 				<td><?php echo $item->name; ?></td>
 				<td><?php echo $item->type; ?></td>
 				<td><input type='submit' name='clearObject[<?php echo $item->id; ?>]' value='C' class='clear' /></td>
