@@ -82,14 +82,14 @@ class yFactory {
 	public function linkTemplate($moduleName = NULL, $templateName = NULL) {
 		if (!isset($moduleName)) {
 			include_once ySettings::$path.DS.'core'.DS.'template.php';
-			return 'yTemplate';
+			return 'yTemplateClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$templateName = yFactory::safeName($templateName, $moduleName, 'error');
-			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.'templates'.DS.$templateName.'.php';
+			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$templateName.'Template.php';
 		
-			return $templateName = $templateName.'Template';
+			return $templateName = $templateName.'TemplateClass';
 		}
 	}
 	

@@ -2,7 +2,7 @@
 
 yFactory::linkTemplate();
 
-class usersTemplate extends yTemplate {
+class usersTemplateClass extends yTemplateClass {
 
 	function head() {
 		

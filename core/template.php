@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-class yTemplate {
+class yTemplateClass {
 	function head(&$_) {}
 	
 	function body(&$_) {}

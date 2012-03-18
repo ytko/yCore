@@ -2,7 +2,7 @@
 
 yFactory::linkTemplate();
 
-class objectsTemplate extends yTemplate {
+class objectsTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head(&$_) { ?>
