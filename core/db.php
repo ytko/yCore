@@ -118,12 +118,14 @@ class yDbClass {
 			$query.= ($i ? ', ' : NULL); $i++;			
 			if (!strcmp($value['type'], 'text'))
 				$query.= "ADD `$key` TEXT NOT NULL";
-			if (!strcmp($value['type'], 'integer'))
+			if (!strcmp($value['type'], 'integer') || !strcmp($value['type'], 'int'))
 				$query.= "ADD `$key` INT NOT NULL";
 			if (!strcmp($value['type'], 'float'))
 				$query.= "ADD `$key` FLOAT NOT NULL";
 			if (!strcmp($value['type'], 'items'))
 				$query.= "ADD `$key` INT NOT NULL";
+			if (!strcmp($value['type'], 'time'))
+				$query.= "ADD `$key` TIMESTAMP NOT NULL";
 		}
 		
 		return $this->Query->run($query);

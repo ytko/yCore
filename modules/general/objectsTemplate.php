@@ -124,6 +124,7 @@ input.delete, input.clear
 					   <option value='text'>Текстовое</option>
 					   <option value='integer'>Целое число</option>
 					   <option value='float'>Число с плавающей точкой</option>
+					   <option value='time'>Timestamp</option>					   
 					</select>
 				</td>
 			</tr>
