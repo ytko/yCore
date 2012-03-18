@@ -2,12 +2,11 @@
 
 yFactory::linkTemplate();
 
-class objectsTemplateClass extends yTemplateClass {
+class generalObjectsTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head(&$_) { ?>
-<script src='/components/com_ncat/view/_js/jquery-1.7.1.min.js'></script>
-<script>
+<script type="text/javascript">
 	$(document).ready(function(){
 		$(".clear").click(function () { 
 			return confirm('Очистить?'); 
@@ -18,7 +17,7 @@ class objectsTemplateClass extends yTemplateClass {
 		});
 	});
 </script>
-<style>
+<style type="text/css">
 input[type='submit'], input[type='password']
 	{min-width:200px; border:solid 1px #848388; padding:5px;}
 .button
@@ -162,9 +161,11 @@ input.delete, input.clear
 // ----- SELF FUNCTIONS ---------------------------------------------------------------------------
 
 	protected function objectsShowArray($arr) {
-	$result = "<table>";
 	
-	if (is_array($arr))
+	if (!is_array($arr)) return;
+		
+	$result = "<table>";
+
 	foreach ($arr as $key => $value)
 		$result.= "<tr><td>$key</td><td>$value</td></tr>";
 

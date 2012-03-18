@@ -2,7 +2,7 @@
 
 yFactory::linkModel();
 
-class objectsModelClass extends yModelClass {
+class generalObjectsModelClass extends yModelClass {
 	function getModel($controller) {
 		$this->run($controller->actions);
 				

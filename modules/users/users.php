@@ -4,12 +4,12 @@ class usersClass {
 	public $moduleName = 'users';
 
 	public function getModule() {
-		$controller = yFactory::getController('default');
+		$controller = yFactory::getController();
 
 		$model = yFactory::getModel($this->moduleName);
 		$_ = $model->getModel($controller);
 
-		$view = yFactory::getView($controller);
+		$view = yFactory::getView();
 		$template = yFactory::getTemplate($this->moduleName);
 		return $view->getView($_, $template);
 	}

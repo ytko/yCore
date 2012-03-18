@@ -2,12 +2,11 @@
 
 yFactory::linkTemplate();
 
-class defaultTemplateClass extends yTemplateClass {
+class generalTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head(&$_) { ?>
-<script src='/components/com_ncat/view/_js/jquery-1.7.1.min.js'></script>
-<script>
+<script type="text/javascript">
 	$(document).ready(function(){
 		$(".clear").click(function () { 
 			return confirm('Очистить?'); 
@@ -18,7 +17,7 @@ class defaultTemplateClass extends yTemplateClass {
 		});
 	});
 </script>
-<style>
+<style type="text/css">
 	table { margin:0 5px 5px 0; }
 	table td { padding:5px; }
 	input.alone { margin:5px 0; }
@@ -29,8 +28,6 @@ class defaultTemplateClass extends yTemplateClass {
 	
 // ----- BODY -------------------------------------------------------------------------------------	
 	function body(&$_) {
-		die('<a href="?mod=general">yCore</a>');
-		
 		self::header($_);
 
 		if (is_array($_->items))

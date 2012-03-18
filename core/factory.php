@@ -18,7 +18,12 @@ class yFactory {
 		
 		include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$glueName.'.php';
 		$moduleClassName = yFactory::getClassPrefix($moduleName, $glueName).'Class';
-		return new $moduleClassName();
+
+		$moduleClass = new $moduleClassName();
+		$moduleClass->moduleName = $moduleName;
+		$moduleClass->glueName = $glueName;
+		
+		return $moduleClass;
 	}
 	
 	public function linkController($moduleName = NULL, $controllerName = NULL) {
@@ -30,11 +35,11 @@ class yFactory {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$controllerName = yFactory::safeName($controllerName, $moduleName, 'error');
 			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$controllerName.'Controller.php';
-			return $controllerName.'ControllerClass';
+			return yFactory::getClassPrefix($moduleName, $controllerName).'ControllerClass';
 		}
 	}
 		
-	public function getController($moduleName, $controllerName = NULL) {
+	public function getController($moduleName = NULL, $controllerName = NULL) {
 		$controllerClassName = yFactory::linkController($moduleName, $controllerName);
 		return new $controllerClassName($controllerName);
 	}
@@ -49,7 +54,7 @@ class yFactory {
 			$modelName = yFactory::safeName($modelName, $moduleName, 'error');
 
 			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$modelName.'Model.php';
-			return $modelName.'ModelClass';
+			return yFactory::getClassPrefix($moduleName, $modelName).'ModelClass';
 		}
 	}	
 	
@@ -74,9 +79,9 @@ class yFactory {
 		}
 	}
 	
-	public function getView($controller, $moduleName = NULL, $viewName = NULL) {
+	public function getView($moduleName = NULL, $viewName = NULL) {
 		$viewClassName = yFactory::linkView($moduleName, $viewName);
-		return new $viewClassName($controller);	
+		return new $viewClassName();	
 	}
 	
 	public function linkTemplate($moduleName = NULL, $templateName = NULL) {
@@ -89,7 +94,7 @@ class yFactory {
 			$templateName = yFactory::safeName($templateName, $moduleName, 'error');
 			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$templateName.'Template.php';
 		
-			return $templateName = $templateName.'TemplateClass';
+			return $templateName = yFactory::getClassPrefix($moduleName, $templateName).'TemplateClass';
 		}
 	}
 	

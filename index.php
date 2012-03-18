@@ -2,7 +2,7 @@
 
 header('Content-type: text/html; charset=utf-8');
 
-$micro_start = microtime();
+//$micro_start = microtime();
 
 define ('_YEXEC', ''); //Первая строка каждого php-файла фреймворка должена быть  "<?php defined ('_YEXEC')  or  die();"
 define ('DS', '/'); //Установка слеша; закомментить для joomla //удалить
@@ -19,12 +19,12 @@ require_once(ySettings::$corePath.'/db.php');
 
 //Работа модуля оформления (в него отпровляется контент основного модуля, который обрамляется в моответствии с шаблоном)
 $module = yFactory::getModule('main');					//Создание экземпляра модуля оформления
-$mainResult = $module->getModule($moduleResult->body);	//Получение данных модуля
+$mainResult = $module->getModule();						//Получение данных модуля
 
 //Вывод данных 
-echo '<head>'.$mainResult->head.$moduleResult->head.'</head>';	//Вывод <head>
-echo '<body>'.$mainResult->body.'</body>';						//Вывод <body>
+echo $mainResult->head;						//Вывод <head>
+echo $mainResult->body;						//Вывод <body>
 
-echo microtime() - $micro_start;
+//echo microtime() - $micro_start;
 
 ?>

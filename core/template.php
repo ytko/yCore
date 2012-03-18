@@ -21,7 +21,7 @@ class yTemplateClass {
 			$first = false;
 			$result.= '?'.$key.'='.$value;
 		} else
-			$result.= '&'.$key.'='.$value;
+			$result.= '&amp;'.$key.'='.$value;
 
 		return $result;
 	}
