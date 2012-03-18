@@ -46,7 +46,7 @@ class yFactory {
 		}
 	}	
 	
-	public function getModel($moduleName, $modelName = NULL) {
+	public function getModel($moduleName = NULL, $modelName = NULL) {
 		$_q = new yDbQueryClass(ySettings::$db->resource);
 		$db = new yDbClass($_q, ySettings::$db->prefix, ySettings::$db->com_prefix, true, true);
 
@@ -67,7 +67,7 @@ class yFactory {
 		}
 	}
 	
-	public function getView($controller, $moduleName, $viewName = NULL) {
+	public function getView($controller, $moduleName = NULL, $viewName = NULL) {
 		$viewClassName = yFactory::linkView($moduleName, $viewName);
 		return new $viewClassName($controller);	
 	}

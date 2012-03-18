@@ -9,8 +9,9 @@ class usersClass {
 		$model = yFactory::getModel($this->moduleName);
 		$_ = $model->getModel($controller);
 
-		$view = yFactory::getView($controller, $this->moduleName, $controller->viewName);
-		return $view->getView($_, $this->moduleName);
+		$view = yFactory::getView($controller);
+		$template = yFactory::getTemplate($this->moduleName);
+		return $view->getView($_, $template);
 	}
 }
 

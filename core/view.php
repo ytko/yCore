@@ -20,18 +20,18 @@ class yViewClass {
 		$view->head = '';
 		$view->breadcrumbs = array();
 	}
-		
-	function getPage($templateClass, &$_ = NULL) {
+	
+	function getPage($template, &$_ = NULL) {
 		ob_start();
-		$templateClass::body($_);
+		$template->body($_);
 		$this->body.= ob_get_contents();
 		ob_end_clean();
-		
+	
 		ob_start();
-		$templateClass::head($_);
+		$template->head($_);
 		$this->head.= ob_get_contents();
 		ob_end_clean();
-		
+	
 		return $this;
 	}
 	
@@ -40,9 +40,8 @@ class yViewClass {
 			$this->quoteRecursive($_->items);
 		if (isset($_->item))
 			$this->quoteRecursive($_->item);
-		
-		$templateClass = yFactory::linkTemplate($template);
-		return $this->getPage($templateClass, $_);
+	
+		return $this->getPage($template, $_);
 	}
 	
 	protected function quoteRecursive(&$data) {
