@@ -8,9 +8,16 @@ class yFactory {
 	}
 	
 	public function getModule($moduleName) {
+		$moduleRequest = explode('/', $moduleName);
+		
+		$moduleName = $moduleRequest[0];
+		$glueName = $moduleRequest[sizeOf($moduleRequest)-1];
+		
 		$moduleName = yFactory::safeName($moduleName, 'default', 'error');
-		include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$moduleName.'.php';
-		$moduleClassName =  $moduleName.'Class';
+		$glueName = yFactory::safeName($glueName, 'default', 'error');
+		
+		include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$glueName.'.php';
+		$moduleClassName = yFactory::getClassPrefix($moduleName, $glueName).'Class';
 		return new $moduleClassName();
 	}
 	
@@ -89,6 +96,18 @@ class yFactory {
 	public function getTemplate($moduleName = NULL, $templateName = NULL) {
 			$templateClassName = yFactory::linkTemplate($moduleName, $templateName);
 			return new $templateClassName();
+	}
+	
+	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса
+		$moduleName = strtolower($moduleName);
+		$name = strtolower($name);
+	
+		if (!strcmp($moduleName, $name))
+			return $moduleName;
+		else {
+			$name[0] = strtoupper($name[0]);
+			return $moduleName.$name;
+		}
 	}
 	
 	// Функции проверки безопасности имен и путей

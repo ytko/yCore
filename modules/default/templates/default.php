@@ -44,7 +44,7 @@ class defaultTemplate extends yTemplate {
 <div style='float:right; background-color:#eeeeee'>
 <?php foreach($_->objectList->items as $i => $item): ?>
 	<div>
-		<a href='<?php echo self::getURI($_->url, array('oid'=>$item->id)); ?>'><?php echo $item->name ?> (<?php echo $item->key ?>)</a>
+		<a href='<?php echo self::getURI($_->url, $_->get, array('oid'=>$item->id)); ?>'><?php echo $item->name ?> (<?php echo $item->key ?>)</a>
 	</div>
 <?php endforeach; ?>
 </div>

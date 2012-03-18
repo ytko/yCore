@@ -127,7 +127,7 @@ class yControllerClass {
 		}
 	}
 	
-	function getRequest($key) {
+	public function getRequest($key) {
 		if     (isset($this->post->$key))
 			return $this->post->$key;
 		elseif (isset($this->get->$key))
@@ -136,7 +136,7 @@ class yControllerClass {
 			return NULL;
 	}
 	
-	function isRequestSet($key) {
+	public function isRequestSet($key) {
 		return (isset($this->post->$key) || isset($this->get->$key));
 	}
 }
