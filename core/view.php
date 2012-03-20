@@ -40,7 +40,7 @@ class yViewClass {
 			$this->quoteRecursive($_->items);
 		if (isset($_->item))
 			$this->quoteRecursive($_->item);
-	
+
 		return $this->getPage($template, $_);
 	}
 	

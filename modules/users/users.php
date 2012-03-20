@@ -1,18 +1,11 @@
 <?php defined ('_YEXEC')  or  die();
 
-class usersClass {
-	public $moduleName = 'users';
+yFactory::linkGlue();
 
-	public function getModule() {
-		$controller = yFactory::getController();
-
-		$model = yFactory::getModel($this->moduleName);
-		$_ = $model->getModel($controller);
-
-		$view = yFactory::getView();
-		$template = yFactory::getTemplate($this->moduleName);
-		return $view->getView($_, $template);
-	}
+class usersClass extends yGlueClass {
+	public
+		$modelName = 'users',
+		$templateName = 'users';
 }
 
 ?>

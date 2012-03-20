@@ -1,17 +1,11 @@
 <?php defined ('_YEXEC')  or  die();
 
-class generalObjectsClass {
-	public $moduleName, $glueName;
-	
-	public function getModule() {
-		$controller = yFactory::getController();
-				
-		$model = yFactory::getModel($this->moduleName, $this->glueName);
-		$_ = $model->getModel($controller);
+yFactory::linkGlue();
 
-		$view = yFactory::getView();
-		$template = yFactory::getTemplate($this->moduleName, $this->glueName);		
-		return $view->getView($_, $template);
-	}
+class generalObjectsClass extends yGlueClass {
+	public
+		$modelName = 'objects',
+		$templateName = 'objects';
 }
+
 ?>

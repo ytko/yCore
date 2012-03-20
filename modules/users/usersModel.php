@@ -8,23 +8,23 @@ class usersModelClass extends yModelClass {
 	public function getModel($controller) {
 		$this->controller = $controller;
 		
-		$this->onceLogin();
+		$this->login($_POST['login'], $_POST['password']);
 		$this->run();
-		echo $this->userID();
+		echo 'uid:'.$this->userID();
 	}
 	
 	function hash($password) {
 		return md5($_SERVER['HTTP_ACCEPT_LANGUAGE'].$password.$_SERVER['HTTP_USER_AGENT']);
 	}
 	
-	function onceLogin() {
-		if	(isset($_POST['login']) && isset($_POST['password'])) {
+	function login($login, $password) {
+		if	(isset($login) && isset($password)) {
 
 			$this->login = mysql_real_escape_string($_POST['login']);
 			$this->password = $this->hash(md5($_POST['password']));
 		
-			setCookie("login", $login, time() + 3600, "/");
-			setCookie("hash", $user_hash, time() + 3600, "/");
+			setCookie("login", $this->login, time() + 3600, "/");
+			setCookie("hash", $this->password, time() + 3600, "/");
 		}
 	}
 	
@@ -32,7 +32,7 @@ class usersModelClass extends yModelClass {
 		if
 			(	(!isset($_SESSION['user_id'])) &&
 				(isset($_COOKIE['login']) && isset($_COOKIE['hash'])) ) {
-			
+
 			$this->login = mysql_real_escape_string($_COOKIE['login']);
 			$this->password = mysql_real_escape_string($_COOKIE['hash']);
 		}	

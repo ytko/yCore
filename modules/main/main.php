@@ -1,6 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-class mainClass {
+yFactory::linkGlue();
+
+class mainClass extends yGlueClass {
 	public $moduleName = 'main';
 
 	public function getModule() {

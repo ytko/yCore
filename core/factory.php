@@ -102,6 +102,25 @@ class yFactory {
 			$templateClassName = yFactory::linkTemplate($moduleName, $templateName);
 			return new $templateClassName();
 	}
+
+	public function linkGlue($moduleName = NULL, $glueName = NULL) {
+		if (!isset($moduleName)) {
+			include_once ySettings::$path.DS.'core'.DS.'glue.php';
+			return 'yGlueClass';
+		}
+		else {
+			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
+			$glueName = yFactory::safeName($glueName, $moduleName, 'error');
+			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$glueName.'.php';
+	
+			return $glueName = yFactory::getClassPrefix($moduleName, $glueName).'GlueClass';
+		}
+	}	
+	
+	public function getGlue($moduleName = NULL, $templateName = NULL) {
+		$glueClassName = yFactory::linkGlue($moduleName, $glueName);
+		return new $glueClassName();
+	}
 	
 	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса
 		$moduleName = strtolower($moduleName);

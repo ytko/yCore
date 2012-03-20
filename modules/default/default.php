@@ -1,18 +1,11 @@
 <?php defined ('_YEXEC')  or  die();
 
-class defaultClass {
-	public $moduleName, $glueName;
-	
-	public function getModule () {
-		$controller = yFactory::getController($this->moduleName);
+yFactory::linkGlue();
 
-		$model = yFactory::getModel($this->moduleName, $this->glueName);
-		$_ = $model->getModel($controller);
-
-		$view = yFactory::getView();
-		$template = yFactory::getTemplate($this->moduleName, $this->glueName);
-		return $view->getView($_, $template);
-	}
+class defaultClass extends yGlueClass{
+	public
+		$modelName = 'default',
+		$templateName = 'default';
 }
 
 ?>
