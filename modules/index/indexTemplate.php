@@ -2,7 +2,7 @@
 
 yFactory::linkTemplate();
 
-class mainTemplateClass extends yTemplateClass {
+class indexTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head() { 
@@ -12,7 +12,7 @@ class mainTemplateClass extends yTemplateClass {
 <title></title>
 <script src='http://code.jquery.com/jquery-1.7.1.min.js' type="text/javascript"></script><?php 
 
-		echo $this->mainModule->head;
+		echo $this->indexModule->head;
 		
 ?><meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head><?php
@@ -28,7 +28,7 @@ class mainTemplateClass extends yTemplateClass {
 <a href='index.php?mod=users'>Login</a>
 </div><?php
 	
-	echo $this->mainModule->body;
+	echo $this->indexModule->body;
 	
 ?></body></html><?php
 	}	

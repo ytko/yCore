@@ -3,13 +3,13 @@
 yFactory::linkModel();
 
 class usersModelClass extends yModelClass {
-	private $userID, $login, $password; 
+	private static $userID, $login, $password; 
 	
 	public function getModel($controller) {
 		$this->controller = $controller;
 		
 		$this->login($_POST['login'], $_POST['password']);
-		$this->run();
+		//$this->run();
 		echo 'uid:'.$this->userID();
 	}
 	
@@ -76,6 +76,18 @@ class usersModelClass extends yModelClass {
 			return NULL;
 		}
 	}
+	
+	//interface
+	
+	public function id() { //stub: get user id
+		return $this->userID();
+	}
+	
+	public function is($group) { //stub: check user rights
+		//'user', 'moder', 'admin'
+		return true;
+	}
+	
 }
 
 ?>

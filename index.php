@@ -18,7 +18,7 @@ require_once(ySettings::$corePath.'/db.php');
 //$moduleResult = $module->getModule();							//Получение контента основного модуля
 
 //Работа модуля оформления (в него отпровляется контент основного модуля, который обрамляется в моответствии с шаблоном)
-$module = yFactory::getModule('main');					//Создание экземпляра модуля оформления
+$module = yFactory::getModule('index');					//Создание экземпляра модуля оформления
 $mainResult = $module->getModule();						//Получение данных модуля
 
 //Вывод данных 
