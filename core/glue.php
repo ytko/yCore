@@ -36,6 +36,7 @@ class yGlueClass {
 		$controller = $this->doFactory($this->controllerName, 'getController');
 
 		$model = $this->doFactory($this->modelName, 'getModel');
+		$model->setController($controller);
 		$_ = $model->getModel($controller);
 
 		$view = $this->doFactory($this->viewName, 'getView');

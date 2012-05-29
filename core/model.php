@@ -95,6 +95,7 @@ class yModelClass {
 	public $db;
 	public $objectExists; //???
 	public $filters, $fields, $flags;
+	public $controller;
 	//public $override = (object)array('SQL' => NULL);
 	private $isObjectLoaded = false;
 	private $itemsPerPage, $pagination;
@@ -103,6 +104,10 @@ class yModelClass {
 		$this->db = &$db;
 		
 		$this->reset();
+	}
+	
+	function setController(&$controller) {
+		$this->controller = &$controller;		
 	}
 	
 	function reset($property = NULL) {
@@ -406,11 +411,44 @@ class yModelClass {
 		
 		return $item->$field;		
 	}	
+
+	public function updateItems($values) {
+		print_r($values);
+		if (is_array($values)) {
+			foreach ($values as $updateItem) {
+				if (!empty($updateItem->oid))
+					if ($this->setObjectID($updateItem->oid))
+						$this->updateItem($updateItem->_d);
+			}
+		}
+	}
 	
-	public function saveItem($values){
-		if (empty($this->objectKey)) return NULL;	
+	public function updateItem($values) {
+		print_r($values);
+		if (empty($this->objectKey)) return NULL;
 	
 		return $this->db->insertItem($this->currentObjectTableName(), $values);
+	}
+	
+	public function saveItem($values) { //synonym
+		return $this->updateItem($values);
+	}
+	
+	public function deleteItems($list) {
+		if (is_array($list)) {
+			foreach ($list as $deleteItem) {
+				if (!empty($deleteItem->oid))
+					if ($this->setObjectID($deleteItem->oid))
+						$this->deleteItem($deleteItem->id);
+			}
+		}
+	}	
+	
+	
+	 public function deleteItems_old() {
+	if (empty($this->objectKey)) return NULL;
+	
+	return $this->db->deleteItems($this->currentObjectTableName());
 	}
 	
 	public function deleteItem($id) {
@@ -420,12 +458,7 @@ class yModelClass {
 		$this->db->setLimit(1);
 		return $this->db->deleteItems($this->currentObjectTableName());
 	}
-	
-	public function deleteItems() {
-		if (empty($this->objectKey)) return NULL;	
 
-		return $this->db->deleteItems($this->currentObjectTableName());
-	}	
 	
 // OBJECTS ------------------------------------------------------------
 
@@ -484,7 +517,7 @@ class yModelClass {
 		//return $result;
 	}
 	
-	public function createObject($objectKey, $objectName = NULL, $objectType = NULL, $fields = NULL){
+	public function createObject($objectKey, $objectName = NULL, $objectType = NULL, $fields = NULL){ //check name
 		if (empty($fields)) $fields = array();
 		
 		$fullKey = $this->currentObjectTableName($objectKey);
@@ -499,10 +532,25 @@ class yModelClass {
 		else return false;	
 	}
 	
-	public function deleteObject($id = NULL) {
+	public function addObjects($list) {
+		if (is_array($list))
+			foreach($list as $addObject)
+				if (!empty($addObject->objectKey))
+					$this->createObject($addObject->objectKey, $addObject->objectName, $addObject->objectType);
+	}
+	
+	public function dropObjects($list) { //todo:dropObjects, deleteObjects merge
+		if (is_array($list))
+			foreach($list as $dropObject)
+				if (!empty($dropObject->oid))
+					$this->dropObject($dropObject->oid);
+	}
+	
+	public function dropObject($id = NULL) {
 		$head = $this->getObjectRec($id);
+
 		$objectKey = $head->key;
-		$fullKey = $this->currentObjectTableName($objectKey = NULL);
+		$fullKey = $this->currentObjectTableName($objectKey);
 		
 		$this->db->setLimit(1);
 		$this->db->addWhere("`id` = '$id'");
@@ -510,7 +558,20 @@ class yModelClass {
 
 		return $this->db->dropTable($fullKey);
 	}
+	
+	public function deleteObject($id = NULL) { //synonym
+		return $this->dropObject($id);
+	}
 
+	public function clearObjects($list) {
+		if (is_array($list))
+			foreach($list as $clearObject) {
+			if (!empty($clearObject->oid))
+				if ($this->setObjectID($clearObject->oid))
+				$this->deleteItems_old();
+		}
+	}	
+	
  //setObjectRec getObjectRec дописать для возможности/невозможности изменять тип существующего поля
 	private function setObjectRec($fields, $key = NULL, $name = NULL, $type = NULL) {
 			$this->isObjectLoaded = false;
@@ -533,11 +594,13 @@ class yModelClass {
 			return $this->db->insertItem('', $values);
 	}
 	
-	private function getObjectRec() {
+	private function getObjectRec($id = NULL) {
 		yDebug::method(__METHOD__);
 		
-		if (isset($this->objectID))
-			$this->db->addWhere("`id` = '{$this->objectID}'");
+		if (!isset($id) && isset($this->objectID)) $id = $this->objectID;
+		
+		if (isset($id))
+			$this->db->addWhere("`id` = '{$id}'");
 		elseif (isset($this->objectKey))
 			$this->db->addWhere("`key` LIKE '{$this->objectKey()}'");
 	
@@ -555,6 +618,15 @@ class yModelClass {
 		return $result;
 	}
 	
+	function addFields($list) {
+		if (is_array($list))
+			foreach($list as $addField) {
+			if (!empty($addField->oid))
+				if ($this->setObjectID($addField->oid))
+					$this->addField($addField->fieldKey, $addField->fieldName, $addField->fieldType, $addField->fieldExt);
+		}
+	}
+	
 	public function addField($key, $name, $type, $ext = NULL) {
 		$field = array(
 			'type' => $type,
@@ -563,10 +635,10 @@ class yModelClass {
 			
 		if (isset($ext)) $field['ext'] = $ext;
 	
-		return $this->addFields(array($key => $field));
+		return $this->addFields_old(array($key => $field));
 	}
 	
-	public function addFields($fields) {
+	public function addFields_old($fields) { //to merge with addFields
 		if ($this->db->tableAddFields(
 				$this->currentObjectTableName(),
 				$fields) ) {
@@ -579,7 +651,16 @@ class yModelClass {
 		else return false;	
 	}
 	
-	public function dropFields($fields) { //setObjectRec getObjectRec
+	public function dropFields($fields) {
+		if (is_array($fields))
+			foreach($fields as $dropField) {
+			if (!empty($dropField->oid))
+				if ($this->setObjectID($dropField->oid))
+					$this->dropFields_old(array($dropField->fieldKey));
+		}		
+	}
+	
+	public function dropFields_old($fields) { //setObjectRec getObjectRec //to merge with addFields
 	//удаление полей объекта
 		//if (!($this->isAdmin&&$this->isUser)) return false;
 

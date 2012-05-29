@@ -6,40 +6,36 @@ class generalModelClass extends yModelClass {
 	function __construct($db) {
 		parent::__construct($db);
 	}
+
+	function getModel($controller = NULL) { //synonym: to delete
+		return $this->get($controller);
+	}	
 	
-	function getModel($controller) {
-		$this->run($controller->actions);
+	public function get($controller = NULL /*may be to delete*/) {
+		if (isset($controller)) $this->controller = $controller; //may be to delete
+		
+		$this->update(); //may be to move to glue
 	
 		$this->set->objectList = true;
 		
-		$this->setObjectID($controller->objectID);
-		$this->setItemID($controller->itemID);
-		$this->setPage($controller->page, 20);
+		$this->setObjectID($this->controller->objectID);
+		$this->setItemID($this->controller->itemID);
+		$this->setPage($this->controller->page, 20);
 	
 		$_ = $this->getObject();
-	
-		$_->get = $controller->get;
-		$_->url = $controller->url;
-	
-		$_->objectList->get = $controller->get;
-		$_->objectList->url = $controller->url;
-	
+
+		$_->get = $this->controller->get; //???
+		$_->url = $this->controller->url; //???
+
+		$_->objectList->get = $this->controller->get; //???
+		$_->objectList->url = $this->controller->url; //???
+
 		return $_;
 	}
 	
-	function run($actions) {
-		if (!empty($actions)) foreach ($actions as $action) {
-			if (!empty($action->oid)) 
-				if (!$this->setObjectID($action->oid)) continue;		
-
-			if (!strcmp($action->action, 'updateItem')) {
-				$this->saveItem($action->_d);
-			}
-
-			elseif (!strcmp($action->action, 'deleteItem')) {
-				$this->deleteItem($action->id);
-			}
-		}	
+	public function update() {
+		$this->deleteItems($this->controller->deleteItems());			
+		$this->updateItems($this->controller->updateItems());
 	}
 }
 
