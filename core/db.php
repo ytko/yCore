@@ -1,17 +1,9 @@
 <?php defined ('_YEXEC')  or  die();
 
-/*
-CREATE TABLE `j1`.`j7_yt_obj` (
-`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-`key` VARCHAR( 255 ) NOT NULL ,
-`name` TEXT NOT NULL ,
-`fields` TEXT NOT NULL ,
-INDEX ( `key` ) 
-) ENGINE = MYISAM ;
-*/
-
-// todo
-// addFields(array)
+// Include ezSQL core
+include_once "ezsql/ez_sql_core.php";
+// Include ezSQL database specific component		
+include_once "ezsql/ez_sql_mysql.php";
 
 class yDbClass {
 	public $Query;
@@ -21,7 +13,7 @@ class yDbClass {
 	
 	public $fields = array(), $from = NULL, $where = NULL, $groupby = NULL, $orderby = NULL, $limit = NULL; //$from!!! - сделать
 
-	function __construct(&$_q, $prefix, $com_prefix, $isUser = false, $isAdmin = false) {
+	function __construct($prefix, $com_prefix, $isUser = false, $isAdmin = false) {
 		//$this->setObj($name);
 		$this->isAdmin = $isAdmin;
 		$this->isUser = $isUser;
@@ -29,7 +21,9 @@ class yDbClass {
 		$this->cms_prefix = $prefix;
 		$this->com_prefix = $com_prefix;
 		
-		$this->Query = &$_q;
+		//$this->Query = &$_q;
+
+		$this->Query = new ezSQL_mysql(ySettings::$db->user, ySettings::$db->password, ySettings::$db->name, ySettings::$db->host);
 	}
 	
 // $from, $where, $limit
@@ -138,7 +132,7 @@ class yDbClass {
 		
 		//проверка есть ли такой индекс
 		//$query = "SHOW INDEX FROM `$tableName`";
-		//foreach ($this->Query->getRows($query) as ... ) {	...
+		//foreach ($this->Query->get_results($query) as ... ) {	...
 		//}
 				
 		if (!strcmp($type, 'fullText'))
@@ -220,7 +214,7 @@ class yDbClass {
 		
 		$this->reset();
 		
-		return $this->Query->getRows($query);
+		return $this->Query->get_results($query);
 	}
 
 	function getItem($table, $id = NULL) {
@@ -232,7 +226,7 @@ class yDbClass {
 
 		$this->reset();
 
-		return (object)$this->Query->getRow($query);
+		return (object)$this->Query->get_row($query);
 	}
 	
 	function insertItem($table, $values) {

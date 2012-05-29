@@ -59,8 +59,7 @@ class yFactory {
 	}	
 	
 	public function getModel($moduleName = NULL, $modelName = NULL) {
-		$_q = new yDbQueryClass(ySettings::$db->resource);
-		$db = new yDbClass($_q, ySettings::$db->prefix, ySettings::$db->com_prefix, true, true);
+		$db = new yDbClass(ySettings::$db->prefix, ySettings::$db->com_prefix, true, true);
 
 		$modelClassName = yFactory::linkModel($moduleName, $modelName);
 		return new $modelClassName($db);

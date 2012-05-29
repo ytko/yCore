@@ -10,7 +10,6 @@ define ('DS', '/'); //Установка слеша; закомментить д
 require_once('settings.php');
 require_once(ySettings::$corePath.'/factory.php');
 require_once(ySettings::$corePath.'/functions.php');
-require_once(ySettings::$corePath.'/dbquery.php');
 require_once(ySettings::$corePath.'/db.php');
 
 //Работа основного модуля
