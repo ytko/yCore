@@ -2,7 +2,7 @@
 
 //TODO: rename _d
 
-class yControllerClass {
+class extendedControllerClass {
 	public $post, $get;
 	public $url;
 	public $actions, $view, $itemID, $objectID;

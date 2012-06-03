@@ -12,13 +12,9 @@ require_once(ySettings::$corePath.'/factory.php');
 require_once(ySettings::$corePath.'/functions.php');
 require_once(ySettings::$corePath.'/db.php');
 
-//Работа основного модуля
-//$module = yFactory::getModule($_GET[ySettings::$mvc->module]);	//Создание экземпляра модуля //TODO:безопасный запрос (как в factory)
-//$moduleResult = $module->getModule();							//Получение контента основного модуля
-
-//Работа модуля оформления (в него отпровляется контент основного модуля, который обрамляется в моответствии с шаблоном)
-$module = yFactory::getModule('index');					//Создание экземпляра модуля оформления
-$mainResult = $module->getModule();						//Получение данных модуля
+//Получение контента страницы
+$mainResult = yFactory::getModule('structure')
+		->get();
 
 //Вывод данных 
 echo $mainResult->head;						//Вывод <head>

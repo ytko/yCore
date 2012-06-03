@@ -2,7 +2,7 @@
 
 yFactory::linkTemplate();
 
-class indexTemplateClass extends yTemplateClass {
+class templateTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head() { 
@@ -23,9 +23,9 @@ class indexTemplateClass extends yTemplateClass {
 ?>
 <body>
 <div style='float:left; width:100%; padding:5px; margin:5px 0 0 0; background-color:#cccccc'>
-<a href='index.php?mod=general'>Таблицы</a>
-<a href='index.php?mod=general/objects'>Объекты</a>
-<a href='index.php?mod=users'>Login</a>
+<a href='general'>Таблицы</a>
+<a href='objects'>Объекты</a>
+<a href='users'>Login</a>
 </div><?php
 	
 	echo $this->indexModule->body;

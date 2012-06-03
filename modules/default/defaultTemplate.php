@@ -29,7 +29,7 @@ class defaultTemplateClass extends yTemplateClass {
 	
 // ----- BODY -------------------------------------------------------------------------------------	
 	function body(&$_) {
-		die('<a href="?mod=general">yCore</a>');
+		die('<a href="/general">yCore</a>');
 		
 		self::header($_);
 

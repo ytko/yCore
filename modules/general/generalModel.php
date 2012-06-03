@@ -1,12 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkModel();
+yFactory::linkModel('extended');
 
-class generalModelClass extends yModelClass {
-	function __construct($db) {
-		parent::__construct($db);
-	}
-
+class generalModelClass extends extendedModelClass {
 	function getModel($controller = NULL) { //synonym: to delete
 		return $this->get($controller);
 	}	
@@ -14,7 +10,7 @@ class generalModelClass extends yModelClass {
 	public function get($controller = NULL /*may be to delete*/) {
 		if (isset($controller)) $this->controller = $controller; //may be to delete
 		
-		$this->update(); //may be to move to glue
+		$this->update(); //may be to move to bean
 	
 		$this->set->objectList = true;
 		

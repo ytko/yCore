@@ -11,30 +11,30 @@ class yFactory {
 		$moduleRequest = explode('/', $moduleName);
 		
 		$moduleName = $moduleRequest[0];
-		$glueName = $moduleRequest[sizeOf($moduleRequest)-1];
+		$beanName = $moduleRequest[sizeOf($moduleRequest)-1];
 		
 		$moduleName = yFactory::safeName($moduleName, 'default', 'error');
-		$glueName = yFactory::safeName($glueName, 'default', 'error');
+		$beanName = yFactory::safeName($beanName, 'default', 'error');
 		
-		include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$glueName.'.php';
-		$moduleClassName = yFactory::getClassPrefix($moduleName, $glueName).'Class';
+		include_once ySettings::$path.'/modules/'.$moduleName.'/'.$beanName.'.php';
+		$moduleClassName = yFactory::getClassPrefix($moduleName, $beanName).'Class';
 
 		$moduleClass = new $moduleClassName();
 		$moduleClass->moduleName = $moduleName;
-		$moduleClass->glueName = $glueName;
+		$moduleClass->beanName = $beanName;
 		
 		return $moduleClass;
 	}
 	
 	public function linkController($moduleName = NULL, $controllerName = NULL) {
 		if (!isset($moduleName)) {
-			include_once ySettings::$path.DS.'core'.DS.'controller.php';
+			include_once ySettings::$path.'/core/controller.php';
 			return 'yControllerClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$controllerName = yFactory::safeName($controllerName, $moduleName, 'error');
-			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$controllerName.'Controller.php';
+			include_once ySettings::$path.'/modules/'.$moduleName.'/'.$controllerName.'Controller.php';
 			return yFactory::getClassPrefix($moduleName, $controllerName).'ControllerClass';
 		}
 	}
@@ -46,14 +46,14 @@ class yFactory {
 		
 	public function linkModel($moduleName = NULL, $modelName = NULL) {
 		if (!isset($moduleName)) {
-			include_once ySettings::$path.DS.'core'.DS.'model.php';
+			include_once ySettings::$path.'/core/model.php';
 			return 'yModelClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$modelName = yFactory::safeName($modelName, $moduleName, 'error');
 
-			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$modelName.'Model.php';
+			include_once ySettings::$path.'/modules/'.$moduleName.'/'.$modelName.'Model.php';
 			return yFactory::getClassPrefix($moduleName, $modelName).'ModelClass';
 		}
 	}	
@@ -67,13 +67,13 @@ class yFactory {
 	
 	public function linkView($moduleName = NULL, $viewName = NULL) {
 		if (!isset($moduleName)) {
-			include_once ySettings::$path.DS.'core'.DS.'view.php';
+			include_once ySettings::$path.'/core/view.php';
 			return 'yViewClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$viewName = yFactory::safeName($viewName, $moduleName, 'error');
-			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$viewName.'View.php';		
+			include_once ySettings::$path.'/modules/'.$moduleName.'/'.$viewName.'View.php';		
 			return $viewClassName = $viewName.'ViewClass';
 		}
 	}
@@ -85,13 +85,13 @@ class yFactory {
 	
 	public function linkTemplate($moduleName = NULL, $templateName = NULL) {
 		if (!isset($moduleName)) {
-			include_once ySettings::$path.DS.'core'.DS.'template.php';
+			include_once ySettings::$path.'/core/template.php';
 			return 'yTemplateClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
 			$templateName = yFactory::safeName($templateName, $moduleName, 'error');
-			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$templateName.'Template.php';
+			include_once ySettings::$path.'/modules/'.$moduleName.'/'.$templateName.'Template.php';
 		
 			return $templateName = yFactory::getClassPrefix($moduleName, $templateName).'TemplateClass';
 		}
@@ -102,23 +102,23 @@ class yFactory {
 			return new $templateClassName();
 	}
 
-	public function linkGlue($moduleName = NULL, $glueName = NULL) {
+	public function linkBean($moduleName = NULL, $beanName = NULL) {
 		if (!isset($moduleName)) {
-			include_once ySettings::$path.DS.'core'.DS.'glue.php';
-			return 'yGlueClass';
+			include_once ySettings::$path.'/core/bean.php';
+			return 'yBeanClass';
 		}
 		else {
 			$moduleName = yFactory::safeName($moduleName, 'default', 'error');
-			$glueName = yFactory::safeName($glueName, $moduleName, 'error');
-			include_once ySettings::$path.DS.'modules'.DS.$moduleName.DS.$glueName.'.php';
+			$beanName = yFactory::safeName($beanName, $moduleName, 'error');
+			include_once ySettings::$path.'/modules/'.$moduleName.'/'.$beanName.'.php';
 	
-			return $glueName = yFactory::getClassPrefix($moduleName, $glueName).'GlueClass';
+			return $beanName = yFactory::getClassPrefix($moduleName, $beanName).'BeanClass';
 		}
 	}	
 	
-	public function getGlue($moduleName = NULL, $templateName = NULL) {
-		$glueClassName = yFactory::linkGlue($moduleName, $glueName);
-		return new $glueClassName();
+	public function getBean($moduleName = NULL, $beanName = NULL) {
+		$beanClassName = yFactory::linkBean($moduleName, $beanName);
+		return new $beanClassName();
 	}
 	
 	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса
@@ -136,12 +136,10 @@ class yFactory {
 	// Функции проверки безопасности имен и путей
 	
 	function safeName($name, $defaultName = NULL, $errorName = NULL) {
-		return strtolower(isset($name) && !empty($name)
-				? (
-						yFactory::isFileNameSafe($name)
+		return strtolower($name ? (
+					yFactory::isFileNameSafe($name)
 						? $name
-						: $errorName
-				)
+						: $errorName )
 				: $defaultName);
 	}
 	

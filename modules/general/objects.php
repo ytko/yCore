@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkGlue();
+yFactory::linkBean();
 
-class generalObjectsClass extends yGlueClass {
+class generalObjectsClass extends yBeanClass {
 	public
 		$modelName = 'objects',
 		$templateName = 'objects';

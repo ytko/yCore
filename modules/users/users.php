@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkGlue();
+yFactory::linkBean();
 
-class usersClass extends yGlueClass {
+class usersClass extends yBeanClass {
 	public
 		$modelName = 'users',
 		$templateName = 'users';

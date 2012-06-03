@@ -88,7 +88,7 @@ class yModelSetClass {
 	}
 }
 
-class yModelClass {
+class extendedModelClass {
 	public $_;
 	public $db;
 	public $objectExists; //???
