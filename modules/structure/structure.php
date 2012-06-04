@@ -3,32 +3,31 @@
 yFactory::linkBean();
 
 class structureClass extends yBeanClass {
-	public $moduleName = 'index';
+	public $moduleName = 'structure';
 
 	public function get() {
-		//echo $_SERVER["REDIRECT_URL"];
 		switch ($_SERVER["REDIRECT_URL"]) {
 			case '':
 			case '/general':
 				return
-					yFactory::getModule('template')
-						->setBean(
+					yFactory::getBean('/template')
+						->setContent(
 							/*yFactory::getBean()
 								->setModuleName('general')
 								->setModelName('general')
 								->setTemplateName('general')*/
-							yFactory::getModule('general')
+							yFactory::getBean('/general')
 						)
 						->get();
 			case '/objects':
 				return
-					yFactory::getModule('template')
-						->setBean(yFactory::getModule('general/objects'))
+					yFactory::getBean('/template')
+						->setContent(yFactory::getBean('/general/objects'))
 						->get();
 			case '/users':
 				return
-					yFactory::getModule('template')
-						->setBean(yFactory::getModule('users'))
+					yFactory::getBean('/template')
+						->setContent(yFactory::getBean('/users'))
 						->get();
 		}
 	}

@@ -4,8 +4,12 @@ yFactory::linkBean();
 
 class generalObjectsClass extends yBeanClass {
 	public
-		$modelName = 'objects',
-		$templateName = 'objects';
+		$moduleName = 'general',			
+
+		$controller = '/extended',			
+		$modelName = '/general/objects',
+		$templateName = '/general/objects';
+	
 }
 
 ?>

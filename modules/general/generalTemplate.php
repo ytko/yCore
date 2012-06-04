@@ -5,7 +5,7 @@ yFactory::linkTemplate();
 class generalTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
-	function head(&$_) { ?>
+	function head() { ?>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".clear").click(function () { 
@@ -27,7 +27,9 @@ class generalTemplateClass extends yTemplateClass {
 	<?php }	
 	
 // ----- BODY -------------------------------------------------------------------------------------	
-	function body(&$_) {
+	function body() {
+		$_ = $this->model->get();
+		
 		self::header($_);
 
 		if (is_array($_->items))

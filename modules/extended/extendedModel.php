@@ -1,5 +1,7 @@
 <?php defined ('_YEXEC')  or  die();
 
+yFactory::linkModel();
+
 /*************************************************
 TODO:
 безопасность для функций БД:
@@ -88,7 +90,7 @@ class yModelSetClass {
 	}
 }
 
-class extendedModelClass {
+class extendedModelClass extends yModelClass {
 	public $_;
 	public $db;
 	public $objectExists; //???
@@ -105,7 +107,8 @@ class extendedModelClass {
 	}
 	
 	function setController(&$controller) {
-		$this->controller = &$controller;		
+		$this->controller = &$controller;
+		return $this;
 	}
 	
 	function reset($property = NULL) {
@@ -411,7 +414,7 @@ class extendedModelClass {
 	}	
 
 	public function updateItems($values) {
-		print_r($values);
+		//print_r($values);
 		if (is_array($values)) {
 			foreach ($values as $updateItem) {
 				if (!empty($updateItem->oid))
@@ -422,7 +425,7 @@ class extendedModelClass {
 	}
 	
 	public function updateItem($values) {
-		print_r($values);
+		//print_r($values);
 		if (empty($this->objectKey)) return NULL;
 	
 		return $this->db->insertItem($this->currentObjectTableName(), $values);

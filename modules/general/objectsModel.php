@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkModel();
+yFactory::linkModel('/extended');
 
-class generalObjectsModelClass extends yModelClass {
+class generalObjectsModelClass extends extendedModelClass {
 	function getModel($controller = NULL) { //synonym: to delete
 		return $this->get($controller);
 	}

@@ -2,16 +2,47 @@
 
 class yViewClass {
 	public
-		$body,
-		$head;
+		$template,	// Объект шаблона
+		$body;		// Контент
+	
+	static
+		$head;		// Код для <head>
 	
 	public $view, $defaultview = 'default';
 
-	function getStyle() {
+	// Устанавливает шаблон для обработки
+	function setTemplate($template) {
+		$this->template = $template;
+		return $this;
+	}
+
+	// Обрабатывает шаблон и возвращает результат
+	function get($template = NULL) {
+		if ($template) $this->setTemplate($template);
+		
+		// 
+		ob_start();
+		$this->template->body();
+		$this->body.= ob_get_contents();
+		ob_end_clean();
+	
+		// Проверяет определен ли метод ->head() объекта шаблона
+		// и дописывает его результат к $this->head
+		if(method_exists($this->template, 'head')) {
+			ob_start();
+			$this->template->head();
+			$this->head.= ob_get_contents();
+			ob_end_clean();
+		}
+	
+		return $this;
+	}
+	
+	function getStyle() { //to del
 		return $this->style;
 	}
 
-	function getScript() {
+	function getScript() { //to del
 		return $this->script;
 	}
 
@@ -21,28 +52,18 @@ class yViewClass {
 		$view->breadcrumbs = array();
 	}
 	
-	function getPage($template, &$_ = NULL) {
-		ob_start();
-		$template->body($_);
-		$this->body.= ob_get_contents();
-		ob_end_clean();
-	
-		ob_start();
-		$template->head($_);
-		$this->head.= ob_get_contents();
-		ob_end_clean();
-	
-		return $this;
+	function getPage($template) { //to del		
+		$this->get($template);
 	}
 	
-	function getView(&$_, $template) {
+	/*function getView($template) { //to del
 		if (isset($_->items))
 			$this->quoteRecursive($_->items);
 		if (isset($_->item))
 			$this->quoteRecursive($_->item);
 
-		return $this->getPage($template, $_);
-	}
+		return $this->getPage($template);
+	}*/
 	
 	protected function quoteRecursive(&$data) {
 		// Рекурсивное преобразование всех строк в html-безопасные в объекте/массиве

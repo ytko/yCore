@@ -26,18 +26,37 @@ class yBeanClass {
 	}
 	
 	// Возвращает данные реализуя MVC по указанным в свойствах именам
-	public function get() {
+	/*public function get() {
 		$controller = $this->doFactory($this->controllerName, 'getController');
 
-		$model = $this->doFactory($this->modelName, 'getModel');
-		$model->setController($controller);
-		$_ = $model->getModel($controller);
+		$model = $this->doFactory($this->modelName, 'getModel')
+				->setController($controller);
+		//print_r($this->modelName);
 
 		$view = $this->doFactory($this->viewName, 'getView');
-		$template = $this->doFactory($this->templateName, 'getTemplate');
+		$template = $this->doFactory($this->templateName, 'getTemplate')
+				->setModel($model);
 
-		return $view->getView($_, $template);
+		return $view
+				->setTemplate($template)
+				->get();
+	}*/
+	
+	public function get () {
+		$controller = yFactory::getController($this->controller);
+
+		$model = yFactory::getModel($this->modelName)
+				->setController($controller);
+
+		$view = yFactory::getView($this->viewName);
+		$template = yFactory::getTemplate($this->templateName)
+				->setModel($model);
+
+		return $view
+				->setTemplate($template)
+				->get();
 	}
+	
 	
 	// Задание свойств $controllerName, $modelName, $viewName, $templateName
 	public function setModuleName($moduleName) {
@@ -67,7 +86,10 @@ class yBeanClass {
 
 	// Подстановка параметров вызова yFactory
 	protected function doFactory($name, $func) {
-		if (isset($name)) {
+		yFactory::$func($name);
+		
+		
+		/*if (isset($name)) {
 			if ($name === false)
 				return NULL;
 			elseif ($name === '')
@@ -76,6 +98,6 @@ class yBeanClass {
 				return yFactory::$func($this->moduleName, $name);
 		}
 		else
-			return yFactory::$func();		
+			return yFactory::$func();		*/
 	}
 }

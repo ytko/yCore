@@ -13,7 +13,7 @@ require_once(ySettings::$corePath.'/functions.php');
 require_once(ySettings::$corePath.'/db.php');
 
 //Получение контента страницы
-$mainResult = yFactory::getModule('structure')
+$mainResult = yFactory::getBean('/structure')
 		->get();
 
 //Вывод данных 

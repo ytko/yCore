@@ -9,7 +9,7 @@ class usersModelClass extends yModelClass {
 		$this->controller = $controller;
 		
 		$this->login($_POST['login'], $_POST['password']);
-		//$this->run();
+
 		echo 'uid:'.$this->userID();
 	}
 	

@@ -90,7 +90,7 @@ class yDbClass {
 		$query.=
 			") ENGINE = MYISAM ;";
 
-		return $this->Query->run($query);
+		return $this->Query->query($query);
 	}
 	
 	function dropTable($table) {
@@ -98,7 +98,7 @@ class yDbClass {
 		
 		$query = "DROP TABLE `{$this->getTableName($table)}`";
 
-		return $this->Query->run($query);
+		return $this->Query->query($query);
 	}
 	
 	function tableAddFields($table, $fields) {
@@ -122,7 +122,7 @@ class yDbClass {
 				$query.= "ADD `$key` TIMESTAMP NOT NULL";
 		}
 		
-		return $this->Query->run($query);
+		return $this->Query->query($query);
 	}
 	
 	function addIndex($table, $field, $type = '') { //сделать распознование $field - строка или массив(набор строк), сейчас только для строки
@@ -140,7 +140,7 @@ class yDbClass {
 		else
 			return;
 			
-		return $this->Query->run($query);				
+		return $this->Query->query($query);				
 	}
 	
 	function tableDropFields($table, $fields) { //setObjRec getObjRec
@@ -161,7 +161,7 @@ class yDbClass {
 				$query.= "DROP `$key`";
 		}
 
-		return $this->Query->run($query);
+		return $this->Query->query($query);
 	}
 	
 // ITEMS --------------------------------------------------------------
@@ -237,7 +237,7 @@ class yDbClass {
 		
 		$i = 0;
 		foreach ($values as $key => $value) {
-			$value = $this->Query->quote($value);
+			//$value = $this->Query->quote($value);
 			$queryColumns.= (($i)?', ':NULL)."`$key`";
 			$queryValues.= (($i)?', ':NULL)."'$value'";
 			$queryUpdate.= (($i)?', ':NULL)."`$key` = '$value'";
@@ -257,7 +257,7 @@ class yDbClass {
 		
 		$this->reset();
 
-		return $this->Query->run($query);		
+		return $this->Query->query($query);		
 	}
 	
 	function deleteItems($table) {
@@ -278,7 +278,7 @@ class yDbClass {
 		
 		$this->reset();		
 		
-		return $this->Query->run($query);
+		return $this->Query->query($query);
 	}
 	
 

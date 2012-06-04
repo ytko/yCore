@@ -1,12 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkModel('extended');
+yFactory::linkModel('/extended');
 
 class generalModelClass extends extendedModelClass {
-	function getModel($controller = NULL) { //synonym: to delete
-		return $this->get($controller);
-	}	
-	
 	public function get($controller = NULL /*may be to delete*/) {
 		if (isset($controller)) $this->controller = $controller; //may be to delete
 		

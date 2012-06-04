@@ -4,25 +4,23 @@ yFactory::linkBean();
 
 class templateClass extends yBeanClass {
 	public $moduleName = 'template';
+//	public $beanName = 'default';
 	
-	public $beanName = 'default';
-	
-	public $content;
-	
-	public function setBean($bean) {
+	protected $content;
+	public function setContent($bean) {
 		$this->content = $bean;
 		return $this;
 	}
 
-	public function get($beanName = NULL) {
-		if ($beanName) $this->setBean($beanName);
+	public function get($bean = NULL) {
+		if ($bean) $this->setContent($bean);
 		
-		$template = yFactory::getTemplate($this->moduleName);
-		
-		//Получение контента
-		$template->indexModule = $this->content();
+		$template = yFactory::getTemplate('/'.$this->moduleName)
+				->setContent($this->content());		//Получение контента
 
-		return yFactory::getView()->getPage($template);								//не $view->getView()!!!
+		return yFactory::getView()
+				->setTemplate($template)
+				->get();
 	}
 }
 

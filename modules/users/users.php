@@ -4,8 +4,8 @@ yFactory::linkBean();
 
 class usersClass extends yBeanClass {
 	public
-		$modelName = 'users',
-		$templateName = 'users';
+		$modelName = '/users',
+		$templateName = '/users';
 }
 
 ?>

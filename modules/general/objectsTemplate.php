@@ -5,7 +5,7 @@ yFactory::linkTemplate();
 class generalObjectsTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
-	function head(&$_) { ?>
+	function head() { ?>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".clear").click(function () { 
@@ -30,7 +30,9 @@ input.delete, input.clear
 	<?php }	
 	
 // ----- BODY -------------------------------------------------------------------------------------	
-	function body(&$_) {
+	function body() {
+		$_ = $this->model->get();
+		
 		self::header($_);
 
 		if (is_array($_->objectList->items))

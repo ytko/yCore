@@ -2,13 +2,7 @@
 
 yFactory::linkTemplate();
 
-class templateTemplateClass extends yTemplateClass {
-	protected $content;
-	
-	function setContent($content) {
-		$this->content = $content;
-		return $this;
-	}
+class mainTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
 	function head() { 
@@ -18,23 +12,23 @@ class templateTemplateClass extends yTemplateClass {
 <title></title>
 <script src='http://code.jquery.com/jquery-1.7.1.min.js' type="text/javascript"></script><?php 
 
-		echo  $this->content->head;
+		echo $this->mainModule->head;
 		
 ?><meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head><?php
-	 }
+	 }	
 	
 // ----- BODY -------------------------------------------------------------------------------------	
 	function body() { 
 ?>
 <body>
 <div style='float:left; width:100%; padding:5px; margin:5px 0 0 0; background-color:#cccccc'>
-<a href='general'>Таблицы</a>
-<a href='objects'>Объекты</a>
-<a href='users'>Login</a>
+<a href='index.php?mod=general'>Таблицы</a>
+<a href='index.php?mod=general/objects'>Объекты</a>
+<a href='index.php?mod=users'>Login</a>
 </div><?php
 	
-	echo $this->content->body;
+	echo $this->mainModule->body;
 	
 ?></body></html><?php
 	}	

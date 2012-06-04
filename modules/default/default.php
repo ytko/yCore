@@ -5,7 +5,7 @@ yFactory::linkBean();
 class defaultClass extends yBeanClass{
 	public
 		$modelName = 'default',
-		$templateName = 'default';
+		$templateName = '/default';
 }
 
 ?>

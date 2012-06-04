@@ -1,6 +1,13 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yTemplateClass {
+	public $model;
+	
+	function setModel($model) {
+		$this->model = $model;
+		return $this;
+	}
+	
 	function head(&$_) {}
 	
 	function body(&$_) {}
