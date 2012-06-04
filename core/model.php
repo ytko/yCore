@@ -4,12 +4,23 @@ class yModelClass {
 	public $db;
 	public $controller;
 	
-	function __construct(&$db) {
-		$this->db = &$db;
+	public function __construct(&$db = NULL) {
+		if ($db)
+			$this->db = &$db;
+		else
+			$this->db = yFactory::getDb();
 	}
 	
-	function setController(&$controller) {
-		$this->controller = &$controller;		
+	// ---- set* methods -------------------------------------------------------
+	
+	public function setDb(&$db) {
+		$this->db = &$db;
+		return $this;
+	}
+	
+	public function setController(&$controller) {
+		$this->controller = &$controller;
+		return $this;
 	}
 }
 

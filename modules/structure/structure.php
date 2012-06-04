@@ -6,6 +6,16 @@ class structureClass extends yBeanClass {
 	public $moduleName = 'structure';
 
 	public function get() {
+		/*$query = yFactory::getDb()
+				->select()
+				->from('`j7_yt_obj`')
+				->where('`id` = 76');
+				
+		echo '<pre>';
+		print_r(
+			$query->get()
+		);*/
+		
 		switch ($_SERVER["REDIRECT_URL"]) {
 			case '':
 			case '/general':

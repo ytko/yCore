@@ -91,10 +91,10 @@ class yFactory {
 		return new $beanClassName();
 	}
 
-	public function getDb($type = 'MySQL') { //TODO:getDb
-		if (strcasecmp($type, 'MySQL')) {
-	
-		}
+	public function getDb(/*$type = 'MySQL'*/) { //TODO:getDb
+		return
+			//new yDbClass(ySettings::$db->prefix, ySettings::$db->com_prefix, true, true);
+			new yDbClass(ySettings::$db->user, ySettings::$db->password, ySettings::$db->name, ySettings::$db->host);
 	}
 	
 	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса
