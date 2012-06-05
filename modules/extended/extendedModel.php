@@ -100,8 +100,7 @@ class extendedModelClass extends yModelClass {
 	private $isObjectLoaded = false;
 	private $itemsPerPage, $pagination;
 	
-	function __construct(&$db) {
-		//$this->db = &$db;
+	function __construct() {
 		$this->db = new yExtDbClass(ySettings::$db->prefix, ySettings::$db->com_prefix, true, true);
 		
 		$this->reset();
@@ -732,7 +731,8 @@ class yExtDbClass {
 		
 		//$this->sql = &$_q;
 
-		$this->sql = new ezSQL_mysql(ySettings::$db->user, ySettings::$db->password, ySettings::$db->name, ySettings::$db->host);
+		$this->db = yFactory::getDb();
+		$this->sql = $this->db->sql;
 	}
 	
 // $from, $where, $limit

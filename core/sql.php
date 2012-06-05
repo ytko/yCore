@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-class yDbClass {
+class ySqlClass {
 	public $sql;
 	public static $static_sql;
 	public $mode, $fields, $table, $join, $where, $group, $having, $order, $limit;

@@ -62,39 +62,42 @@ class yFactory {
 	public function linkBean($name = NULL) {
 		return
 			yFactory::link('bean', $name);		
+	}
+	
+	public function linkDb($name = NULL) {
+		return
+			yFactory::link('sql', $name);	
 	}	
 	
-	public function getController($moduleName = NULL, $controllerName = NULL) {
-		$controllerClassName = yFactory::linkController($moduleName, $controllerName);
+	public function getController($name = NULL) {
+		$controllerClassName = yFactory::linkController($name);
 		return new $controllerClassName($controllerName);
 	}
 	
-	public function getModel($moduleName = NULL, $modelName = NULL) {
-		$db = new yDbClass(ySettings::$db->prefix, ySettings::$db->com_prefix, true, true);
-
-		$modelClassName = yFactory::linkModel($moduleName, $modelName);
-		return new $modelClassName($db);
+	public function getModel($name = NULL) {
+		$modelClassName = yFactory::linkModel($name);
+		return new $modelClassName();
 	}
 	
-	public function getView($moduleName = NULL, $viewName = NULL) {
-		$viewClassName = yFactory::linkView($moduleName, $viewName);
+	public function getView($name = NULL) {
+		$viewClassName = yFactory::linkView($name);
 		return new $viewClassName();	
 	}
 	
-	public function getTemplate($moduleName = NULL, $templateName = NULL) {
-			$templateClassName = yFactory::linkTemplate($moduleName, $templateName);
-			return new $templateClassName();
+	public function getTemplate($name = NULL) {
+		$templateClassName = yFactory::linkTemplate($name);
+		return new $templateClassName();
 	}
 
-	public function getBean($moduleName = NULL, $beanName = NULL) {
-		$beanClassName = yFactory::linkBean($moduleName, $beanName);
+	public function getBean($name = NULL) {
+		$beanClassName = yFactory::linkBean($name);
 		return new $beanClassName();
 	}
 
-	public function getDb(/*$type = 'MySQL'*/) { //TODO:getDb
+	public function getDb($name = NULL) {
+		$dbClassName = yFactory::linkDb($name);
 		return
-			//new yDbClass(ySettings::$db->prefix, ySettings::$db->com_prefix, true, true);
-			new yDbClass(ySettings::$db->user, ySettings::$db->password, ySettings::$db->name, ySettings::$db->host);
+			new $dbClassName(ySettings::$db->user, ySettings::$db->password, ySettings::$db->name, ySettings::$db->host, ySettings::$db->type);
 	}
 	
 	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса
