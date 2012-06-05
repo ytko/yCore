@@ -3,7 +3,12 @@
 class ySqlClass {
 	public $sql;
 	public static $static_sql;
-	public $mode, $fields, $table, $join, $where, $group, $having, $order, $limit;
+	public
+			$mode, // Can be 'select', 'insert', 'insert_or_update', etc. Changes with last ->select(), ->insert(), etc. method called.
+			$fields, // Used for SELECT
+			$table, // Used for SELECT FROM $table, INSERT INTO $table, etc.
+			$values, // Used for INSERT and UPDATE
+			$join, $where, $option, $group, $having, $order, $limit;
 	
 	function __construct($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql', $forced = false) {
 		// Overriding emulation:
@@ -44,16 +49,34 @@ class ySqlClass {
 		
 		return $this;
 	}
-		
+
+	// query generating
+	
 	function select($fields = NULL) {
 		$this->mode = 'select';
 		if($fields) $this->fields = $fields;
 		return $this;
 	}
 	
-	function insert($fields = NULL) {
+	function insert($values = NULL) {
 		$this->mode = 'insert';
-		if($fields) $this->fields = $fields;
+		if($values) $this->values = $values;
+		return $this;
+	}
+	
+	function update($values = NULL) {
+		$this->mode = 'update';
+		if($values) $this->values = $values;
+		return $this;
+	}
+	
+	function set($values = NULL) { // alias for insertOrUpdate()
+		return $this->insertOrUpdate($values);
+	}
+	
+	function insertOrUpdate($values = NULL) {
+		$this->mode = 'insert_or_update';
+		if($values) $this->values = $values;
 		return $this;
 	}
 	
@@ -69,6 +92,11 @@ class ySqlClass {
 	
 	function where($where) {
 		$this->where = $where;
+		return $this;		
+	}
+	
+	function option($option) {
+		$this->option = $option;
 		return $this;		
 	}
 	
@@ -92,10 +120,14 @@ class ySqlClass {
 		return $this;		
 	}
 	
-	function getQuery() {
+	// query executing
+	
+	function getQuery($mode = NULL) {
 		if (!$this->table) return;
 
-		switch ($this->mode):
+		$mode = ($mode ? $mode : $this->mode);
+		
+		switch ($mode):
 			case 'select':
 				return
 					'SELECT '.($this->fields ? $this->fields : '*').
@@ -107,42 +139,63 @@ class ySqlClass {
 					($this->order ? ' ORDER BY '.$this->order : NULL).
 					($this->limit ? ' LIMIT '.$this->limit : NULL).
 					';';
+			case 'insert':
+			case 'insert_or_update':
+				$fields = '';
+				$values = '';
 				
-/*INSERT INTO <название таблицы> ([<Имя столбца>, ... ]) VALUES (<Значение>,...)
- * 
- * 			UPDATE [top(x)] <объект> 
-SET <присваивание1 [, присваивание2, ...]> 
-[WHERE <условие>]
-[OPTION <хинт1 [, хинт2, ...]>]*/
+				// Chech if array $this->values is associative
+				$keys = array_keys($this->values);
+				$isAssociative = array_keys($keys) !== $keys;
 				
-/*			case 'insert':
-				return
-					'INSERT '.($this->fields ? $this->fields : '*').
-					' INTO '.$this->table.
-					($this->join ? ' '.$this->join : NULL).
+				// Generating lists of fields and their values
+				foreach($this->values as $key => $value) {
+					if ($isAssociative)
+						$fields.= ($fields ? ', ': NULL)."`$key`";
+					
+					$values.= ($value ? ', ': NULL).$value;
+				}
+				
+				$insert =
+					'INSERT INTO '.$this->table.
+					($fields ? ' ('.$fields.')' : NULL).
+					' VALUES ('.$values.')';
+				
+				// Do not return if 'insert_or_update'
+				if ($mode == 'insert') return $insert.';';
+			case 'update':
+			//and 'insert_or_update': 
+				$set = '';
+								
+				foreach($this->values as $key => $value) {
+					$set.= ($set ? ', ': NULL)."`$key` = $value";
+				}
+
+				$update =
+					'UPDATE '.$this->table.
+					' SET '.$set.
 					($this->where ? ' WHERE '.$this->where : NULL).
-					($this->group ? ' GROUP BY '.$this->group : NULL).
-					($this->having ? ' HAVING '.$this->having : NULL).
-					($this->order ? ' ORDER BY '.$this->order : NULL).
-					($this->limit ? ' LIMIT '.$this->limit : NULL).
-					';';*/
+					($this->option ? ' WHERE '.$this->option : NULL);
+
+				if ($mode == 'update') return $update.';';
+			//case 'insert_or_update':
 		endswitch;
 	}
 	
-	function get() {
-		return $this->sql->get_results($this->getQuery());
+	function get($query = NULL) {
+		return $this->sql->get_results($query ? $query : $this->getQuery());
 	}
 		
-	function getResults() {
-		return $this->get();
+	function getResults($query = NULL) { // alias for get()
+		return $this->get($query);
 	}
 	
-	function getRow() {
-		return $this->sql->get_row($this->getQuery());
+	function getRow($query = NULL) {
+		return $this->sql->get_row($query ? $query : $this->getQuery());
 	}
 	
-	function getVar() {
-		return $this->sql->get_var($this->getQuery());
+	function getVar($query = NULL) {
+		return $this->sql->get_var($query ? $query : $this->getQuery());
 	}
 }
 
