@@ -1,18 +1,15 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yFactory {
-	public static
-			$corePath = '/core/',
-			$modulesPath = '/modules/';
-
 	public function link($type, $name = NULL) {
 	/* include_once файла и возврат имени класса
 	 * путь до файла и имени генерируется из $type ('model', 'view', etc) и $name вида '/module/name'
 	*/	
+		
 		// если имя не передано, то подключается класс из ядра
 		if (!isset($name)) {
-			include_once ySettings::$path.self::$corePath.$type.'.php';
-			return 'y'.ucfirst($type).'Class';
+			include_once ySettings::$corePath.'/'.$type.'.php';
+			$result = 'y'.ucfirst($type).'Class';
 		}
 		// если имя передано, то подключается класс из соответствующего файла
 		else {
@@ -24,19 +21,17 @@ class yFactory {
 			$name = (is_array($name)) ? $name : explode('/', $name);
 
 			// Определение имени подключаемого модуля и класса
-			if ($name[0]) {			// Указан относительный путь
-				return;				// На данный момент не поддерживается
-			}
-			elseif ($name[1]) {		// Указан абсолютный путь
-				$moduleName = $name[1];
-				$className = ($name[2]) ? $name[2] : $name[1];
+			if ($name[0]) {		// Указан абсолютный путь
+				$moduleName = $name[0];
+				$className = (isset($name[1])) ? $name[1] : $name[0];
 			}
 			else return;			// Неправильно задано имя
 			
-			include_once (ySettings::$path.self::$modulesPath.$moduleName.'/'.$className.$Type.'.php');
-			return
-				yFactory::getClassPrefix($moduleName, $className).$Type.'Class';
-		}	
+			include_once (ySettings::$modulesPath.'/'.$moduleName.'/'.$className.$Type.'.php');
+			$result = yFactory::getClassPrefix($moduleName, $className).$Type.'Class';
+		}
+		
+		return $result;
 	}
 
 	public function linkController($name = NULL) {
@@ -67,7 +62,12 @@ class yFactory {
 	public function linkDb($name = NULL) {
 		return
 			yFactory::link('sql', $name);	
-	}	
+	}
+	
+	public function linkObject($name = NULL) {
+		return
+			yFactory::link('object', $name);	
+	}
 	
 	public function getController($name = NULL) {
 		$controllerClassName = yFactory::linkController($name);
@@ -89,7 +89,12 @@ class yFactory {
 		return new $templateClassName();
 	}
 
-	public function getBean($name = NULL) {
+	public function get($name = NULL) {
+		$beanClassName = yFactory::linkBean($name);
+		return new $beanClassName();
+	}
+	
+	public function getBean($name = NULL) { //alias get
 		$beanClassName = yFactory::linkBean($name);
 		return new $beanClassName();
 	}
@@ -97,7 +102,13 @@ class yFactory {
 	public function getDb($name = NULL) {
 		$dbClassName = yFactory::linkDb($name);
 		return
-			new $dbClassName(ySettings::$db->user, ySettings::$db->password, ySettings::$db->name, ySettings::$db->host, ySettings::$db->type);
+			new $dbClassName();
+	}
+	
+	public function getObject($name = NULL) {
+		$objectClassName = yFactory::linkObject($name);
+		return
+			new $objectClassName();
 	}
 	
 	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса

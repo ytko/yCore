@@ -2,13 +2,15 @@
 
 // ------ Framework settings ----------------------------------------------------------------------
 class ySettings {
-	static public $get, $mvc, $path, $rootPath, $corePath, $db;
+	static public $get, $mvc, $path, $rootPath, $corePath, $modulesPath, $db;
 }
 
 // ------ Paths -----------------------------------------------------------------------------------
 ySettings::$rootPath = $_SERVER['DOCUMENT_ROOT'];
 ySettings::$path = ySettings::$rootPath.'';				//Путь к корню фреймворка //JPATH_COMPONENT_SITE
-ySettings::$corePath = ySettings::$rootPath.'/core';	//Путь к ядру (core)
+//ySettings::$path = ySettings::$rootPath.preg_replace("/\/([^\/]*)$/m", '', $_SERVER['PHP_SELF']);
+ySettings::$corePath = ySettings::$path.'/core';		//Путь к ядру (core)
+ySettings::$modulesPath = ySettings::$path.'/modules';	//Путь к модулям
 
 // ------ GET-requests ----------------------------------------------------------------------------
 ySettings::$get = (object)array(						//Обязательная добавка ко всем get-запросам (нужно для joomla)

@@ -1,6 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-class yModelClass {
+@require_once 'base.php';
+
+class yModelClass extends yBaseClass {
 	public $db;
 	public $controller;
 	

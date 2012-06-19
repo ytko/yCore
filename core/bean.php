@@ -1,6 +1,8 @@
 <?php
 
-class yBeanClass {
+@require_once 'base.php';
+
+class yBeanClass extends yBaseClass{
 	public
 	// задаются при вызове из yFactory	
 		$moduleName,

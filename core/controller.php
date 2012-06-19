@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-//TODO: rename _d
+@require_once 'base.php';
 
-class yControllerClass {
+class yControllerClass extends yBaseClass{
 	public $post, $get, $url, $files;
 	public $controllerName;
 

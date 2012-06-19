@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkModel('/extended');
+yFactory::linkModel('extended');
 
 class generalModelClass extends extendedModelClass {
 	public function get($controller = NULL /*may be to delete*/) {

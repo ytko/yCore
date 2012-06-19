@@ -6,9 +6,9 @@ class generalObjectsClass extends yBeanClass {
 	public
 		$moduleName = 'general',			
 
-		$controller = '/extended',			
-		$modelName = '/general/objects',
-		$templateName = '/general/objects';
+		$controller = 'extended',			
+		$modelName = 'general/objects',
+		$templateName = 'general/objects';
 	
 }
 

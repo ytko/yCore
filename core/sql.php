@@ -1,28 +1,211 @@
 <?php defined ('_YEXEC')  or  die();
 
-class ySqlClass {
-	public $sql;
-	public static $static_sql;
+class ySqlGenClass {
 	public
 			$mode, // Can be 'select', 'insert', 'insert_or_update', etc. Changes with last ->select(), ->insert(), etc. method called.
 			$fields, // Used for SELECT
 			$table, // Used for SELECT FROM $table, INSERT INTO $table, etc.
 			$values, // Used for INSERT and UPDATE
 			$join, $where, $option, $group, $having, $order, $limit;
+			
+	// Query definition
+
+	// Set table name
+	function table($table) {
+		$this->table = $table;
+		return $this;		
+	}
+	
+	// Set join tables (for select)
+	function join($join) {
+		$this->join = $join;
+		return $this;		
+	}
+	
+	// Set where
+	function where($where) {
+		$this->where = $where;
+		return $this;		
+	}
+
+	// Set option	
+	function option($option) {
+		$this->option = $option;
+		return $this;		
+	}
+
+	// Set group	
+	function group($group) {
+		$this->group = $group;
+		return $this;		
+	}
+
+	// Set having	
+	function having($having) {
+		$this->having = $having;
+		return $this;		
+	}
+	
+	// Set order
+	function order($order) {
+		$this->order = $order;
+		return $this;		
+	}
+
+	// Set limit
+	function limit($limit) {
+		$this->limit = $limit;
+		return $this;		
+	}
+
+	// set query type and fields
+	// TODO: safe values arrays
+	// TODO: array and object input
+	
+	// query generating
+
+	function selectQuery($fields = NULL) {
+		// Generating field list for sql-query
+		$fields = '';
+		if (is_array($this->fields) and !empty($this->fields))
+			foreach($this->fields as $field) {
+				$fields.= ($fields ? ', ': NULL)."$field";
+			}
+		else
+			$fields = '*';
+
+		// Return query
+		return
+			"SELECT $fields".
+			" FROM `{$this->table}`".
+			($this->join ? ' '.$this->join : NULL).
+			($this->where ? ' WHERE '.$this->where : NULL).
+			($this->group ? ' GROUP BY '.$this->group : NULL).
+			($this->having ? ' HAVING '.$this->having : NULL).
+			($this->order ? ' ORDER BY '.$this->order : NULL).
+			($this->limit ? ' LIMIT '.$this->limit : NULL).
+			';';		
+	}
+	
+	function insertQuery($values = NULL) {
+		// Check if $this->values array is associative
+		//$keys = array_keys($this->values);
+		//$isAssociative = array_keys($keys) !== $keys;
+		
+		// Generating lists of fields and their values
+		// TODO: exception on empty $this->values
+		$fields = '';
+		$values = '';
+		foreach($this->values as $key => $value) {
+			if (isset($value)) {
+				// Generating field list if $this->values array is associative
+				//if ($isAssociative)
+					$fields.= ($fields ? ', ': NULL)."`$key`";
+
+				// Generating values list in both cases
+				$values.= ($values ? ', ': NULL)."'".$this->quote($value)."'";
+			}
+		}
+		
+		return
+			"INSERT INTO `{$this->table}`".
+			($fields ? ' ('.$fields.')' : NULL).
+			' VALUES ('.$values.')'.
+			';';
+	}
+	
+	function updateQuery() {
+		$set = '';
+						
+		foreach($this->values as $key => $value) {
+			$set.= ($set ? ', ': NULL)."`$key` = $value";
+		}
+
+		return
+			"UPDATE `{$this->table}`".
+			' SET '.$set.
+			($this->where ? ' WHERE '.$this->where : NULL).
+			($this->option ? ' OPTION '.$this->option : NULL).
+			';';
+	}
+	
+	function deleteQuery() {
+/*
+DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
+    [PARTITION (partition_name,...)]
+    [WHERE where_condition]
+    [ORDER BY ...]
+    [LIMIT row_count]
+*/
+		return
+			"DELETE FROM `{$this->table}`".
+			($this->where ? ' WHERE '.$this->where : NULL).
+			($this->order ? ' ORDER BY '.$this->order : NULL).
+			($this->limit ? ' LIMIT '.$this->limit : NULL).
+			';';
+	}
+	
+	// Field values defenition
+	
+	function values($values = NULL) { // TODO: merge with existed values
+		if($values) $this->values = $values;
+		return $this;
+	}
+	
+	function value($field, $value) {
+		if(is_object($this->values))
+			$this->values->$field = $this->quote($value);
+		elseif(is_array($this->values))
+			$this->values[$field] = $this->quote($value);
+		else {
+			$this->values = array();
+			$this->values[$field] = $this->quote($value);
+		}
+		
+		return $this;
+	}
+	
+	function fields($fields = NULL) { // TODO: merge with existed values
+		if($fields) $this->fields = $fields;
+		return $this;
+	}
+	
+	function field($field) {
+		if(is_array($this->fields))
+			$this->fields[] = $this->quote($field);
+		else {
+			$this->fields = array();
+			$this->fields[] = $this->quote($field);
+		}
+		
+		return $this;
+	}
+
+	// Safe query self methods
+	
+	function quote($string) {
+		return
+			addslashes($string);
+	}
+}
+
+class yDbClass extends ySqlGenClass {
+	public $sql;
+	public static $static_sql;
 	
 	function __construct($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql', $forced = false) {
 		// Overriding emulation:
 		if (is_object($user))
 			// Second (not last) argument is $forced if object is given
-			$forced = &$password;
-		
-		if (($forced or !$this->static_sql)) {
+			$forced = $password;
+				
+		if ($forced or is_null(self::$static_sql)) {
 			// Create new ezSQL object if it's not crated yet or in forced mode
 			$this->init($user, $password, $name, $host, $driver);
 		}
 		else {
 			// Link object if already connected
-			$this->sql = &$this->static_sql;
+			$this->sql = &self::$static_sql;
 		}
 	}
 	
@@ -41,153 +224,94 @@ class ySqlClass {
 			include_once "ezsql/ez_sql_$driver.php";	
 			
 			$className = "ezSQL_$driver";
-			$this->sql = new $className($user, $password, $name, $host);			
+			
+			if (isset($user))
+				$this->sql = new $className($user, $password, $name, $host);
+			elseif (isset(ySettings::$db))
+				$this->sql = new $className(ySettings::$db->user, ySettings::$db->password, ySettings::$db->name, ySettings::$db->host);
 		}
 		
 		// Static copy of ezSQL object for optimization
-		$this->static_sql = $this->sql;
-		
-		return $this;
-	}
-
-	// query generating
-	
-	function select($fields = NULL) {
-		$this->mode = 'select';
-		if($fields) $this->fields = $fields;
+		self::$static_sql = &$this->sql;
 		return $this;
 	}
 	
-	function insert($values = NULL) {
-		$this->mode = 'insert';
-		if($values) $this->values = $values;
-		return $this;
+	// Query processing functions
+	
+	function select($query = NULL) {
+		return
+			$this->sql->get_results(
+				($query and is_string($query))
+					? $query
+					: $this->selectQuery($query)
+			);
 	}
 	
-	function update($values = NULL) {
-		$this->mode = 'update';
-		if($values) $this->values = $values;
-		return $this;
+	function selectCol($query = NULL) {
+		return
+			$this->sql->get_col(
+				($query and is_string($query))
+					? $query
+					: $this->selectQuery($query)
+			);
 	}
 	
-	function set($values = NULL) { // alias for insertOrUpdate()
-		return $this->insertOrUpdate($values);
+	function selectRow($query = NULL) {
+		return
+			$this->sql->get_row(
+				($query and is_string($query))
+					? $query
+					: $this->selectQuery($query)
+			);
 	}
 	
-	function insertOrUpdate($values = NULL) {
-		$this->mode = 'insert_or_update';
-		if($values) $this->values = $values;
-		return $this;
+	function insert($query = NULL) {
+		// case input ($query) is array of rows
+		if(is_array($query)) {
+			foreach ($query as $row) {
+				$this->insert($row);
+			}
+		}
+		// case input ($query) is a single row
+		elseif(is_object($query)) {
+			$this->values = $query;
+			$this->insert();
+		}
+		// case input ($query) is not set or is a string
+		else
+			return
+				$this->sql->query(
+					($query and is_string($query))
+						? $query
+						: $this->insertQuery($query)
+				);
 	}
 	
-	function from($table) {
-		$this->table = $table;
-		return $this;		
+	function update($query = NULL) {
+		return
+			$this->sql->query(
+				($query and is_string($query))
+					? $query
+					: $this->updateQuery($query)
+			);
 	}
 	
-	function join($join) {
-		$this->join = $join;
-		return $this;		
+	function delete($query = NULL) {
+		return
+			$this->sql->query(
+				($query and is_string($query))
+					? $query
+					: $this->deleteQuery($query)
+			);
 	}
 	
-	function where($where) {
-		$this->where = $where;
-		return $this;		
-	}
-	
-	function option($option) {
-		$this->option = $option;
-		return $this;		
-	}
-	
-	function group($group) {
-		$this->group = $group;
-		return $this;		
-	}
-	
-	function having($having) {
-		$this->having = $having;
-		return $this;		
-	}
-	
-	function order($order) {
-		$this->order = $order;
-		return $this;		
-	}
-	
-	function limit($limit) {
-		$this->limit = $limit;
-		return $this;		
-	}
-	
-	// query executing
-	
-	function getQuery($mode = NULL) {
-		if (!$this->table) return;
-
-		$mode = ($mode ? $mode : $this->mode);
-		
-		switch ($mode):
-			case 'select':
-				return
-					'SELECT '.($this->fields ? $this->fields : '*').
-					' FROM '.$this->table.
-					($this->join ? ' '.$this->join : NULL).
-					($this->where ? ' WHERE '.$this->where : NULL).
-					($this->group ? ' GROUP BY '.$this->group : NULL).
-					($this->having ? ' HAVING '.$this->having : NULL).
-					($this->order ? ' ORDER BY '.$this->order : NULL).
-					($this->limit ? ' LIMIT '.$this->limit : NULL).
-					';';
-			case 'insert':
-			case 'insert_or_update':
-				$fields = '';
-				$values = '';
-				
-				// Chech if array $this->values is associative
-				$keys = array_keys($this->values);
-				$isAssociative = array_keys($keys) !== $keys;
-				
-				// Generating lists of fields and their values
-				foreach($this->values as $key => $value) {
-					if ($isAssociative)
-						$fields.= ($fields ? ', ': NULL)."`$key`";
-					
-					$values.= ($value ? ', ': NULL).$value;
-				}
-				
-				$insert =
-					'INSERT INTO '.$this->table.
-					($fields ? ' ('.$fields.')' : NULL).
-					' VALUES ('.$values.')';
-				
-				// Do not return if 'insert_or_update'
-				if ($mode == 'insert') return $insert.';';
-			case 'update':
-			//and 'insert_or_update': 
-				$set = '';
-								
-				foreach($this->values as $key => $value) {
-					$set.= ($set ? ', ': NULL)."`$key` = $value";
-				}
-
-				$update =
-					'UPDATE '.$this->table.
-					' SET '.$set.
-					($this->where ? ' WHERE '.$this->where : NULL).
-					($this->option ? ' WHERE '.$this->option : NULL);
-
-				if ($mode == 'update') return $update.';';
-			//case 'insert_or_update':
-		endswitch;
+/*
+	function query($query = NULL) {
+		return $this->sql->query($query ? $query : $this->getQuery());
 	}
 	
 	function get($query = NULL) {
 		return $this->sql->get_results($query ? $query : $this->getQuery());
-	}
-		
-	function getResults($query = NULL) { // alias for get()
-		return $this->get($query);
 	}
 	
 	function getRow($query = NULL) {
@@ -197,6 +321,27 @@ class ySqlClass {
 	function getVar($query = NULL) {
 		return $this->sql->get_var($query ? $query : $this->getQuery());
 	}
+*/
+}
+
+// yObjectClass processing
+class ySqlClass extends yDbClass {
+	/*function insert($query = NULL) {
+		// Override if $query is object
+		if (!is_object($query))
+			return parent::insert($query);
+		else
+		{
+			$this->table($query->table);
+
+			foreach($query->values as $row) {
+				$this->values = $row;
+				parent::insert();
+			}
+			
+			return;
+		}
+	}*/
 }
 
 ?>

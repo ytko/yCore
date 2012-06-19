@@ -6,9 +6,9 @@ class generalClass extends yBeanClass {
 	public
 		$moduleName = 'general',
 			
-		$controller = '/extended',
-		$modelName = '/general',
-		$templateName = '/general';
+		$controller = 'extended',
+		$modelName = 'general',
+		$templateName = 'general';
 	
 /*	public function get () {
 		$controller = yFactory::getController('/extended/extended');

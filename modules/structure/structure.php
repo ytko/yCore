@@ -20,24 +20,29 @@ class structureClass extends yBeanClass {
 			case '':
 			case '/general':
 				return
-					yFactory::getBean('/template')
+					yFactory::getBean('template')
 						->setContent(
 							/*yFactory::getBean()
 								->setModuleName('general')
 								->setModelName('general')
 								->setTemplateName('general')*/
-							yFactory::getBean('/general')
+							yFactory::getBean('general')
 						)
 						->get();
 			case '/objects':
 				return
-					yFactory::getBean('/template')
-						->setContent(yFactory::getBean('/general/objects'))
+					yFactory::getBean('template')
+						->setContent(yFactory::getBean('general/objects'))
 						->get();
 			case '/users':
 				return
-					yFactory::getBean('/template')
-						->setContent(yFactory::getBean('/users'))
+					yFactory::getBean('template')
+						->setContent(yFactory::getBean('users'))
+						->get();
+			case '/news':
+				return
+					yFactory::getBean('template')
+						->setContent(yFactory::getBean('news'))
 						->get();
 		}
 	}

@@ -1,6 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-class yTemplateClass {
+@require_once 'base.php';
+
+class yTemplateClass extends yBaseClass{
 	public $model;
 	
 	function setModel($model) {

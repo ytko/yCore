@@ -1,6 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-class yViewClass {
+@require_once 'base.php';
+
+class yViewClass extends yBaseClass{
 	public
 		$template,	// Объект шаблона
 		$body;		// Контент

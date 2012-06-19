@@ -15,7 +15,7 @@ class templateClass extends yBeanClass {
 	public function get($bean = NULL) {
 		if ($bean) $this->setContent($bean);
 		
-		$template = yFactory::getTemplate('/'.$this->moduleName)
+		$template = yFactory::getTemplate($this->moduleName)
 				->setContent($this->content());		//Получение контента
 
 		return yFactory::getView()
