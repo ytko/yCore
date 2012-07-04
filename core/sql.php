@@ -265,6 +265,15 @@ class yDbClass extends ySqlGenClass {
 			);
 	}
 	
+	function selectVar($query = NULL) {
+		return
+			$this->sql->get_var(
+				($query and is_string($query))
+					? $query
+					: $this->selectQuery($query)
+			);
+	}
+	
 	function insert($query = NULL) {
 		// case input ($query) is array of rows
 		if(is_array($query)) {
