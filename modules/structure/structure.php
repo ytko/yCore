@@ -44,6 +44,9 @@ class structureClass extends yBeanClass {
 					yFactory::getBean('template')
 						->setContent(yFactory::getBean('news'))
 						->get();
+			case '/customforms':
+				echo
+					yFactory::getBean('customforms')->edit();
 		}
 	}
 }

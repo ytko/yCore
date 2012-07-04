@@ -6,7 +6,7 @@ class yControllerClass extends yBaseClass{
 	public $post, $get, $url, $files;
 	public $controllerName;
 
-	function __construct($controllerName) {	
+	function __construct($controllerName = NULL) {	
 		$this->post = (object) $_POST;
 		$this->get = (object) $_GET;
 		$this->files = $_FILES;

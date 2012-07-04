@@ -11,49 +11,58 @@ class ySqlGenClass {
 	// Query definition
 
 	// Set table name
-	function table($table) {
+	public function table($table) {
 		$this->table = $table;
 		return $this;		
 	}
 	
 	// Set join tables (for select)
-	function join($join) {
+	public function join($join) {
 		$this->join = $join;
 		return $this;		
 	}
 	
 	// Set where
-	function where($where) {
-		$this->where = $where;
-		return $this;		
+	public function where($key, $value = NULL) {
+		// override:
+		// function has two arguments: use them as `$key` field = $value
+		if (isset($value)) {
+			$value = $this->quote($value);
+			$this->where.= ($this->where ? ' AND ' : '')."`$key` = '$value'";
+		}
+		// function has one argument: use it as simple string
+		else
+			$this->where = $key;
+		
+		return $this;
 	}
 
 	// Set option	
-	function option($option) {
+	public function option($option) {
 		$this->option = $option;
 		return $this;		
 	}
 
 	// Set group	
-	function group($group) {
+	public function group($group) {
 		$this->group = $group;
 		return $this;		
 	}
 
 	// Set having	
-	function having($having) {
+	public function having($having) {
 		$this->having = $having;
 		return $this;		
 	}
 	
 	// Set order
-	function order($order) {
+	public function order($order) {
 		$this->order = $order;
 		return $this;		
 	}
 
 	// Set limit
-	function limit($limit) {
+	public function limit($limit) {
 		$this->limit = $limit;
 		return $this;		
 	}
@@ -64,7 +73,7 @@ class ySqlGenClass {
 	
 	// query generating
 
-	function selectQuery($fields = NULL) {
+	public function selectQuery($fields = NULL) {
 		// Generating field list for sql-query
 		$fields = '';
 		if (is_array($this->fields) and !empty($this->fields))
@@ -87,7 +96,7 @@ class ySqlGenClass {
 			';';		
 	}
 	
-	function insertQuery($values = NULL) {
+	public function insertQuery($values = NULL) {
 		// Check if $this->values array is associative
 		//$keys = array_keys($this->values);
 		//$isAssociative = array_keys($keys) !== $keys;
@@ -98,12 +107,14 @@ class ySqlGenClass {
 		$values = '';
 		foreach($this->values as $key => $value) {
 			if (isset($value)) {
+				$key = $this->quote($key);
+				$value = $this->quote($value);
 				// Generating field list if $this->values array is associative
 				//if ($isAssociative)
 					$fields.= ($fields ? ', ': NULL)."`$key`";
 
 				// Generating values list in both cases
-				$values.= ($values ? ', ': NULL)."'".$this->quote($value)."'";
+				$values.= ($values ? ', ': NULL)."'$value'";
 			}
 		}
 		
@@ -114,11 +125,13 @@ class ySqlGenClass {
 			';';
 	}
 	
-	function updateQuery() {
+	public function updateQuery() {
 		$set = '';
 						
 		foreach($this->values as $key => $value) {
-			$set.= ($set ? ', ': NULL)."`$key` = $value";
+			$key = $this->quote($key);
+			$value = $this->quote($value);
+			$set.= ($set ? ', ': NULL)."`$key` = '$value'";
 		}
 
 		return
@@ -129,7 +142,7 @@ class ySqlGenClass {
 			';';
 	}
 	
-	function deleteQuery() {
+	public function deleteQuery() {
 /*
 DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
     [PARTITION (partition_name,...)]
@@ -147,12 +160,12 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 	
 	// Field values defenition
 	
-	function values($values = NULL) { // TODO: merge with existed values
+	public function values($values = NULL) { // TODO: merge with existed values
 		if($values) $this->values = $values;
 		return $this;
 	}
 	
-	function value($field, $value) {
+	public function value($field, $value) {
 		if(is_object($this->values))
 			$this->values->$field = $this->quote($value);
 		elseif(is_array($this->values))
@@ -165,18 +178,20 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 		return $this;
 	}
 	
-	function fields($fields = NULL) { // TODO: merge with existed values
+	public function clearValues() {
+		$this->values = array();
+	}
+	
+	public function fields($fields = NULL) { // TODO: merge with existed values
 		if($fields) $this->fields = $fields;
 		return $this;
 	}
 	
-	function field($field) {
-		if(is_array($this->fields))
-			$this->fields[] = $this->quote($field);
-		else {
+	public function field($field) {
+		if(!is_array($this->fields))
 			$this->fields = array();
-			$this->fields[] = $this->quote($field);
-		}
+
+		$this->fields[] = $this->quote($field);
 		
 		return $this;
 	}
@@ -193,7 +208,7 @@ class yDbClass extends ySqlGenClass {
 	public $sql;
 	public static $static_sql;
 	
-	function __construct($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql', $forced = false) {
+	public function __construct($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql', $forced = false) {
 		// Overriding emulation:
 		if (is_object($user))
 			// Second (not last) argument is $forced if object is given
@@ -209,7 +224,7 @@ class yDbClass extends ySqlGenClass {
 		}
 	}
 	
-	function init($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql') {
+	public function init($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql') {
 		// Overriding emulation:
 		if (is_object($user)) {
 			// Use ezSQL object if object is given
@@ -238,16 +253,20 @@ class yDbClass extends ySqlGenClass {
 	
 	// Query processing functions
 	
-	function select($query = NULL) {
+	public function select($query = NULL) { //alias for selectResults
+		return $this->selectResults($query);
+	}
+	
+	public function selectResults($query = NULL) {
 		return
 			$this->sql->get_results(
 				($query and is_string($query))
 					? $query
 					: $this->selectQuery($query)
-			);
+			);		
 	}
 	
-	function selectCol($query = NULL) {
+	public function selectCol($query = NULL) {
 		return
 			$this->sql->get_col(
 				($query and is_string($query))
@@ -256,7 +275,7 @@ class yDbClass extends ySqlGenClass {
 			);
 	}
 	
-	function selectRow($query = NULL) {
+	public function selectRow($query = NULL) {
 		return
 			$this->sql->get_row(
 				($query and is_string($query))
@@ -265,7 +284,7 @@ class yDbClass extends ySqlGenClass {
 			);
 	}
 	
-	function selectVar($query = NULL) {
+	public function selectVar($query = NULL) {
 		return
 			$this->sql->get_var(
 				($query and is_string($query))
@@ -274,7 +293,7 @@ class yDbClass extends ySqlGenClass {
 			);
 	}
 	
-	function insert($query = NULL) {
+	public function insert($query = NULL) {
 		// case input ($query) is array of rows
 		if(is_array($query)) {
 			foreach ($query as $row) {
@@ -296,7 +315,7 @@ class yDbClass extends ySqlGenClass {
 				);
 	}
 	
-	function update($query = NULL) {
+	public function update($query = NULL) {
 		return
 			$this->sql->query(
 				($query and is_string($query))
@@ -305,7 +324,7 @@ class yDbClass extends ySqlGenClass {
 			);
 	}
 	
-	function delete($query = NULL) {
+	public function delete($query = NULL) {
 		return
 			$this->sql->query(
 				($query and is_string($query))
@@ -318,39 +337,133 @@ class yDbClass extends ySqlGenClass {
 	function query($query = NULL) {
 		return $this->sql->query($query ? $query : $this->getQuery());
 	}
-	
-	function get($query = NULL) {
-		return $this->sql->get_results($query ? $query : $this->getQuery());
-	}
-	
-	function getRow($query = NULL) {
-		return $this->sql->get_row($query ? $query : $this->getQuery());
-	}
-	
-	function getVar($query = NULL) {
-		return $this->sql->get_var($query ? $query : $this->getQuery());
-	}
 */
 }
 
 // yObjectClass processing
 class ySqlClass extends yDbClass {
-	/*function insert($query = NULL) {
-		// Override if $query is object
-		if (!is_object($query))
-			return parent::insert($query);
-		else
-		{
-			$this->table($query->table);
+	public function create($object) { // create table
+		$unique = array();
+		$primary = array();
+		
+		$query = NULL;
+		foreach($object->fields as $field) {
+			//echo print_r($field, 1).'<br />';
+			if ($query) $query.= ', ';
+			
+			if		($field->type == 'int')		$query.= "`{$field->key}` INT NOT NULL";
+			elseif	($field->type == 'id') {
+				$query.= "`{$field->key}` INT NOT NULL AUTO_INCREMENT";
+				$unique[] = $field->key;
+				$primary[] = $field->key;
+			}
+			elseif	($field->type == 'string')	$query.= "`{$field->key}` VARCHAR(255) NOT NULL";
+			elseif	($field->type == 'text')	$query.= "`{$field->key}` TEXT NOT NULL";
+		}
 
-			foreach($query->values as $row) {
-				$this->values = $row;
-				parent::insert();
+		if($primary) {
+			$primaryQuery = NULL;
+			foreach($primary as $key) {
+				if ($primaryQuery) $primaryQuery.= ', ';
+				$primaryQuery.= "`$key`";
+			}
+			$primaryQuery = ", PRIMARY KEY ($primaryQuery)";
+		}
+		
+		if($unique) {
+			$uniqueQuery = NULL;
+			foreach($unique as $key) {
+				if ($uniqueQuery) $uniqueQuery.= ', ';
+				$uniqueQuery.= "`$key`";
+			}
+			$uniqueQuery = ", UNIQUE ($uniqueQuery)";
+		}
+		//, PRIMARY KEY ( `{$field->key}` ) ,
+		
+		$query = "CREATE TABLE `{$object->table}` ({$query}{$primaryQuery}{$uniqueQuery}) ENGINE = MYISAM;";
+		
+		//echo $query;
+		
+		$this->sql->query($query);
+	}
+	
+	public function insert($object = NULL) { //insert or update
+		// override:
+		// if $object is child of yObjectClass
+		if (is_a($object, 'yObjectClass')) {
+			// define table
+			$this->table($object->table);
+			// go through array of rows to insert
+			foreach($object->values as $row) {
+				// reset array of values
+				$this->clearValues();
+				// go through object fields
+				foreach($object->fields as $field) {
+					// value of field in current row
+					$value = $row->{$field->key};
+					// if value of field is defined add it to request
+					if(isset($value)) {
+						// if type of this field is 'id' add it to WHERE
+						if ($field->type == 'id') {
+							$this->where($field->key, $value);
+						}
+						// in other case add it as a value to INSERT (or UPDATE)
+						else {
+							$this->value($field->key, $value);
+						}
+					}
+				}
+				// UPDATE if has where clause and INSERT if not
+				if ($this->where)
+					parent::update();
+				else
+					parent::insert();
 			}
 			
 			return;
 		}
-	}*/
+		// in other case do not override
+		else {
+			return parent::insert($object);
+		}	
+				/*if($object->fields) foreach($object->fields as $field) {
+			if($value = $this->getRequest($field->key)) {
+				$object->value($field->key, $value, $row);
+			}
+		}*/
+	}
+	
+	public function select($object = NULL, $mode = 'Results') {
+		// override:
+		// if $object is child of yObjectClass
+		if (is_a($object, 'yObjectClass')) {
+			// define table
+			$this->table($object->table);
+			// go through object fields
+			foreach ($object->fields as $field) {
+				// add field to selection
+				$this->field($field->key);
+				// get value of field in the first row
+				$value = $object->values[0]->{$field->key}; // TODO: select from all rows for selectResults
+				// if type of this field is 'id' add it to WHERE
+				if($field->type == 'id' && isset($value)) {
+					$this->where($field->key, $value);
+				}
+			}
+			
+			// method to use: selectResults, selectRow, etc.
+			$method = 'select'.$mode;
+			return parent::$method();
+		}
+		// in other case do not override
+		else {
+			return parent::select($object);
+		}
+	}
+	
+	public function selectRow($object = NULL) {
+		return $this->select($object, 'Row');
+	}
 }
 
 ?>

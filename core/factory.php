@@ -143,4 +143,10 @@ class yFactory {
 	}
 }
 
+class yy extends yFactory {
+	public function db($name = NULL) {
+		return parent::getDb($name);
+	}
+}
+
 ?>

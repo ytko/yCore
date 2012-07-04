@@ -10,26 +10,47 @@ class yObjectClass extends yBaseClass {//TODO: implements
 		$fields = array(),	// Table fields
 		$values = array();	// Table values
 		
-	// db initialization
-	/*protected function dbInit() {
-		// using ySql for db
-		if (!$db)
-			$this->db = yFactory::getDb();
-	}*/
-	
-	public function table($tableName) {
+	public function table($tableName) { //TODO: make it safe
 		$this->table = $tableName;
 		return $this;
 	}
 	
-	public function field($field, $type) {
-		$this->fields[$field] = $type;		
+	public function field($key, $properties = NULL, $name = NULL) {		
+		// overriding emulation:
+		if (is_array($properties) or is_object($properties)) {
+			// taking properties from $properties array
+			$properties = (object)$properties;
+		}
+		else {
+			// taking properties from function parameters
+			$properties = (object)array('key' => $key, 'type' => $properties, 'name' => $name);
+		}
+
+		if ($properties->name === NULL) $properties->name = $key;
+		if ($properties->type === NULL) $properties->type = 'string';
+
+		$this->fields[$key] = $properties;
+		
 		return $this;
 	}
 	
 	public function addRow($values) {
-		$this->values[] = $values;		
+		$this->values[] = (object)$values;		
 		return $this;
+	}
+	
+	public function value($key, $value, $row = 0) {
+		if (!is_object($this->values[$row]))
+			$this->values[$row] = (object)array();
+		
+		//if(isset($this->fields->$key)) //uncomment after debug
+			$this->values[$row]->$key = $value;
+		
+		return $this;
+	}
+	
+	public function clearValues() {
+		$this->values = array();
 	}
 	
 	/*
