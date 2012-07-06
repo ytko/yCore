@@ -118,10 +118,11 @@ class ySqlGenClass {
 			}
 		}
 		
+		
 		return
 			"INSERT INTO `{$this->table}`".
 			($fields ? ' ('.$fields.')' : NULL).
-			' VALUES ('.$values.')'.
+			($values ? ' VALUES ('.$values.')' : NULL).
 			';';
 	}
 	
@@ -134,12 +135,15 @@ class ySqlGenClass {
 			$set.= ($set ? ', ': NULL)."`$key` = '$value'";
 		}
 
-		return
-			"UPDATE `{$this->table}`".
-			' SET '.$set.
-			($this->where ? ' WHERE '.$this->where : NULL).
-			($this->option ? ' OPTION '.$this->option : NULL).
-			';';
+		if ($set)
+			return
+				"UPDATE `{$this->table}`".
+				' SET '.$set.
+				($this->where ? ' WHERE '.$this->where : NULL).
+				($this->option ? ' OPTION '.$this->option : NULL).
+				';';
+		else
+			return NULL;
 	}
 	
 	public function deleteQuery() {
@@ -316,12 +320,11 @@ class yDbClass extends ySqlGenClass {
 	}
 	
 	public function update($query = NULL) {
-		return
-			$this->sql->query(
-				($query and is_string($query))
+		$query = ($query and is_string($query))
 					? $query
-					: $this->updateQuery($query)
-			);
+					: $this->updateQuery($query);
+		
+		return $query ? $this->sql->query($query) : NULL;
 	}
 	
 	public function delete($query = NULL) {
@@ -359,6 +362,7 @@ class ySqlClass extends yDbClass {
 			}
 			elseif	($field->type == 'string')	$query.= "`{$field->key}` VARCHAR(255) NOT NULL";
 			elseif	($field->type == 'text')	$query.= "`{$field->key}` TEXT NOT NULL";
+			elseif	($field->type == 'list')	$query.= "`{$field->key}` INT NOT NULL";
 		}
 
 		if($primary) {
@@ -382,12 +386,12 @@ class ySqlClass extends yDbClass {
 		
 		$query = "CREATE TABLE `{$object->table}` ({$query}{$primaryQuery}{$uniqueQuery}) ENGINE = MYISAM;";
 		
-		//echo $query;
+		echo $query;
 		
 		$this->sql->query($query);
 	}
-	
-	public function insert($object = NULL) { //insert or update
+
+	public function insert($object = NULL, $mode = '') { //insert or update
 		// override:
 		// if $object is child of yObjectClass
 		if (is_a($object, 'yObjectClass')) {
@@ -415,16 +419,20 @@ class ySqlClass extends yDbClass {
 				}
 				// UPDATE if has where clause and INSERT if not
 				if ($this->where)
-					parent::update();
+					$method = 'update'.$mode;
 				else
-					parent::insert();
+					$method = 'insert'.$mode;
+				
+				$iResult = parent::$method();
+				if (is_string($iResult)) $result.= $iResult;
 			}
-			
-			return;
+
+			return $result;
 		}
 		// in other case do not override
 		else {
-			return parent::insert($object);
+			$method = 'insert'.$mode;
+			return parent::$method($object);
 		}	
 				/*if($object->fields) foreach($object->fields as $field) {
 			if($value = $this->getRequest($field->key)) {
@@ -432,7 +440,11 @@ class ySqlClass extends yDbClass {
 			}
 		}*/
 	}
-	
+
+	public function insertQuery($object) { //alias
+		return $this->insert($object, 'Query');
+	}	
+
 	public function select($object = NULL, $mode = 'Results') {
 		// override:
 		// if $object is child of yObjectClass
@@ -457,12 +469,17 @@ class ySqlClass extends yDbClass {
 		}
 		// in other case do not override
 		else {
-			return parent::select($object);
+			$method = 'select'.$mode;
+			return parent::$method($object);
 		}
 	}
-	
-	public function selectRow($object = NULL) {
+
+	public function selectRow($object = NULL) { //alias
 		return $this->select($object, 'Row');
+	}
+
+	public function selectQuery($object = NULL) { //alias
+		return $this->select($object, 'Query');
 	}
 }
 

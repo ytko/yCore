@@ -15,7 +15,7 @@ class yObjectClass extends yBaseClass {//TODO: implements
 		return $this;
 	}
 	
-	public function field($key, $properties = NULL, $name = NULL) {		
+	public function field($key, $type = NULL, $properties = NULL) {		
 		// overriding emulation:
 		if (is_array($properties) or is_object($properties)) {
 			// taking properties from $properties array
@@ -23,11 +23,12 @@ class yObjectClass extends yBaseClass {//TODO: implements
 		}
 		else {
 			// taking properties from function parameters
-			$properties = (object)array('key' => $key, 'type' => $properties, 'name' => $name);
+			$properties = (object)array('key' => $key, 'type' => $type, 'name' => $properties);
 		}
 
+		if ($properties->key === NULL) $properties->key = $key;
 		if ($properties->name === NULL) $properties->name = $key;
-		if ($properties->type === NULL) $properties->type = 'string';
+		if ($properties->type === NULL) $properties->type = $type ?: 'string';
 
 		$this->fields[$key] = $properties;
 		

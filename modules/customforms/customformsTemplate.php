@@ -31,11 +31,23 @@ HEREDOC;
 
 	function form($object) {
 		foreach ($object->fields as $field) {
-			$value = $object->values[0]->{$field->key};
-			if		($field->type == 'int')		$result.= "{$field->name}:<br /><input type='text' name='{$field->key}' value='$value' /><br />";
+			$value = htmlspecialchars(stripcslashes($object->values[0]->{$field->key}), ENT_QUOTES);
+			$name = htmlspecialchars(stripcslashes($field->name), ENT_QUOTES);
+			
+			if		($field->type == 'int')		$result.= "{$name}:<br /><input type='text' name='{$field->key}' value='$value' /><br />";
 			elseif	($field->type == 'id')		$result.= "<input type='hidden' name='{$field->key}' value='$value' />";
-			elseif	($field->type == 'string')	$result.= "{$field->name}:<br /><input type='text' name='{$field->key}' value='$value' /><br />";
-			elseif	($field->type == 'text')	$result.= "{$field->name}:<br /><textarea name='{$field->key}'>$value</textarea><br />";
+			elseif	($field->type == 'string')	$result.= "{$name}:<br /><input type='text' name='{$field->key}' value='$value' /><br />";
+			elseif	($field->type == 'text')	$result.= "{$name}:<br /><textarea name='{$field->key}'>$value</textarea><br />";
+			elseif	($field->type == 'list') {
+				$result.= "{$name}:<br /><select name='{$field->key}'>";
+				if(isset($field->values)) foreach ($field->values as $iKey => $iName) {
+					$iKey = htmlspecialchars($iKey, ENT_QUOTES);
+					$iName = htmlspecialchars($iName, ENT_QUOTES);
+					$iSelected = ($iKey == $value) ? ' selected' : NULL;
+					$result.= "<option value='$iKey'{$iSelected}>$iName</option>";
+				}
+				$result.= "</select>";
+			}
 		}
 		
 		return "<form method='post' action=''>$result<input type='submit' value='Отправить'></form>";
@@ -43,4 +55,3 @@ HEREDOC;
 }
 
 ?>
-

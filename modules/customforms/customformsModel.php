@@ -3,21 +3,27 @@
 yFactory::linkModel();
 
 class customformsModelClass extends yModelClass {
+	function installObject($object) {
+		yFactory::getDb()->create($object);
+		return $this;
+	}
+	
 	function insertObject($object) {
 		if ($object->values)
-			return yFactory::getDb()->insert($object);
+			yFactory::getDb()->insert($object);
+		return $this;
 	}
 	
 	//TODO: function updateObject($object)
 	
 	function listObject($object) {
 		$object->values = yFactory::getDb()->select($object);
-		return $object;
+		return $this;
 	}
 	
 	function getObject($object) {
 		$object->values[0] = yFactory::getDb()->selectRow($object);
-		return $object;
+		return $this;
 	}
 }
 

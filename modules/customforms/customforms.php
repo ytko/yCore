@@ -5,18 +5,16 @@ yFactory::linkBean();
 class customformsClass extends yBeanClass {
 	public function edit() {
 		$object = yFactory::getObject('customforms');
-		
-		$controller = yFactory::getController('customforms');
-		$object = $controller->getObject($object);
-		
-		$model = yFactory::getModel('customforms');
-		$model->insertObject($object);
-		
-		$object->value('id', 2);
-		print_r($model->getObject($object));
-		
-		$template = yFactory::getTemplate('customforms')
-				->setProperty('model', $model);
+
+		$controller = yFactory::getController('customforms')
+				->getObject($object);
+
+		$model = yFactory::getModel('customforms')
+				//->installObject($object)
+				->insertObject($object)
+				->getObject($object);
+
+		$template = yFactory::getTemplate('customforms');
 
 		//$db->create($object);
 		//$db->insert($object);
