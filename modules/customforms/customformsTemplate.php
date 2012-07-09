@@ -5,7 +5,7 @@ yFactory::linkTemplate();
 class customformsTemplateClass extends yTemplateClass {
 
 // ----- HEAD -------------------------------------------------------------------------------------	
-	function head() {
+	public function head() {
 		return
 <<<HEREDOC
 <script type="text/javascript">
@@ -29,7 +29,7 @@ class customformsTemplateClass extends yTemplateClass {
 HEREDOC;
 	}
 
-	function form($object) {
+	public function form($object) {
 		foreach ($object->fields as $field) {
 			$value = htmlspecialchars(stripcslashes($object->values[0]->{$field->key}), ENT_QUOTES);
 			$name = htmlspecialchars(stripcslashes($field->name), ENT_QUOTES);
@@ -52,6 +52,8 @@ HEREDOC;
 		
 		return "<form method='post' action=''>$result<input type='submit' value='Отправить'></form>";
 	}
+	
+	//public function 
 }
 
 ?>

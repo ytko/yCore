@@ -2,7 +2,9 @@
 
 // ------ Framework settings ----------------------------------------------------------------------
 class ySettings {
-	static public $get, $mvc, $path, $rootPath, $corePath, $modulesPath, $db;
+	static public $get, $mvc, $path, $rootPath, $corePath, $modulesPath,
+			$db,
+			$altPaths;
 }
 
 // ------ Paths -----------------------------------------------------------------------------------
@@ -12,35 +14,28 @@ ySettings::$path = ySettings::$rootPath.'';				//Путь к корню фрей
 ySettings::$corePath = ySettings::$path.'/core';		//Путь к ядру (core)
 ySettings::$modulesPath = ySettings::$path.'/modules';	//Путь к модулям
 
-// ------ GET-requests ----------------------------------------------------------------------------
-ySettings::$get = (object)array(						//Обязательная добавка ко всем get-запросам (нужно для joomla)
-		//'option' => $_GET['option']
+// ------ Alternative paths for modules (redirection) ---------------------------------------------
+
+ySettings::$altPaths = (object)array(
+		'structure' => 'cms',
+		'template' => 'cms',
+		'users' => 'cms',
+	
+		'badge' => 'ignore',
+		'extended' => 'ignore',
+		'general' => 'ignore',
+		'default' => 'ignore'
+		
 );
-ySettings::$mvc = (object)array(						//Названия параметров, передаваемых в get-запросах
-		'module' => 'mod',									//Параметр, отвечающий за название модуля
-		'controller' => 'controller',						//...контроллера
-		'model' => 'model',									//...модели
-		'view' => 'view',									//...вида
-		'template' => 'template'							//...шаблона
-		//Пример: 'module' => 'mod', тогда запрос для модуля mmm с альтернативным видом vvv будет ?mod=mmm&view=vvv
-); //TODO: проверить работоспособность
 
 // ------ Data base -------------------------------------------------------------------------------
 ySettings::$db = (object)array(
-		//'resource' => JFactory::getDBO(),					//Ссылка на ресурс БД
 		'host' => 'localhost',
 		'name' => 'j1',
 		'user' => 'j1',
 		'password' => '12345',
-		'prefix' => 'j7_ytko',
-		'type' => 'mysql'									//TODO: Тип БД.
-); //TODO: Оставить только prefix
-
-// ------ Debuger ---------------------------------------------------------------------------------
-require_once(ySettings::$path.DS.'include'.DS.'debug.php');
-//*yDebug::$on = true;
-yDebug::$all = true;
-//*/
-
+		'prefix' => 'j7_ytko',	//TODO: использовать
+		'type' => 'mysql'		//Тип БД.
+);
 
 ?>

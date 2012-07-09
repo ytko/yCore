@@ -19,15 +19,20 @@ class yFactory {
 			
 			// имя может быть готовым массивом, либо задано через '/'
 			$name = (is_array($name)) ? $name : explode('/', $name);
-
+			
 			// Определение имени подключаемого модуля и класса
-			if ($name[0]) {		// Указан абсолютный путь
+			if ($name[0]) {
 				$moduleName = $name[0];
 				$className = (isset($name[1])) ? $name[1] : $name[0];
 			}
 			else return;			// Неправильно задано имя
+
+			if(isset(ySettings::$altPaths->$moduleName))
+				$modulesPath = ySettings::$path.'/'.ySettings::$altPaths->$moduleName;
+			else
+				$modulesPath = ySettings::$modulesPath;
 			
-			include_once (ySettings::$modulesPath.'/'.$moduleName.'/'.$className.$Type.'.php');
+			include_once ($modulesPath.'/'.$moduleName.'/'.$className.$Type.'.php');
 			$result = yFactory::getClassPrefix($moduleName, $className).$Type.'Class';
 		}
 		
