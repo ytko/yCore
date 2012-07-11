@@ -13,12 +13,11 @@ require_once(ySettings::$corePath.'/functions.php');
 header('Content-type: text/html; charset=utf-8');
 
 //Получение контента страницы
-$mainResult = yFactory::getBean('structure')
+$result = yFactory::getBean('structure')
 		->get();
 
 //Вывод данных 
-echo $mainResult->head;						//Вывод <head>
-echo $mainResult->body;						//Вывод <body>
+echo $result;
 
 //echo microtime() - $micro_start;
 

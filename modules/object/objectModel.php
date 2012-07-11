@@ -2,13 +2,13 @@
 
 yFactory::linkModel();
 
-class customformsModelClass extends yModelClass {
-	function installObject($object) {
+class objectModelClass extends yModelClass {
+	function install($object) {
 		yFactory::getDb()->create($object);
 		return $this;
 	}
 	
-	function insertObject($object) {
+	function insert($object) {
 		if ($object->values)
 			yFactory::getDb()->insert($object);
 		return $this;
@@ -16,12 +16,12 @@ class customformsModelClass extends yModelClass {
 	
 	//TODO: function updateObject($object)
 	
-	function listObject($object) {
+	function getCat($object) {
 		$object->values = yFactory::getDb()->select($object);
 		return $this;
 	}
 	
-	function getObject($object) {
+	function get($object) {
 		$object->values[0] = yFactory::getDb()->selectRow($object);
 		return $this;
 	}

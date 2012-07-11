@@ -5,22 +5,12 @@ yFactory::linkBean();
 class templateClass extends yBeanClass {
 	public $moduleName = 'template';
 //	public $beanName = 'default';
-	
-	protected $content;
-	public function setContent($bean) {
-		$this->content = $bean;
-		return $this;
-	}
 
-	public function get($bean = NULL) {
-		if ($bean) $this->setContent($bean);
-		
+	public function get($content) {
 		$template = yFactory::getTemplate($this->moduleName)
-				->setContent($this->content());		//Получение контента
+				->setContent($content);		//Получение контента
 
-		return yFactory::getView()
-				->setTemplate($template)
-				->get();
+		return $template->get();
 	}
 }
 

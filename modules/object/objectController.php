@@ -2,7 +2,7 @@
 
 yFactory::linkController();
 
-class customformsControllerClass extends yControllerClass {
+class objectControllerClass extends yControllerClass {
 	
 	// gets POST or GET values and writes them to yObject container
 	function getObject($object, $row = 0) {

@@ -2,26 +2,24 @@
 
 yFactory::linkBean();
 
-class customformsClass extends yBeanClass {
+class catalogClass extends yBeanClass {
 	public function cat() {
-		$object = yFactory::getObject('customforms')
-				->full();
+		$object = yFactory::getObject('catalog')
+				->cat();
 
 		$controller = yFactory::getController('object');
 
 		$model = yFactory::getModel('object')
-				//->install($object)
 				->getCat($object);
 
-		$template = yFactory::getTemplate('object')
+		$template = yFactory::getTemplate('catalog')
 				->setObject($object);
-				//->setModel($model);
-		
+
 		return $template->cat();		
 	}
 	
 	public function page() {
-		$object = yFactory::getObject('customforms')
+		$object = yFactory::getObject('catalog')
 				->full();
 
 		$controller = yFactory::getController('object')
@@ -30,29 +28,42 @@ class customformsClass extends yBeanClass {
 		$model = yFactory::getModel('object')
 				->getCat($object);
 
-		$template = yFactory::getTemplate('object')
+		$template = yFactory::getTemplate('catalog')
 				->setObject($object);
-				//->setModel($model);
 		
 		return $template->page();		
 	}
 
 	public function edit() {
-		$object = yFactory::getObject('customforms')
+		$object = yFactory::getObject('catalog')
 				->full();
 
 		$controller = yFactory::getController('object')
 				->getObject($object);
 
 		$model = yFactory::getModel('object')
+				//->install($object)
 				->insert($object)
 				->get($object);
 
-		$template = yFactory::getTemplate('object')
+		$template = yFactory::getTemplate('catalog')
 				->setObject($object);
 		
 		return $template->form($object);
-	}	
+	}
+	
+	public function install() {
+		$object = yFactory::getObject('catalog')
+				->full();
+
+		$model = yFactory::getModel('object')
+				->install($object);
+	}
+	
+	public function export() {
+		$object = yFactory::getObject('catalog')->full();
+		$model = yFactory::getModel('catalog')->export($object);		
+	}
 }
 
 ?>

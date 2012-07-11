@@ -360,9 +360,11 @@ class ySqlClass extends yDbClass {
 				$unique[] = $field->key;
 				$primary[] = $field->key;
 			}
-			elseif	($field->type == 'string')	$query.= "`{$field->key}` VARCHAR(255) NOT NULL";
-			elseif	($field->type == 'text')	$query.= "`{$field->key}` TEXT NOT NULL";
-			elseif	($field->type == 'list')	$query.= "`{$field->key}` INT NOT NULL";
+			elseif	($field->type == 'float')		$query.= "`{$field->key}` FLOAT NOT NULL";
+			elseif	($field->type == 'currency')	$query.= "`{$field->key}` DECIMAL(18,2) NOT NULL";
+			elseif	($field->type == 'string')		$query.= "`{$field->key}` VARCHAR(255) NOT NULL";
+			elseif	($field->type == 'text')		$query.= "`{$field->key}` TEXT NOT NULL";
+			elseif	($field->type == 'list')		$query.= "`{$field->key}` INT NOT NULL";
 		}
 
 		if($primary) {

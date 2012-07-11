@@ -5,14 +5,14 @@
 class yTemplateClass extends yBaseClass{
 	public $model;
 	
-	function setModel($model) {
+	public function setModel($model) {
 		$this->model = $model;
 		return $this;
 	}
 	
-	function head(&$_) {}
+	public function head(&$_) {}
 	
-	function body(&$_) {}
+	public function body(&$_) {}
 	
 	static function getURI($base, $query, $modify = NULL) {
 		$result = $base;

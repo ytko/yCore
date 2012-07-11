@@ -18,36 +18,25 @@ class structureClass extends yBeanClass {
 		
 		switch ($_SERVER["REDIRECT_URL"]) {
 			case '':
-			case '/general':
-				return
-					yFactory::getBean('template')
-						->setContent(
-							/*yFactory::getBean()
-								->setModuleName('general')
-								->setModelName('general')
-								->setTemplateName('general')*/
-							yFactory::getBean('general')
-						)
-						->get();
-			case '/objects':
-				return
-					yFactory::getBean('template')
-						->setContent(yFactory::getBean('general/objects'))
-						->get();
-			case '/users':
-				return
-					yFactory::getBean('template')
-						->setContent(yFactory::getBean('users'))
-						->get();
-			case '/news':
-				return
-					yFactory::getBean('template')
-						->setContent(yFactory::getBean('news'))
-						->get();
-			case '/customforms':
-				echo
-					yFactory::getBean('customforms')->edit();
+				$content =
+					yFactory::getBean('catalog')->cat();
+				break;
+			case '/page':
+				$content =
+					yFactory::getBean('catalog')->page();
+				break;
+			case '/edit':
+				$content =
+					yFactory::getBean('catalog')->edit();
+				break;
+			case '/export':
+				$content =
+					yFactory::getBean('catalog')->export();
+				break;
 		}
+				
+		return yFactory::getBean('template')
+				->get($content);
 	}
 }
 
