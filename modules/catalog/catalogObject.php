@@ -27,7 +27,8 @@ class catalogObjectClass extends yObjectClass {
 			->field('vendor', 'string')
 			->field('name', 'string')
 			->field('price', 'currency')
-			->field('description', 'text');
+			->field('description', 'text')
+			->filter('page', 'page', array('type' => 'page', 'rows' => '20'));
 		return $this;
 	}
 }

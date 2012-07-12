@@ -76,7 +76,7 @@ body {
 <div class='header'>
 <div class="logo">
     <a href="/">
-        <img alt="Интернет магазин ёGenius (yourgenius.ru)" align="left" border="0" width="150" height="80" title="Интернет магазин ёGenius (yourgenius.ru)" src="/templates/images/logo.png">
+        <img alt="Интернет магазин ёGenius (yourgenius.ru)" align="left" border="0" width="150" height="80" title="Интернет магазин ёGenius (yourgenius.ru)" src="/files/images/logo.png">
     </a>
 </div>
 <div style="font-family:actor; display:inline-block; float:right; margin:10px 0 5px 0;">(812) <span style="font-size:1.8em; color:#f60;">987 1626</span></div>

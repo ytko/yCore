@@ -4,19 +4,37 @@
 
 class yObjectClass extends yBaseClass {//TODO: implements
 	public
-		$db,				// ySql object
+		$key,
 		$table,				// Table name
+		$name,
 	//private
 		$fields = array(),	// Table fields
-		$values = array();	// Table values
-		
-	public function table($tableName) { //TODO: make it safe
-		$this->table = $tableName;
+		$values = array(),	// Table values
+		$filter = array();	// Table filter
+	
+	public function table($table) { //TODO: make it safe
+		$this->table = $table;
+		if(!isset($this->key)) $this->key = $table;
+		if(!isset($this->name)) $this->name = $table;
 		return $this;
 	}
 	
-	public function field($key, $type = NULL, $properties = NULL) {		
+	public function key($key) { //TODO: make it safe
+		$this->key = $key;
+		if(!isset($this->name)) $this->name = $key;
+		return $this;
+	}
+	
+	public function name($name) {
+		$this->name = $name;
+		return $this;
+	}
+	
+	protected function makeRecord($key, $type = NULL, $properties = NULL) {
 		// overriding emulation:
+		if (is_array($type) or is_object($type))
+			$properties = $type;
+		
 		if (is_array($properties) or is_object($properties)) {
 			// taking properties from $properties array
 			$properties = (object)$properties;
@@ -28,11 +46,33 @@ class yObjectClass extends yBaseClass {//TODO: implements
 
 		if ($properties->key === NULL) $properties->key = $key;
 		if ($properties->name === NULL) $properties->name = $key;
-		if ($properties->type === NULL) $properties->type = $type ?: 'string';
+		if ($properties->type === NULL) $properties->type = $type ?: 'string';		
+		
+		return array($key, $properties);
+	}
+	
+	public function field($key, $type = NULL, $properties = NULL) {
+		list($key, $properties) = $result = $this->makeRecord($key, $type, $properties);
 
 		$this->fields[$key] = $properties;
 		
 		return $this;
+	}
+	
+	public function clearFields() {
+		$this->fields = array();
+	}
+	
+	public function filter($key, $type = NULL, $properties = NULL) {
+		list($key, $properties) = $result = $this->makeRecord($key, $type, $properties);
+
+		$this->filter[$key] = $properties;
+		
+		return $this;		
+	}
+	
+	public function clearFilters() {
+		$this->filters = array();
 	}
 	
 	public function addRow($values) {
