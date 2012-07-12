@@ -10,7 +10,12 @@ class yObjectClass extends yBaseClass {//TODO: implements
 	//private
 		$fields = array(),	// Table fields
 		$values = array(),	// Table values
-		$filter = array();	// Table filter
+		$filters = array();	// Table filter
+	
+	public function __construct() {
+		$this->fields = (object)array();	// Table fields
+		$this->filters = (object)array();	// Table filter
+	}
 	
 	public function table($table) { //TODO: make it safe
 		$this->table = $table;
@@ -46,7 +51,7 @@ class yObjectClass extends yBaseClass {//TODO: implements
 
 		if ($properties->key === NULL) $properties->key = $key;
 		if ($properties->name === NULL) $properties->name = $key;
-		if ($properties->type === NULL) $properties->type = $type ?: 'string';		
+		if ($properties->type === NULL) $properties->type = $type ? $type : 'string';		
 		
 		return array($key, $properties);
 	}
@@ -54,7 +59,7 @@ class yObjectClass extends yBaseClass {//TODO: implements
 	public function field($key, $type = NULL, $properties = NULL) {
 		list($key, $properties) = $result = $this->makeRecord($key, $type, $properties);
 
-		$this->fields[$key] = $properties;
+		$this->fields->$key = $properties;
 		
 		return $this;
 	}
@@ -66,7 +71,7 @@ class yObjectClass extends yBaseClass {//TODO: implements
 	public function filter($key, $type = NULL, $properties = NULL) {
 		list($key, $properties) = $result = $this->makeRecord($key, $type, $properties);
 
-		$this->filter[$key] = $properties;
+		$this->filters->$key = $properties;
 		
 		return $this;		
 	}

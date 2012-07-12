@@ -23,17 +23,33 @@ class ySqlGenClass {
 	}
 	
 	// Set where
-	public function where($key, $value = NULL) {
+	public function where($key, $args = NULL) {
 		// override:
 		// function has two arguments: use them as `$key` field = $value
-		if (isset($value)) {
+		if (isset($args)) {
+			if (is_array($args) or is_object($args)) {
+				$args = (object)$args;
+				$value = $args->value;
+				if(isset($args->collation)) $collation = $args->collation;
+			} else {
+				$value = $args;
+				$collation = '=';
+			}
+			
+			if ($collation == 'like') {
+				$collation = 'LIKE';
+				$value = "%$value%";
+			} else {
+				$collation = '=';
+			}
+
 			$value = $this->quote($value);
-			$this->where.= ($this->where ? ' AND ' : '')."`$key` = '$value'";
+			$this->where.= ($this->where ? ' AND ' : '')."`$key` $collation '$value'";
 		}
 		// function has one argument: use it as simple string
 		else
 			$this->where = $key;
-		
+
 		return $this;
 	}
 
@@ -62,9 +78,14 @@ class ySqlGenClass {
 	}
 
 	// Set limit
-	public function limit($limit) {
-		$this->limit = $limit;
-		return $this;		
+	public function limit($limit, $offset = NULL) {
+		if (isset($offset))
+			//if (is_numeric($limit) && is_numeric($rows))
+				$this->limit = "$offset, $limit";
+		else
+			//if (is_numeric($limit))
+				$this->limit = $limit;
+		return $this;
 	}
 
 	// set query type and fields
@@ -267,7 +288,7 @@ class yDbClass extends ySqlGenClass {
 				($query and is_string($query))
 					? $query
 					: $this->selectQuery($query)
-			);		
+			);
 	}
 	
 	public function selectCol($query = NULL) {
@@ -288,13 +309,17 @@ class yDbClass extends ySqlGenClass {
 			);
 	}
 	
-	public function selectVar($query = NULL) {
+	public function selectCell($query = NULL) {
 		return
 			$this->sql->get_var(
 				($query and is_string($query))
 					? $query
 					: $this->selectQuery($query)
 			);
+	}
+	
+	public function selectVar($query = NULL) { //alias for selectResults
+		return $this->selectCell($query);
 	}
 	
 	public function insert($query = NULL) {
@@ -457,12 +482,35 @@ class ySqlClass extends yDbClass {
 			foreach ($object->fields as $field) {
 				// add field to selection
 				$this->field($field->key);
+				
+				
 				// get value of field in the first row
-				$value = $object->values[0]->{$field->key}; // TODO: select from all rows for selectResults
+				//$value = $object->values[0]->{$field->key}; // TODO: select from all rows for selectResults
 				// if type of this field is 'id' add it to WHERE
-				if($field->type == 'id' && isset($value)) {
+				/*if($field->type == 'id' && isset($value)) {
 					$this->where($field->key, $value);
+				}*/
+			}
+			
+			foreach($object->filters as $filter) {
+				if($filter->type == 'field' && $filter->value)
+					$this->where($filter->field,
+							array(
+								'value' => "$filter->value",
+								'collation' => $filter->collation,
+							));
+				elseif($filter->type == 'page') {
+					if(!$filter->value) $filter->value = 1;
+					$this->limit($filter->rows, $filter->rows*($filter->value-1));
 				}
+			}
+			
+			if ($mode == 'Results' || $mode == 'Cols') { // get total values count
+				$db = clone($this);
+				$db->limit('');
+				$db->fields = NULL;
+				$db->field('COUNT(*) as `count`');
+				$object->rowsTotal = $db->selectCell();
 			}
 			
 			// method to use: selectResults, selectRow, etc.
@@ -476,8 +524,22 @@ class ySqlClass extends yDbClass {
 		}
 	}
 
+	// Aliases
+	
+	public function selectResults($object = NULL) { //alias
+		return $this->select($object, 'Results');
+	}
+	
 	public function selectRow($object = NULL) { //alias
 		return $this->select($object, 'Row');
+	}
+	
+	public function selectCol($object = NULL) { //alias
+		return $this->select($object, 'Col');
+	}
+	
+	public function selectCell($object = NULL) { //alias
+		return $this->select($object, 'Cell');
 	}
 
 	public function selectQuery($object = NULL) { //alias

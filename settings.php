@@ -12,19 +12,19 @@ ySettings::$rootPath = $_SERVER['DOCUMENT_ROOT'];
 ySettings::$path = ySettings::$rootPath.'';				//Путь к корню фреймворка //JPATH_COMPONENT_SITE
 //ySettings::$path = ySettings::$rootPath.preg_replace("/\/([^\/]*)$/m", '', $_SERVER['PHP_SELF']);
 ySettings::$corePath = ySettings::$path.'/core';		//Путь к ядру (core)
+
+// ------ Base path and alternative paths for modules (redirection) --------------------------------
+
 ySettings::$modulesPath = ySettings::$path.'/modules';	//Путь к модулям
-
-// ------ Alternative paths for modules (redirection) ---------------------------------------------
-
 ySettings::$altPaths = (object)array(
-		'structure' => 'cms',
-		'template' => 'cms',
-		'users' => 'cms',
+		'structure' => '/cms',
+		'template' => '/cms',
+		'users' => '/cms',
 	
-		'badge' => 'ignore',
-		'extended' => 'ignore',
-		'general' => 'ignore',
-		'default' => 'ignore'
+		'badge' => '/ignore',
+		'extended' => '/ignore',
+		'general' => '/ignore',
+		'default' => '/ignore'
 		
 );
 

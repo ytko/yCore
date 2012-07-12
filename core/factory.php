@@ -1,7 +1,7 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yFactory {
-	public function link($type, $name = NULL) {
+	public static function link($type, $name = NULL) {
 	/* include_once файла и возврат имени класса
 	 * путь до файла и имени генерируется из $type ('model', 'view', etc) и $name вида '/module/name'
 	*/	
@@ -39,78 +39,78 @@ class yFactory {
 		return $result;
 	}
 
-	public function linkController($name = NULL) {
+	public static function linkController($name = NULL) {
 		return
 			yFactory::link('controller', $name);
 	}
 
-	public function linkModel($name = NULL) {
+	public static function linkModel($name = NULL) {
 		return
 			yFactory::link('model', $name);
 	}		
 
-	public function linkView($name = NULL) {
+	public static function linkView($name = NULL) {
 		return
 			yFactory::link('view', $name);
 	}
 
-	public function linkTemplate($name = NULL) {
+	public static function linkTemplate($name = NULL) {
 		return
 			yFactory::link('template', $name);
 	}
 
-	public function linkBean($name = NULL) {
+	public static function linkBean($name = NULL) {
 		return
 			yFactory::link('bean', $name);		
 	}
 	
-	public function linkDb($name = NULL) {
+	public static function linkDb($name = NULL) {
 		return
 			yFactory::link('sql', $name);	
 	}
 	
-	public function linkObject($name = NULL) {
+	public static function linkObject($name = NULL) {
 		return
 			yFactory::link('object', $name);	
 	}
 	
-	public function getController($name = NULL) {
+	public static function getController($name = NULL) {
 		$controllerClassName = yFactory::linkController($name);
 		return new $controllerClassName($controllerName);
 	}
 	
-	public function getModel($name = NULL) {
+	public static function getModel($name = NULL) {
 		$modelClassName = yFactory::linkModel($name);
 		return new $modelClassName();
 	}
 	
-	public function getView($name = NULL) {
+	public static function getView($name = NULL) {
 		$viewClassName = yFactory::linkView($name);
 		return new $viewClassName();	
 	}
 	
-	public function getTemplate($name = NULL) {
+	public static function getTemplate($name = NULL) {
 		$templateClassName = yFactory::linkTemplate($name);
 		return new $templateClassName();
 	}
 
-	public function get($name = NULL) {
+	public static function get($name = NULL) {
 		$beanClassName = yFactory::linkBean($name);
 		return new $beanClassName();
 	}
 	
-	public function getBean($name = NULL) { //alias get
+	public static function getBean($name = NULL) { //alias get
 		$beanClassName = yFactory::linkBean($name);
 		return new $beanClassName();
 	}
 
-	public function getDb($name = NULL) {
+	public static function getDb($name = NULL) {
 		$dbClassName = yFactory::linkDb($name);
 		return
 			new $dbClassName();
 	}
 	
-	public function getObject($name = NULL) {
+	public static function getObject($name = NULL) {
 		$objectClassName = yFactory::linkObject($name);
 		return
 			new $objectClassName();
@@ -149,7 +149,7 @@ class yFactory {
 }
 
 class yy extends yFactory {
-	public function db($name = NULL) {
+	public static function db($name = NULL) {
 		return parent::getDb($name);
 	}
 }

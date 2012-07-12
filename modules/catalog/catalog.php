@@ -7,8 +7,9 @@ class catalogClass extends yBeanClass {
 		$object = yFactory::getObject('catalog')
 				->cat();
 
-		$controller = yFactory::getController('object');
-
+		$controller = yFactory::getController('object')
+				->getObject($object);
+		
 		$model = yFactory::getModel('object')
 				->getCat($object);
 

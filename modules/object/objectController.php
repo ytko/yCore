@@ -3,13 +3,18 @@
 yFactory::linkController();
 
 class objectControllerClass extends yControllerClass {
-	
-	// gets POST or GET values and writes them to yObject container
-	function getObject($object, $row = 0) {
+	// sets values fo external filters from POST or GET
+	function getObject($object) {
 		if($object->fields) foreach($object->fields as $field) {
 			if($value = $this->getRequest($field->key)) {
 				$object->value($field->key, $value, $row);
 			}
+		}
+		if($object->filters) foreach($object->filters as &$filter) {
+			if($filter->scope == 'external')
+				if($value = $this->getRequest($filter->key)) {
+					$filter->value = $value;
+				}
 		}
 		return $this;
 	}
