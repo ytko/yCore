@@ -46,7 +46,8 @@ class catalogClass extends yBeanClass {
 				->getCat($object);
 
 		$template = yFactory::template('catalog')
-				->setObject($object);
+				->setObject($object)
+				->setMode('admin');
 
 		return $template->cat();
 	}
@@ -63,7 +64,8 @@ class catalogClass extends yBeanClass {
 				->get($object);
 
 		$template = yFactory::getTemplate('catalog')
-				->setObject($object);
+				->setObject($object)
+				->setMode('admin');
 		
 		return $template->form($object);
 	}
@@ -79,7 +81,8 @@ class catalogClass extends yBeanClass {
 				->insert($object);
 
 		$template = yFactory::getTemplate('catalog')
-				->setObject($object);
+				->setObject($object)
+				->setMode('admin');
 		
 		return $template->form($object);
 	}

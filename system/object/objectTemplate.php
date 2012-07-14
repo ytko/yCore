@@ -3,14 +3,19 @@
 yFactory::includeTemplate();
 
 class objectTemplateClass extends yTemplateClass {
-	public $object;
+	public $object, $mode;
 	
 	public function setObject($object) {
 		$this->object = $object;
 		return $this;
 	}
 	
-// ----- HEAD -------------------------------------------------------------------------------------	
+	public function setMode($mode) {
+		$this->mode = $mode;
+		return $this;
+	}
+	
+// ----- HEAD ------------------------------------------------------------------
 	public function head() {
 		return
 <<<HEREDOC
@@ -35,19 +40,8 @@ class objectTemplateClass extends yTemplateClass {
 HEREDOC;
 	}
 
-	// ------ FORMS -------------------------------------------------------------------------------
-	
-	public function form() {
-		foreach ($this->object->fields as $field) {
-			$value = htmlspecialchars(stripcslashes($this->object->values[0]->{$field->key}), ENT_QUOTES);
-			$field->name = htmlspecialchars(stripcslashes($field->name), ENT_QUOTES);
-			
-			$result.= self::fieldInput($field, $value);
-		}
-		
-		return "<form method='post' action=''>$result<input type='submit' value='Отправить'></form>";
-	}
-	
+// ------ FORMS ----------------------------------------------------------------
+
 	static public function fieldInput($field, $value = NULL) {
 			if (!isset($value)) $value = $field->value;
 			
@@ -60,50 +54,17 @@ HEREDOC;
 			elseif	($field->type == 'list')		return self::listInput($field->key, $field->values, $value, $field->name).'<br />';		
 	}
 
-	public function cat() {
-		$pagination = $this->pagination();
+	public function form() {
+		foreach ($this->object->fields as $field) {
+			$value = htmlspecialchars(stripcslashes($this->object->values[0]->{$field->key}), ENT_QUOTES);
+			$field->name = htmlspecialchars(stripcslashes($field->name), ENT_QUOTES);
+			
+			$result.= self::fieldInput($field, $value);
+		}
 		
-		foreach ($this->object->values as $row) {
-			$items.= $this->catItem($row);
-		}
-		return <<<HEREDOC
-<div class="catalog">
-	<div class="search">$search</div>
-	<div class="pagination">$pagination</div>
-	<div class="items">$items</div>
-</div>
-HEREDOC;
+		return "<form method='post' action=''>$result<input type='submit' value='Отправить'></form>";
 	}
-	
-	protected function catItem($row) {
-		foreach($this->object->fields as $field) {
-			$value = $row->{$field->key};
-			$class = $field->key;
-			$name = $field->name;
-			$result.= "<a href='page?id={$row->id}' class='$class'>{$name}: $value; </a>";
-		}
-		return '<div>'.$result.'</div>';
-	}
-	
-	protected function pagination($rad = 5) {
-		return
-			self::getPagination(
-				$this->object->filters->page->value,
-				$this->object->filters->page->rows,
-				$this->object->rowsTotal,
-				$rad);
-	}
-		
-	public function page() {
-		foreach($this->object->fields as $field) {
-			$value = $this->object->values[0]->{$field->key};
-			$class = $field->key;
-			$name = $field->name;
-			$result.= "<span class='$class'>{$name}: $value; </span>";
-		}
-		return $result;
-	}
-	
+
 	public function search() {
 		if($this->object->filters) foreach($this->object->filters as $filter) {
 			if($filter->scope == 'external' && $filter->type == 'field') {
@@ -113,6 +74,59 @@ HEREDOC;
 		}
 		
 		return "<form method='get' action=''>$result<input type='submit' value='Искать'></form>";
+	}
+
+// ---- Catalog View -----------------------------------------------------------
+
+	public function cat() {
+		$pagination = $this->pagination();
+
+		foreach ($this->object->values as $row)
+			$items.= $this->catItem($row);
+
+		$search = $this->search();
+
+		$add = ($this->mode == 'admin') ? "<a href='add'>Добавить</a>" : NULL;
+
+		return <<<HEREDOC
+
+<div class="catalog">
+	<div class="search">$search</div>
+	<div class="pagination">$pagination</div>
+	<div class="items">$items</div>
+	<div class="pagination">$pagination</div>
+	$add
+</div>
+HEREDOC;
+	}
+
+	protected function catItem($row) {
+		foreach($this->object->fields as $field) {
+			$value = $row->{$field->key};
+			$class = $field->key;
+			$name = $field->name;
+			$result.= "<a href='page?id={$row->id}' class='$class'>{$name}: $value; </a>";
+		}
+		return '<div>'.$result.'</div>';
+	}
+
+	protected function pagination($rad = 5) {
+		return
+			self::getPagination(
+				$this->object->filters->page->value,
+				$this->object->filters->page->rows,
+				$this->object->rowsTotal,
+				$rad);
+	}
+
+	public function page() {
+		foreach($this->object->fields as $field) {
+			$value = $this->object->values[0]->{$field->key};
+			$class = $field->key;
+			$name = $field->name;
+			$result.= "<span class='$class'>{$name}: $value; </span>";
+		}
+		return $result;
 	}
 }
 
