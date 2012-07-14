@@ -185,26 +185,29 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 	
 	// Field values defenition
 	
-	public function values($values = NULL) { // TODO: merge with existed values
-		if($values) $this->values = $values;
+	public function values($values = NULL) {
+		if(is_array($values) or is_object($values)) {
+			foreach($values as $key => $value) {
+				$this->value($key, $value);
+			}
+		}
 		return $this;
 	}
 	
 	public function value($field, $value) {
-		if(is_object($this->values))
-			$this->values->$field = $this->quote($value);
-		elseif(is_array($this->values))
-			$this->values[$field] = $this->quote($value);
-		else {
-			$this->values = array();
-			$this->values[$field] = $this->quote($value);
-		}
+		if (is_array($this->values))
+			$this->values = (object)$this->values;
+		elseif (!is_object($this->values))
+			$this->values = (object)array();
+		
+		$this->values->$field = $this->quote($value);
 		
 		return $this;
 	}
 	
 	public function clearValues() {
-		$this->values = array();
+		$this->values = (object)array();
+		return $this;
 	}
 	
 	public function fields($fields = NULL) { // TODO: merge with existed values

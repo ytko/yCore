@@ -9,10 +9,10 @@ class catalogClass extends yBeanClass {
 
 		$controller = yFactory::controller('object')
 				->getObject($object);
-		
+	
 		$model = yFactory::model('object')
 				->getCat($object);
-
+	
 		$template = yFactory::template('catalog')
 				->setObject($object);
 
@@ -60,7 +60,25 @@ class catalogClass extends yBeanClass {
 
 		$model = yFactory::getModel('object')
 				//->install($object)
-				->insert($object)
+				->replace($object)
+				->get($object);
+
+		$template = yFactory::getTemplate('catalog')
+				->setObject($object);
+		
+		return $template->form($object);
+	}
+	
+	public function pageAdd() {
+		$object = yFactory::getObject('catalog')
+				->full();
+
+		$controller = yFactory::getController('object')
+				->getObject($object);
+
+		$model = yFactory::getModel('object')
+				//->install($object)
+				->replace($object)
 				->get($object);
 
 		$template = yFactory::getTemplate('catalog')

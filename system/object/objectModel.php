@@ -8,9 +8,9 @@ class objectModelClass extends yModelClass {
 		return $this;
 	}
 	
-	function insert($object) {
+	function replace($object) {
 		if ($object->values)
-			yFactory::db('object')->insert($object);
+			yFactory::db('object')->replace($object);
 		return $this;
 	}
 	

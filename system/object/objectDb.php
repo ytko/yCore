@@ -3,6 +3,31 @@
 yFactory::includeDb();
 
 class objectDbClass extends yDbClass {
+	protected function whereFilters($filters) { //TODO: make filter yFilterClass, and then rename methon to "where"
+		foreach($filters as $filter) // define WHERE from filters
+			if($filter->type == 'field' && $filter->value)
+				$this->where($filter->field,
+						array(
+							'value' => "$filter->value",
+							'collation' => $filter->collation,
+						));
+			elseif($filter->type == 'page') {
+				if(!$filter->value) $filter->value = 1;
+				$this->limit($filter->rows, $filter->rows*($filter->value-1));
+			}
+		return $this;
+	}
+	
+	protected function valuesFromRow($values, $fields) {
+		// add row values to query
+		foreach($fields as $field) { // go through object fields
+			$value = $values->{$field->key}; // value of field in current row
+			if(isset($value)) // if value of field is defined add it to INSERT (or UPDATE) request
+				$this->value($field->key, $value);
+		}
+		return $this;
+	}
+
 	public function create($object) { // create table
 		$unique = array();
 		$primary = array();
@@ -51,94 +76,64 @@ class objectDbClass extends yDbClass {
 		$this->sql->query($query);
 	}
 
-	public function insert($object = NULL, $mode = '') { //insert or update
-		// override:
-		// if $object is child of yObjectClass
-		if (is_a($object, 'yObjectClass')) {
-			// define table
-			$this->table($object->table);
-			// go through array of rows to insert
-			foreach($object->values as $row) {
-				// reset array of values
-				$this->clearValues();
-				// go through object fields
-				foreach($object->fields as $field) {
-					// value of field in current row
-					$value = $row->{$field->key};
-					// if value of field is defined add it to request
-					if(isset($value)) {
-						// if type of this field is 'id' add it to WHERE
-						if ($field->type == 'id') {
-							$this->where($field->key, $value);
-						}
-						// in other case add it as a value to INSERT (or UPDATE)
-						else {
-							$this->value($field->key, $value);
-						}
-					}
-				}
-				// UPDATE if has where clause and INSERT if not
-				if ($this->where)
-					$method = 'update'.$mode;
-				else
-					$method = 'insert'.$mode;
-				
-				$iResult = parent::$method();
-				if (is_string($iResult)) $result.= $iResult;
-			}
+// ---- replace methods (like insert or update) ---------------------------------------------------
 
-			return $result;
-		}
-		// in other case do not override
-		else {
-			$method = 'insert'.$mode;
+	public function replace($object = NULL, $mode = '') { // overrrides replace($object)
+		if (is_a($object, 'yObjectClass')) // if $object is child of yObjectClass
+			return $this->replaceObject($object, $mode);
+		else { // in other case do not override
+			$method = 'replace'.$mode; //TODO: yDbClass::replace()
 			return parent::$method($object);
-		}	
-				/*if($object->fields) foreach($object->fields as $field) {
-			if($value = $this->getRequest($field->key)) {
-				$object->value($field->key, $value, $row);
-			}
-		}*/
+		}
 	}
 
-	public function insertQuery($object) { //alias
-		return $this->insert($object, 'Query');
+	public function replaceObject($object = NULL, $mode = '') { //insert or update
+		$this
+			->table($object->table) // define table
+			->whereFilters($object->filters); // set where
+
+		foreach($object->values as $row) { // go through array of rows to insert
+			$this
+				->clearValues() // reset array of values
+				->valuesFromRow($row, $object->fields); // set values
+
+			// UPDATE if has where clause and INSERT if not
+			if ($this->where)
+				$method = 'update'.$mode;
+			else
+				$method = 'insert'.$mode;
+			$iResult = parent::$method();
+			if (is_string($iResult)) $result.= $iResult;
+		}
+
+		return $result;
+	}
+
+	public function replaceQuery($object) { //alias
+		return $this->replace($object, 'Query');
 	}	
 
-	public function select($object = NULL, $mode = 'Results') {
-		// override:
-		// if $object is child of yObjectClass
-		if (is_a($object, 'yObjectClass')) {
-			// define table
-			$this->table($object->table);
-			// go through object fields
-			foreach ($object->fields as $field) {
-				// add field to selection
-				$this->field($field->key);
-				
-				
-				// get value of field in the first row
-				//$value = $object->values[0]->{$field->key}; // TODO: select from all rows for selectResults
-				// if type of this field is 'id' add it to WHERE
-				/*if($field->type == 'id' && isset($value)) {
-					$this->where($field->key, $value);
-				}*/
-			}
+// ---- select methods ----------------------------------------------------------------------------
+
+	public function select($object = NULL, $mode = 'Results') { // overrrides select($object)
+		if (is_a($object, 'yObjectClass')) // if $object is child of yObjectClass
+			return $this->selectObject($object, $mode);
+		else { // in other case do not override
+			$method = 'select'.$mode;
+			return parent::$method($object);
+		}
+	}
+
+	public function selectObject($object = NULL, $mode = 'Results') {
+		$this
+			->table($object->table)
+			->whereFilters($object->filters); // define table
 			
-			foreach($object->filters as $filter) {
-				if($filter->type == 'field' && $filter->value)
-					$this->where($filter->field,
-							array(
-								'value' => "$filter->value",
-								'collation' => $filter->collation,
-							));
-				elseif($filter->type == 'page') {
-					if(!$filter->value) $filter->value = 1;
-					$this->limit($filter->rows, $filter->rows*($filter->value-1));
-				}
-			}
+			foreach ($object->fields as $field) // go through object fields
+				$this->field($field->key); // add field to selection
 			
-			if ($mode == 'Results' || $mode == 'Cols') { // get total values count
+			// get total values count
+			if ($mode == 'Results' || $mode == 'Cols') {
 				$db = clone($this);
 				$db->limit('');
 				$db->fields = NULL;
@@ -146,31 +141,24 @@ class objectDbClass extends yDbClass {
 				$object->rowsTotal = $db->selectCell();
 			}
 			
-			// method to use: selectResults, selectRow, etc.
-			$method = 'select'.$mode;
+			$method = 'select'.$mode; // method to use: selectResults, selectRow, etc.
 			return parent::$method();
-		}
-		// in other case do not override
-		else {
-			$method = 'select'.$mode;
-			return parent::$method($object);
-		}
 	}
 
 	// Aliases
-	
+
 	public function selectResults($object = NULL) { //alias
 		return $this->select($object, 'Results');
 	}
-	
+
 	public function selectRow($object = NULL) { //alias
 		return $this->select($object, 'Row');
 	}
-	
+
 	public function selectCol($object = NULL) { //alias
 		return $this->select($object, 'Col');
 	}
-	
+
 	public function selectCell($object = NULL) { //alias
 		return $this->select($object, 'Cell');
 	}
