@@ -4,7 +4,7 @@ yFactory::includeController();
 
 class objectControllerClass extends yControllerClass {
 	// sets values fo external filters from POST or GET
-	function getObject($object) {
+	function get($object) {
 		if($object->fields) foreach($object->fields as $field) {
 			if($value = $this->getRequest($field->key)) {
 				$object->value($field->key, $value, $row);

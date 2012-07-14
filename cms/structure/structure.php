@@ -33,6 +33,10 @@ class structureClass extends yBeanClass {
 				$content =
 					yFactory::getBean('catalog')->pageEdit();
 				break;
+			case '/admin/add':
+				$content =
+					yFactory::getBean('catalog')->pageAdd();
+				break;
 			case '/export':
 				$content =
 					yFactory::getBean('catalog')->export();

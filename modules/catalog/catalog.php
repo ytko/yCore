@@ -8,7 +8,7 @@ class catalogClass extends yBeanClass {
 				->cat();
 
 		$controller = yFactory::controller('object')
-				->getObject($object);
+				->get($object);
 	
 		$model = yFactory::model('object')
 				->getCat($object);
@@ -24,7 +24,7 @@ class catalogClass extends yBeanClass {
 				->full();
 
 		$controller = yFactory::getController('object')
-				->getObject($object);
+				->get($object);
 
 		$model = yFactory::getModel('object')
 				->getCat($object);
@@ -40,7 +40,7 @@ class catalogClass extends yBeanClass {
 				->cat();
 
 		$controller = yFactory::controller('object')
-				->getObject($object);
+				->get($object);
 		
 		$model = yFactory::model('object')
 				->getCat($object);
@@ -56,10 +56,9 @@ class catalogClass extends yBeanClass {
 				->full();
 
 		$controller = yFactory::getController('object')
-				->getObject($object);
+				->get($object);
 
 		$model = yFactory::getModel('object')
-				//->install($object)
 				->replace($object)
 				->get($object);
 
@@ -74,12 +73,10 @@ class catalogClass extends yBeanClass {
 				->full();
 
 		$controller = yFactory::getController('object')
-				->getObject($object);
+				->get($object);
 
 		$model = yFactory::getModel('object')
-				//->install($object)
-				->replace($object)
-				->get($object);
+				->insert($object);
 
 		$template = yFactory::getTemplate('catalog')
 				->setObject($object);

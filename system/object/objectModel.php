@@ -14,6 +14,12 @@ class objectModelClass extends yModelClass {
 		return $this;
 	}
 	
+	function insert($object) {
+		if ($object->values)
+			yFactory::db('object')->insert($object);
+		return $this;
+	}
+	
 	//TODO: function updateObject($object)
 	
 	function getCat($object) {

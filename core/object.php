@@ -17,6 +17,8 @@ class yObjectClass extends yBaseClass {//TODO: implements
 		$this->filters = (object)array();	// Table filter
 	}
 	
+// ---- setters ----------------------------------------------------------------
+	
 	public function table($table) { //TODO: make it safe
 		$this->table = $table;
 		if(!isset($this->key)) $this->key = $table;
@@ -34,8 +36,10 @@ class yObjectClass extends yBaseClass {//TODO: implements
 		$this->name = $name;
 		return $this;
 	}
+
+// -----------------------------------------------------------------------------
 	
-	protected function makeRecord($key, $type = NULL, $properties = NULL) {
+	protected function makeRecord($key, $type = NULL, $properties = NULL) { // compile field or filter record
 		// overriding emulation:
 		if (is_array($type) or is_object($type))
 			$properties = $type;
@@ -51,39 +55,49 @@ class yObjectClass extends yBaseClass {//TODO: implements
 
 		if ($properties->key === NULL) $properties->key = $key;
 		if ($properties->name === NULL) $properties->name = $key;
-		if ($properties->type === NULL) $properties->type = $type ? $type : 'string';		
 		
 		return array($key, $properties);
 	}
-	
-	public function field($key, $type = NULL, $properties = NULL) {
-		list($key, $properties) = $result = $this->makeRecord($key, $type, $properties);
 
+// ---- field set edit ---------------------------------------------------------
+
+	public function field($key, $type = NULL, $properties = NULL) {
+		list($key, $properties) = $this->makeRecord($key, $type, $properties);
+		if ($properties->type === NULL) $properties->type = $type ? $type : 'string'; // default value of type is 'string'
 		$this->fields->$key = $properties;
-		
+		return $this;
+	}
+	
+	public function deleteField($key) {
+		unset($this->fields->$key);
 		return $this;
 	}
 	
 	public function clearFields() {
-		$this->fields = array();
+		$this->fields = (object)array();
+		return $this;
 	}
+
+// ---- filter set edit --------------------------------------------------------
 	
 	public function filter($key, $type = NULL, $properties = NULL) {
-		list($key, $properties) = $result = $this->makeRecord($key, $type, $properties);
-
+		list($key, $properties) = $this->makeRecord($key, $type, $properties);
+		if ($properties->type === NULL) $properties->type = $type ? $type : 'field'; // default value of type is 'field'
 		$this->filters->$key = $properties;
-		
-		return $this;		
+		return $this;
+	}
+	
+	public function deleteFilter($key) {
+		unset($this->filters->$key);
+		return $this;
 	}
 	
 	public function clearFilters() {
-		$this->filters = array();
-	}
-	
-	public function addRow($values) {
-		$this->values[] = (object)$values;		
+		$this->filters = (object)array();
 		return $this;
 	}
+
+// ---- values set edit --------------------------------------------------------
 	
 	public function value($key, $value, $row = 0) {
 		if (!is_object($this->values[$row]))
@@ -97,26 +111,23 @@ class yObjectClass extends yBaseClass {//TODO: implements
 	
 	public function clearValues() {
 		$this->values = array();
+		return $this;
 	}
 	
-	/*
-	public function insert($values) {
-		$this->dbInit();				// db initialization
-		$this->db
-			->table($this->table);		// set current table
-
-		// single insert
-		foreach($values as $field => $value) {
-			$this->db
-				->value($field, $value);
-		}
-
-		$this->db
-			->insert();
-		
-		//TODO: multiple insert
+	public function deleteValue($key, $row = 0) {
+		unset($this->values[$row]->$key);
+		return $this;
+	}	
+	
+	public function addRow($values) {
+		$this->values[] = (object)$values;		
+		return $this;
 	}
-	*/
+	
+	public function deleteRow($row) {
+		unset($this->values[$row]);
+		return $this;
+	}
 }
 
 ?>

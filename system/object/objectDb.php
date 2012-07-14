@@ -78,7 +78,7 @@ class objectDbClass extends yDbClass {
 
 // ---- replace methods (like insert or update) ---------------------------------------------------
 
-	public function replace($object = NULL, $mode = '') { // overrrides replace($object)
+	public function replace($object = NULL, $mode = NULL) { // overrrides replace($object)
 		if (is_a($object, 'yObjectClass')) // if $object is child of yObjectClass
 			return $this->replaceObject($object, $mode);
 		else { // in other case do not override
@@ -111,6 +111,39 @@ class objectDbClass extends yDbClass {
 
 	public function replaceQuery($object) { //alias
 		return $this->replace($object, 'Query');
+	}	
+	
+// ---- replace methods (like insert or update) ---------------------------------------------------
+
+	public function insert($object = NULL, $mode = NULL) { // overrrides replace($object)
+		if (is_a($object, 'yObjectClass')) // if $object is child of yObjectClass
+			return $this->replaceObject($object, $mode);
+		else { // in other case do not override
+			$method = 'insert'.$mode; //TODO: yDbClass::replace()
+			return parent::$method($object);
+		}
+	}
+
+	public function insertObject($object = NULL, $mode = '') { //insert or update
+		$this
+			->table($object->table); // define table
+
+		foreach($object->values as $row) { // go through array of rows to insert
+			$this
+				->clearValues() // reset array of values
+				->valuesFromRow($row, $object->fields); // set values
+
+			// UPDATE if has where clause and INSERT if not
+			$method = 'insert'.$mode;
+			$iResult = parent::$method();
+			if (is_string($iResult)) $result.= $iResult;
+		}
+
+		return $result;
+	}
+
+	public function insertQuery($object) { //alias
+		return $this->insert($object, 'Query');
 	}	
 
 // ---- select methods ----------------------------------------------------------------------------
