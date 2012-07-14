@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkObject();
+yFactory::includeObject();
 
 class catalogObjectClass extends yObjectClass {
 	public function full() {

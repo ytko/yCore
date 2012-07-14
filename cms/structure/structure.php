@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkBean();
+yFactory::includeBean();
 
 class structureClass extends yBeanClass {
 	public $moduleName = 'structure';
@@ -32,6 +32,10 @@ class structureClass extends yBeanClass {
 			case '/export':
 				$content =
 					yFactory::getBean('catalog')->export();
+				break;
+			case '/install':
+				$content =
+					yFactory::getBean('install')->export();
 				break;
 		}
 				

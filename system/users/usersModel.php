@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkModel();
+yFactory::includeModel();
 
 class usersModelClass extends yModelClass {
 	private static $userID, $login, $password; 

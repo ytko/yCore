@@ -1,22 +1,22 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkBean();
+yFactory::includeBean();
 
 class catalogClass extends yBeanClass {
 	public function cat() {
-		$object = yFactory::getObject('catalog')
+		$object = yFactory::object('catalog')
 				->cat();
 
-		$controller = yFactory::getController('object')
+		$controller = yFactory::controller('object')
 				->getObject($object);
 		
-		$model = yFactory::getModel('object')
+		$model = yFactory::model('object')
 				->getCat($object);
 
-		$template = yFactory::getTemplate('catalog')
+		$template = yFactory::template('catalog')
 				->setObject($object);
 
-		return $template->cat();		
+		return $template->cat();
 	}
 	
 	public function page() {

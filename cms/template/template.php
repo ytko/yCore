@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkBean();
+yFactory::includeBean();
 
 class templateClass extends yBeanClass {
 	public $moduleName = 'template';

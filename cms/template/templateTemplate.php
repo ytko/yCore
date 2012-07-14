@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkTemplate();
+yFactory::includeTemplate();
 
 class templateTemplateClass extends yTemplateClass {
 	protected $content;

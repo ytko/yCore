@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkController();
+yFactory::includeController();
 
 class objectControllerClass extends yControllerClass {
 	// sets values fo external filters from POST or GET

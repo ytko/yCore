@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkBean();
+yFactory::includeBean();
 
 class customformsClass extends yBeanClass {
 	public function cat() {

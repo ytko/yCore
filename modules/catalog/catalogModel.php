@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkModel('object');
+yFactory::includeModel('object');
 
 class catalogModelClass extends objectModelClass {
 	function export($object) {
@@ -33,7 +33,7 @@ class catalogModelClass extends objectModelClass {
 		$object->values = $values;
 		
 		if ($object->values) 
-			echo yFactory::getDb()->insert($object);
+			echo yFactory::db('object')->insert($object);
 		
 		return $this;
 	}

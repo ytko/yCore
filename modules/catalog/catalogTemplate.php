@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::linkTemplate('object');
+yFactory::includeTemplate('object');
 
 class catalogTemplateClass extends objectTemplateClass {
 	public function cat() {

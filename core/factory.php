@@ -1,7 +1,7 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yFactory {
-	public static function link($type, $name = NULL) {
+	protected static function includeComponent($type, $name = NULL) {
 	/* include_once файла и возврат имени класса
 	 * путь до файла и имени генерируется из $type ('model', 'view', etc) и $name вида '/module/name'
 	*/	
@@ -39,71 +39,96 @@ class yFactory {
 		return $result;
 	}
 
-	public static function linkController($name = NULL) {
+	public static function includeBean($name = NULL) {
 		return
-			yFactory::link('controller', $name);
+			yFactory::includeComponent('bean', $name);		
+	}
+	
+	public static function includeController($name = NULL) {
+		return
+			yFactory::includeComponent('controller', $name);
 	}
 
-	public static function linkModel($name = NULL) {
+	public static function includeModel($name = NULL) {
 		return
-			yFactory::link('model', $name);
+			yFactory::includeComponent('model', $name);
 	}		
 
-	public static function linkTemplate($name = NULL) {
+	public static function includeTemplate($name = NULL) {
 		return
-			yFactory::link('template', $name);
+			yFactory::includeComponent('template', $name);
 	}
 
-	public static function linkBean($name = NULL) {
+	public static function includeDb($name = NULL) {
 		return
-			yFactory::link('bean', $name);		
+			yFactory::includeComponent('db', $name);	
 	}
 	
-	public static function linkDb($name = NULL) {
+	public static function includeObject($name = NULL) {
 		return
-			yFactory::link('sql', $name);	
+			yFactory::includeComponent('object', $name);	
 	}
-	
-	public static function linkObject($name = NULL) {
-		return
-			yFactory::link('object', $name);	
+
+	public static function getBean($name = NULL) { //alias get
+		$beanClassName = yFactory::includeBean($name);
+		return new $beanClassName();
 	}
 	
 	public static function getController($name = NULL) {
-		$controllerClassName = yFactory::linkController($name);
+		$controllerClassName = yFactory::includeController($name);
 		return new $controllerClassName($controllerName);
 	}
 	
 	public static function getModel($name = NULL) {
-		$modelClassName = yFactory::linkModel($name);
+		$modelClassName = yFactory::includeModel($name);
 		return new $modelClassName();
 	}
 		
 	public static function getTemplate($name = NULL) {
-		$templateClassName = yFactory::linkTemplate($name);
+		$templateClassName = yFactory::includeTemplate($name);
 		return new $templateClassName();
 	}
 
-	public static function get($name = NULL) {
-		$beanClassName = yFactory::linkBean($name);
-		return new $beanClassName();
-	}
-	
-	public static function getBean($name = NULL) { //alias get
-		$beanClassName = yFactory::linkBean($name);
-		return new $beanClassName();
-	}
-
 	public static function getDb($name = NULL) {
-		$dbClassName = yFactory::linkDb($name);
+		$dbClassName = yFactory::includeDb($name);
 		return
 			new $dbClassName();
 	}
 	
 	public static function getObject($name = NULL) {
-		$objectClassName = yFactory::linkObject($name);
+		$objectClassName = yFactory::includeObject($name);
 		return
 			new $objectClassName();
+	}
+	
+	// Aliases
+	
+	public static function get($name = NULL) {
+		return yFactory::getBean($name);
+	}
+	
+	public static function bean($name = NULL) {
+		return yFactory::getBean($name);
+	}
+	
+	public static function controller($name = NULL) {
+		return yFactory::getController($name);
+	}
+	
+	public static function model($name = NULL) {
+		return yFactory::getModel($name);
+	}
+	
+	public static function template($name = NULL) {
+		return yFactory::getTemplate($name);
+	}
+	
+	public static function db($name = NULL) {
+		return yFactory::getDb($name);
+	}
+	
+	public static function object($name = NULL) {
+		return yFactory::getObject($name);
 	}
 	
 	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса
