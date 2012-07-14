@@ -283,39 +283,30 @@ class yDbClass extends ySqlClass {
 	}
 	
 	public function selectResults($query = NULL) {
-		return
-			$this->sql->get_results(
-				($query and is_string($query))
-					? $query
-					: $this->selectQuery($query)
-			);
+		if(!is_string($query)) $query = $this->selectQuery($query);
+		$result = $this->sql->get_results($query);
+		if(!$result) $result = array();
+		return $result;
 	}
 	
 	public function selectCol($query = NULL) {
-		return
-			$this->sql->get_col(
-				($query and is_string($query))
-					? $query
-					: $this->selectQuery($query)
-			);
+		if(!is_string($query)) $query = $this->selectQuery($query);
+		$result = $this->sql->get_col($query);
+		if(!$result) $result = array();
+		return $result;
 	}
 	
 	public function selectRow($query = NULL) {
-		return
-			$this->sql->get_row(
-				($query and is_string($query))
-					? $query
-					: $this->selectQuery($query)
-			);
+		if(!is_string($query)) $query = $this->selectQuery($query);
+		$result = $this->sql->get_row($query);
+		if(!$result) $result = (object)array();
+		return $result;
 	}
 	
 	public function selectCell($query = NULL) {
-		return
-			$this->sql->get_var(
-				($query and is_string($query))
-					? $query
-					: $this->selectQuery($query)
-			);
+		if(!is_string($query)) $query = $this->selectQuery($query);
+		$result = $this->sql->get_var($query);
+		return $result;
 	}
 	
 	public function selectVar($query = NULL) { //alias for selectResults

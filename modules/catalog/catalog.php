@@ -35,7 +35,23 @@ class catalogClass extends yBeanClass {
 		return $template->page();		
 	}
 
-	public function edit() {
+	public function catEdit() {
+		$object = yFactory::object('catalog')
+				->cat();
+
+		$controller = yFactory::controller('object')
+				->getObject($object);
+		
+		$model = yFactory::model('object')
+				->getCat($object);
+
+		$template = yFactory::template('catalog')
+				->setObject($object);
+
+		return $template->cat();
+	}
+	
+	public function pageEdit() {
 		$object = yFactory::getObject('catalog')
 				->full();
 

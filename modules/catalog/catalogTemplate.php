@@ -5,7 +5,7 @@ yFactory::includeTemplate('object');
 class catalogTemplateClass extends objectTemplateClass {
 	public function cat() {
 		$pagination = $this->pagination();
-		
+
 		foreach ($this->object->values as $row) {
 			$items.= $this->catItem($row);
 		}
@@ -28,7 +28,7 @@ HEREDOC;
 <<<HEREDOC
 <div class='catItem'>
 	<div class='price'>Цена: <span>{$row->price}</span> руб.</div>
-	<div class='name'>{$row->name}</div>
+	<div class='name'><a href='page?id={$row->id}'>{$row->name}</a></div>
 	<div class='description'>{$row->description}</div>
 	<div class='category'>Категория: {$row->category}</div>
 </div>
