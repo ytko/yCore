@@ -49,11 +49,6 @@ class yFactory {
 			yFactory::link('model', $name);
 	}		
 
-	public static function linkView($name = NULL) {
-		return
-			yFactory::link('view', $name);
-	}
-
 	public static function linkTemplate($name = NULL) {
 		return
 			yFactory::link('template', $name);
@@ -83,12 +78,7 @@ class yFactory {
 		$modelClassName = yFactory::linkModel($name);
 		return new $modelClassName();
 	}
-	
-	public static function getView($name = NULL) {
-		$viewClassName = yFactory::linkView($name);
-		return new $viewClassName();	
-	}
-	
+		
 	public static function getTemplate($name = NULL) {
 		$templateClassName = yFactory::linkTemplate($name);
 		return new $templateClassName();

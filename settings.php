@@ -19,7 +19,9 @@ ySettings::$modulesPath = ySettings::$path.'/modules';	//Путь к модул�
 ySettings::$altPaths = (object)array(
 		'structure' => '/cms',
 		'template' => '/cms',
-		'users' => '/cms',
+	
+		'users' => '/system',
+		'object' => '/system',
 	
 		'badge' => '/ignore',
 		'extended' => '/ignore',
