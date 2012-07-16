@@ -3,7 +3,7 @@
 yFactory::includeDb();
 
 class objectDbClass extends yDbClass {
-	protected function whereFilters($filters) { //TODO: make filter yFilterClass, and then rename methon to "where"
+	public function filters($filters) { //TODO: make filter yFilterClass, and then rename methon to "where"
 		foreach($filters as $filter) // define WHERE from filters
 			if($filter->type == 'field' && $filter->value)
 				$this->where($filter->field,
@@ -15,6 +15,16 @@ class objectDbClass extends yDbClass {
 				if(!$filter->value) $filter->value = 1;
 				$this->limit($filter->rows, $filter->rows*($filter->value-1));
 			}
+			elseif($filter->type == 'order' || $filter->type == 'sort') {
+				if($filter->direction)
+					$direction = $filter->direction;
+				else
+					$direction = $filter->value; // safe, because order() checks $direction argument
+				
+				if ($direction)
+					$this->order($filter->field, $direction);
+			}
+
 		return $this;
 	}
 	
@@ -70,10 +80,10 @@ class objectDbClass extends yDbClass {
 		//, PRIMARY KEY ( `{$field->key}` ) ,
 		
 		$query = "CREATE TABLE `{$object->table}` ({$query}{$primaryQuery}{$uniqueQuery}) ENGINE = MYISAM;";
-		
-		echo $query;
-		
+				
 		$this->sql->query($query);
+		
+		return $this;
 	}
 
 // ---- replace methods (like insert or update) ---------------------------------------------------
@@ -90,7 +100,7 @@ class objectDbClass extends yDbClass {
 	public function replaceObject($object = NULL, $mode = '') { //insert or update
 		$this
 			->table($object->table) // define table
-			->whereFilters($object->filters); // set where
+			->filters($object->filters); // set where
 
 		foreach($object->values as $row) { // go through array of rows to insert
 			$this
@@ -160,10 +170,11 @@ class objectDbClass extends yDbClass {
 	public function selectObject($object = NULL, $mode = 'Results') {
 		$this
 			->table($object->table)
-			->whereFilters($object->filters); // define table
+			->filters($object->filters); // define table
 			
-			foreach ($object->fields as $field) // go through object fields
-				$this->field($field->key); // add field to selection
+			if(!$this->fields)
+				foreach ($object->fields as $field) // go through object fields
+					$this->field($field->key); // add field to selection
 			
 			// get total values count
 			if ($mode == 'Results' || $mode == 'Cols') {

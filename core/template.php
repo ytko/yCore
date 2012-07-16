@@ -37,37 +37,54 @@ class yTemplateClass extends yBaseClass{
 	
 	// ----- FORM FIELDS --------------------------------------------------------------------------
 	
+	static protected function input($type, $key, $value, $name = NULL) {
+		return <<<HEREDOC
+<div class='{$type}InputWrap inputWrap {$key}InputWrap'>
+	<div class='label {$key}InputLabel'>
+		<label for='{$key}Input'>$name</label>
+	</div>
+	<div class='input'>
+		<input type='text' name='$key' id='{$key}Input' value='$value' />
+	</div>
+</div>
+HEREDOC;
+	}
+	
 	static public function intInput($key, $value, $name = NULL) {
-		return
-			"<label for='{$key}Input'>$name</label><input type='text' name='$key' id='{$key}Input' value='$value' />";
+		return self::input('int', $key, $value, $name);
 	}
 	
 	static public function hiddenInput($key, $value) {
 		return
-			"<input type='hidden' name='$key' value='$value' />";
+			"<input type='hidden' name='$key' id='{$key}Input' value='$value' />";
 	}
 	
 	static public function stringInput($key, $value, $name = NULL) {
-		return
-			"<label for='{$key}Input'><div class='label {$key}InputLabel'>$name</div></label><input type='text' name='$key' id='{$key}Input' value='$value' />";
+		return self::input('string', $key, $value, $name);
 	}
 		
 	static public function floatInput($key, $value, $name = NULL) {
-		return
-			"<label for='{$key}Input'>$name</label><input type='text' name='$key' id='{$key}Input' value='$value' />";
+		return self::input('float', $key, $value, $name);
 	}
 	
 	static public function currencyInput($key, $value, $name = NULL) {
-		return
-			"<label for='{$key}Input'>$name</label><input type='text' name='$key' id='{$key}Input' value='$value' />";
+		return self::input('currency', $key, $value, $name);
 	}
 	
 	static public function textInput($key, $value, $name = NULL) {
-		return
-			"<label for='{$key}Input'>$name</label><textarea name='$key' id='{$key}Input'>$value</textarea>";
+				return <<<HEREDOC
+<div class='textInputWrap inputWrap {$key}InputWrap'>
+	<div class='label {$key}InputLabel'>
+		<label for='{$key}Input'>$name</label>
+	</div>
+	<div class='input'>
+		<textarea name='$key' id='{$key}Input'>$value</textarea>
+	</div>
+</div>
+HEREDOC;
 	}
 	
-	static public function listInput($key, $values, $active = NULL, $name = NULL) {
+	static public function listInput($key, $values, $name = NULL, $active = NULL) {
 		$result.= "{$name}:<br /><select name='{$key}'>";
 			if(isset($values)) foreach ($values as $iKey => $iName) {
 				$iKey = htmlspecialchars($iKey, ENT_QUOTES);
@@ -117,12 +134,12 @@ class yTemplateClass extends yBaseClass{
 
 			$result.=
 				($pagination->first != $pagination->current)
-					? "<a href='".self::getURI($url, $query, array('page' => $pagination->first))."'><<</a> "
+					? "<a href='".self::getURI($url, $query, array('page' => $pagination->first))."'>&#9668;&#9668;</a> "
 					: NULL;
 
 			$result.=
 				(!empty($pagination->prev))
-					? "<a href='".self::getURI($url, $query, array('page' => $pagination->prev))."'><</a> "
+					? "<a href='".self::getURI($url, $query, array('page' => $pagination->prev))."'>&#9668;</a> "
 					: NULL;
 
 			foreach($pagination->before as $page)
@@ -135,12 +152,12 @@ class yTemplateClass extends yBaseClass{
 
 			$result.=
 				(!empty($pagination->next))
-					? "<a href='".self::getURI($url, $query, array('page' => $pagination->next))."'>></a> "
+					? "<a href='".self::getURI($url, $query, array('page' => $pagination->next))."'>&#9658;</a> "
 					: NULL;
 
 			$result.=
 				($pagination->last != $pagination->current)
-					? "<a href='".self::getURI($url, $query, array('page' => $pagination->last))."'>>></a> "
+					? "<a href='".self::getURI($url, $query, array('page' => $pagination->last))."'>&#9658;&#9658;</a> "
 					: NULL;
 		}
 		return $result;

@@ -72,8 +72,19 @@ class ySqlClass {
 	}
 	
 	// Set order
-	public function order($order) {
-		$this->order = $order;
+	public function order($order, $direction = NULL) {
+		if (isset($direction) && strtoupper($direction) == 'ASC')
+			$direction = 'ASC';
+		elseif (isset($direction) && strtoupper($direction) == 'DESC')
+			$direction = 'DESC';
+		else
+			$direction = NULL;
+		
+		$this->order.= 
+				($this->order ? ', ' : NULL).
+				"`$order`".
+				($direction ? ' '.$direction : NULL);
+		
 		return $this;		
 	}
 
@@ -235,7 +246,7 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 class yDbClass extends ySqlClass {
 	public $sql;
 	public static $static_sql;
-	
+
 	public function __construct($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql', $forced = false) {
 		// Overriding emulation:
 		if (is_object($user))
@@ -251,7 +262,7 @@ class yDbClass extends ySqlClass {
 			$this->sql = &self::$static_sql;
 		}
 	}
-	
+
 	public function init($user = NULL, $password = NULL, $name = NULL, $host = NULL, $driver = 'mysql') {
 		// Overriding emulation:
 		if (is_object($user)) {
@@ -278,44 +289,44 @@ class yDbClass extends ySqlClass {
 		self::$static_sql = &$this->sql;
 		return $this;
 	}
-	
+
 	// Query processing functions
-	
+
 	public function select($query = NULL) { //alias for selectResults
 		return $this->selectResults($query);
 	}
-	
+
 	public function selectResults($query = NULL) {
 		if(!is_string($query)) $query = $this->selectQuery($query);
 		$result = $this->sql->get_results($query);
 		if(!$result) $result = array();
 		return $result;
 	}
-	
+
 	public function selectCol($query = NULL) {
 		if(!is_string($query)) $query = $this->selectQuery($query);
 		$result = $this->sql->get_col($query);
 		if(!$result) $result = array();
 		return $result;
 	}
-	
+
 	public function selectRow($query = NULL) {
 		if(!is_string($query)) $query = $this->selectQuery($query);
 		$result = $this->sql->get_row($query);
 		if(!$result) $result = (object)array();
 		return $result;
 	}
-	
+
 	public function selectCell($query = NULL) {
 		if(!is_string($query)) $query = $this->selectQuery($query);
 		$result = $this->sql->get_var($query);
 		return $result;
 	}
-	
+
 	public function selectVar($query = NULL) { //alias for selectResults
 		return $this->selectCell($query);
 	}
-	
+
 	public function insert($query = NULL) {
 		// case input ($query) is array of rows
 		if(is_array($query)) {
@@ -337,7 +348,7 @@ class yDbClass extends ySqlClass {
 						: $this->insertQuery($query)
 				);
 	}
-	
+
 	public function update($query = NULL) {
 		$query = ($query and is_string($query))
 					? $query
@@ -345,7 +356,7 @@ class yDbClass extends ySqlClass {
 		
 		return $query ? $this->sql->query($query) : NULL;
 	}
-	
+
 	public function delete($query = NULL) {
 		return
 			$this->sql->query(
@@ -354,7 +365,7 @@ class yDbClass extends ySqlClass {
 					: $this->deleteQuery($query)
 			);
 	}
-	
+
 /*
 	function query($query = NULL) {
 		return $this->sql->query($query ? $query : $this->getQuery());
