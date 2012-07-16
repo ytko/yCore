@@ -51,7 +51,7 @@ HEREDOC;
 			elseif	($field->type == 'float')		return self::floatInput($field->key, $value, $field->name).'<br />';
 			elseif	($field->type == 'currency')	return self::currencyInput($field->key, $value, $field->name).'<br />';
 			elseif	($field->type == 'text')		return self::textInput($field->key, $value, $field->name).'<br />';
-			elseif	($field->type == 'list')		return self::listInput($field->key, $field->values, $value, $field->name).'<br />';		
+			elseif	($field->type == 'list')		return self::listInput($field->key, $field->values, $field->name, $value).'<br />';		
 	}
 
 	public function form() {
@@ -65,11 +65,13 @@ HEREDOC;
 		return "<form method='post' action=''>$result<input type='submit' value='Отправить'></form>";
 	}
 
-	public function search() {
-		if($this->object->filters) foreach($this->object->filters as $filter) {
-			if($filter->scope == 'external' && $filter->type == 'field') {
+	public function search($filters = NULL) {
+		$filters = $filters ? $filters : $this->object->filters;
+		if($filters) foreach($filters as $filter) {
+			if($filter->show && $filter->type == 'field') { //maybe: $filter->scope == 'external'
+				$value = htmlspecialchars(stripcslashes($filter->value), ENT_QUOTES);
 				$field = $this->object->fields->{$filter->field};
-				$result.= self::fieldInput($field);
+				$result.= self::fieldInput($field, $value);
 			}
 		}
 		
@@ -81,23 +83,36 @@ HEREDOC;
 	public function cat() {
 		$pagination = $this->pagination();
 
+		// rows
 		foreach ($this->object->values as $row)
 			$items.= $this->catItem($row);
 
+		//search
 		$search = $this->search();
 
+		// add button
 		$add = ($this->mode == 'admin') ? "<a href='add'>Добавить</a>" : NULL;
+		
+		// filters
+		$url = '';
+		$query = $_GET; //TODO: connect with controller!!!
+		
+		foreach ($this->object->filters as $filter)
+			if($filter->type == 'order' || $filter->type == 'sort')
+				$order =
+					$this->object->fields->{$filter->field}->name.': '.
+					"<a href='".self::getURI($url, $query, array($filter->field => 'asc'))."' title='по возрастанию'>&#9650;</a> ".
+					"<a href='".self::getURI($url, $query, array($filter->field => 'desc'))."' title='по убыванию'>&#9660;</a>";
 
-		return <<<HEREDOC
-
-<div class="catalog">
-	<div class="search">$search</div>
-	<div class="pagination">$pagination</div>
-	<div class="items">$items</div>
-	<div class="pagination">$pagination</div>
-	$add
-</div>
-HEREDOC;
+		return
+"<div class='catalog'>".
+	($search ? "<div class='search'>$search</div>" : NULL).
+	($pagination ? "<div class='pagination'>$pagination</div>" : NULL).
+	($order ? "<div class='order'>$order</div>" : NULL).
+	"<div class='items'>$items</div>".
+	($pagination ? "<div class='pagination'>$pagination</div>" : NULL).
+	($add ? "<div class='add'>$add</div>" : NULL).
+"</div>";
 	}
 
 	protected function catItem($row) {
@@ -105,18 +120,24 @@ HEREDOC;
 			$value = $row->{$field->key};
 			$class = $field->key;
 			$name = $field->name;
-			$result.= "<a href='page?id={$row->id}' class='$class'>{$name}: $value; </a>";
+			
+			if($field->type == 'list')
+				$value = $field->values[$value];
+			
+			if($value)
+				$result.= "<a href='page?id={$row->id}' class='$class'>{$name}: $value; </a>";
 		}
 		return '<div>'.$result.'</div>';
 	}
 
-	protected function pagination($rad = 5) {
-		return
-			self::getPagination(
-				$this->object->filters->page->value,
-				$this->object->filters->page->rows,
-				$this->object->rowsTotal,
-				$rad);
+	protected function pagination($rad = 5) { //TODO: find by key
+		if ($this->object->filters->page->show)
+			return
+				self::getPagination(
+					$this->object->filters->page->value,
+					$this->object->filters->page->rows,
+					$this->object->rowsTotal,
+					$rad);
 	}
 
 	public function page() {
