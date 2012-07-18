@@ -10,11 +10,17 @@ require_once(ySettings::$corePath.'/factory.php');
 header('Content-type: text/html; charset=utf-8');
 
 //Получение контента страницы
-$result = yFactory::getBean('structure')
-		->get();
 
-//Вывод данных 
-echo $result;
+
+//$result = yFactory::getBean('structure')
+//		->get();
+
+print_r(yy::db()->table('Newtable')->fields('newfield')->createTmp());
+
+//$result = yy::db()->init()->table('catalog');
+//
+//echo $result;
+
 
 //echo microtime() - $micro_start;
 

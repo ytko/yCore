@@ -63,6 +63,10 @@ class yFactory {
 		return
 			yFactory::link('bean', $name);		
 	}
+        
+        public static function linkTest($name = NULL){
+            return yFactory::link('test',$name);
+        }
 	
 	public static function linkDb($name = NULL) {
 		return
@@ -103,6 +107,11 @@ class yFactory {
 		$beanClassName = yFactory::linkBean($name);
 		return new $beanClassName();
 	}
+        
+        public static function getTest($name = NULL){
+                $testClassName = yFactory::linkTest($name);
+                return new $testClassName;
+        }
 
 	public static function getDb($name = NULL) {
 		$dbClassName = yFactory::linkDb($name);
