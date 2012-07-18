@@ -182,13 +182,6 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 			($this->limit ? ' LIMIT '.$this->limit : NULL).
 			';';
 	}
-        
-        public function createQuery(){
-//            echo '!!!!!'.$this->table;
-            return
-                    "CREATE TABLE `{$this->table}` (
-                        $this->fields char(16) NOT NULL);";
-        }
 	
 	// Field values defenition
 	
@@ -367,15 +360,6 @@ class yDbClass extends ySqlGenClass {
 					: $this->deleteQuery($query)
 			);
 	}
-        
-        public function createTmp($query = NULL){
-                return
-			$this->sql->query(
-				($query and is_string($query))
-					? $query
-					: $this->createQuery($query)
-			);
-        }
 	
 /*
 	function query($query = NULL) {
