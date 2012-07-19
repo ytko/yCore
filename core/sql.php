@@ -12,20 +12,48 @@ class ySqlGenClass {
 	// Query definition
 
 	// Set table name
+	
+	public function __call($func_name,$val_args){
+//		echo 'sdsd';
+		 if($func_name = 'values'){
+			 
+			 $this->values = "'".implode("', '", $val_args)."'";
+			 return $this;
+		 }
+			 
+		 
+	}
+	
 	public function table($table) {
 		$key_args = array_keys($this->tables);
 		!in_array($table,$key_args) ? $this->tables[$table] = '': NULL;
 		return $this;		
 	}
 	
-	public function field($field) {
+	public function field($field, $type = NULL, $length = NULL, $notnull = NULL) {
 		foreach($this->tables as $key=>$value){
-			$this->tables[$key][$field] = '';
-//			$value[$field] = '1';
+			//!!!!!!!!!!!!!!!!!!!!!!!!!
+//			$this->tables[$key][$field] = array();
+			$this->tables[$key][$field][type] = $type;
+			$this->tables[$key][$field][length] = $length;
+			$this->tables[$key][$field][notnull] = $notnull;
+
 		}
 		
 		return $this;
 	}
+	
+	public function merge_params($field_arr){
+			
+			$result = ' ';
+			$result.=        ($field_arr[type])   ? $field_arr[type]   : "CHAR" ;
+			$result.= " ( ".(($field_arr[length]) ? $field_arr[length] : "32"     )." )";
+			$result.= " ".  (($field_arr[notnull])? $field_arr[notnull]: "NULL" );
+			
+			return $result;
+		
+	}
+	
 	
 	public function fields($fields = NULL) { // TODO: merge with existed values
 		if($fields) $this->fields = $fields;
@@ -142,34 +170,44 @@ class ySqlGenClass {
 			';';		
 	}
 	
-	public function insertQuery($values = NULL) {
-		// Check if $this->values array is associative
-		//$keys = array_keys($this->values);
-		//$isAssociative = array_keys($keys) !== $keys;
-		
-		// Generating lists of fields and their values
-		// TODO: exception on empty $this->values
-		$fields = '';
-		$values = '';
-		foreach($this->values as $key => $value) {
-			if (isset($value)) {
-				$key = $this->quote($key);
-				$value = $this->quote($value);
-				// Generating field list if $this->values array is associative
-				//if ($isAssociative)
-					$fields.= ($fields ? ', ': NULL)."`$key`";
-
-				// Generating values list in both cases
-				$values.= ($values ? ', ': NULL)."'$value'";
-			}
+//	public function insertQuery($values = NULL) {
+//		// Check if $this->values array is associative
+//		//$keys = array_keys($this->values);
+//		//$isAssociative = array_keys($keys) !== $keys;
+//		
+//		// Generating lists of fields and their values
+//		// TODO: exception on empty $this->values
+//		$fields = '';
+//		$values = '';
+//		foreach($this->values as $key => $value) {
+//			if (isset($value)) {
+//				$key = $this->quote($key);
+//				$value = $this->quote($value);
+//				// Generating field list if $this->values array is associative
+//				//if ($isAssociative)
+//					$fields.= ($fields ? ', ': NULL)."`$key`";
+//
+//				// Generating values list in both cases
+//				$values.= ($values ? ', ': NULL)."'$value'";
+//			}
+//		}
+//		
+//		
+//		return
+//			"INSERT INTO `{$this->table}`".
+//			($fields ? ' ('.$fields.')' : NULL).
+//			($values ? ' VALUES ('.$values.')' : NULL).
+//			';';
+//	}
+	
+	public function insertQuery(){
+		$result = "";
+		foreach($this->tables as $tables_name=>$fields_args){
+				$result.= "INSERT INTO ". $tables_name." ";
+				$result.= "VALUES (".$this->values.");";
 		}
 		
-		
-		return
-			"INSERT INTO `{$this->table}`".
-			($fields ? ' ('.$fields.')' : NULL).
-			($values ? ' VALUES ('.$values.')' : NULL).
-			';';
+		return $result;
 	}
 	
 	public function updateQuery() {
@@ -215,7 +253,9 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 			$result.= "CREATE TABLE `$tables_name`(";
 			
 			foreach($fields_args as $field_name=>$value){
-				$result.=" $field_name"." char(16) NOT NULL,";
+				$result.=" $field_name";
+				$result.= $this->merge_params($value);
+				$result.= ",";
 			}
 			
 			$result = substr($result,0,-1); //удаляем последнюю запятую
@@ -228,23 +268,23 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 	
 	// Field values defenition
 	
-	public function values($values = NULL) { // TODO: merge with existed values
-		if($values) $this->values = $values;
-		return $this;
-	}
+//	public function values($values = NULL) { // TODO: merge with existed values
+//		if($values) $this->values = $values;
+//		return $this;
+//	}
 	
-	public function value($field, $value) {
-		if(is_object($this->values))
-			$this->values->$field = $this->quote($value);
-		elseif(is_array($this->values))
-			$this->values[$field] = $this->quote($value);
-		else {
-			$this->values = array();
-			$this->values[$field] = $this->quote($value);
-		}
-		
-		return $this;
-	}
+//	public function value($field, $value) {
+//		if(is_object($this->values))
+//			$this->values->$field = $this->quote($value);
+//		elseif(is_array($this->values))
+//			$this->values[$field] = $this->quote($value);
+//		else {
+//			$this->values = array();
+//			$this->values[$field] = $this->quote($value);
+//		}
+//		
+//		return $this;
+//	}
 	
 	public function clearValues() {
 		$this->values = array();
