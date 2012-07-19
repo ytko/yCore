@@ -6,15 +6,40 @@ class ySqlGenClass {
 			$fields, // Used for SELECT
 			$table, // Used for SELECT FROM $table, INSERT INTO $table, etc.
 			$values, // Used for INSERT and UPDATE
-			$join, $where, $option, $group, $having, $order, $limit;
-			
+			$join, $where, $option, $group, $having, $order, $limit,
+			$tables = array(); 
+	
 	// Query definition
 
 	// Set table name
 	public function table($table) {
-		$this->table = $table;
+		$key_args = array_keys($this->tables);
+		!in_array($table,$key_args) ? $this->tables[$table] = '': NULL;
 		return $this;		
 	}
+	
+	public function field($field) {
+		foreach($this->tables as $key=>$value){
+			$this->tables[$key][$field] = '';
+//			$value[$field] = '1';
+		}
+		
+		return $this;
+	}
+	
+	public function fields($fields = NULL) { // TODO: merge with existed values
+		if($fields) $this->fields = $fields;
+		return $this;
+	}
+	
+//	public function field($field) {
+//		if(!is_array($this->fields))
+//			$this->fields = array();
+//
+//		$this->fields[] = $this->quote($field);
+//		
+//		return $this;
+//	}
 	
 	// Set join tables (for select)
 	public function join($join) {
@@ -183,6 +208,24 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 			';';
 	}
 	
+	
+	public function createQuery() {
+		$result = '';
+		foreach($this->tables as $tables_name=>$fields_args){
+			$result.= "CREATE TABLE `$tables_name`(";
+			
+			foreach($fields_args as $field_name=>$value){
+				$result.=" $field_name"." char(16) NOT NULL,";
+			}
+			
+			$result = substr($result,0,-1); //удаляем последнюю запятую
+			$result.= ") ENGINE = MYISAM; ";
+		}
+		
+		return
+			$result;
+	}
+	
 	// Field values defenition
 	
 	public function values($values = NULL) { // TODO: merge with existed values
@@ -207,19 +250,7 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 		$this->values = array();
 	}
 	
-	public function fields($fields = NULL) { // TODO: merge with existed values
-		if($fields) $this->fields = $fields;
-		return $this;
-	}
 	
-	public function field($field) {
-		if(!is_array($this->fields))
-			$this->fields = array();
-
-		$this->fields[] = $this->quote($field);
-		
-		return $this;
-	}
 
 	// Safe query self methods
 	
@@ -358,6 +389,15 @@ class yDbClass extends ySqlGenClass {
 				($query and is_string($query))
 					? $query
 					: $this->deleteQuery($query)
+			);
+	}
+	
+	public function create($query = NULL) {
+		return
+			$this->sql->query(
+				($query and is_string($query))
+					? $query
+					: $this->createQuery($query)
 			);
 	}
 	

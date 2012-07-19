@@ -25,7 +25,7 @@ class yFactory {
 				$moduleName = $name[0];
 				$className = (isset($name[1])) ? $name[1] : $name[0];
 			}
-			else return;			// Неправильно задано имя
+			else return 'Неправильно задано имя';			// Неправильно задано имя
 
 			if(isset(ySettings::$altPaths->$moduleName))
 				$modulesPath = ySettings::$path.'/'.ySettings::$altPaths->$moduleName;
