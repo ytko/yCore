@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-class yFactory {
+class yCore {
 	protected static function includeComponent($type, $name = NULL) {
 	/* include_once файла и возврат имени класса
 	 * путь до файла и имени генерируется из $type ('model', 'view', etc) и $name вида '/module/name'
@@ -163,10 +163,6 @@ class yFactory {
 	}
 }
 
-class yy extends yFactory {
-	public static function db($name = NULL) {
-		return parent::getDb($name);
-	}
-}
+class yFactory extends yCore {} //TODO: rename yFactory to yCore in modules and delete this string
 
 ?>
