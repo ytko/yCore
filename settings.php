@@ -2,9 +2,10 @@
 
 // ------ Framework settings ----------------------------------------------------------------------
 class ySettings {
-	static public $get, $mvc, $path, $rootPath, $corePath, $modulesPath,
+	static public
+			$path, $rootPath, $corePath,
 			$db,
-			$altPaths;
+			$modulesPath, $altPaths;
 }
 
 // ------ Paths -----------------------------------------------------------------------------------
@@ -17,17 +18,11 @@ ySettings::$corePath = ySettings::$path.'/core';		//Путь к ядру (core)
 
 ySettings::$modulesPath = ySettings::$path.'/modules';	//Путь к модулям
 ySettings::$altPaths = (object)array(
-		'structure' => '/cms',
-		'template' => '/cms',
+		'structure' => '/modules/_cms',
+		'template' => '/modules/_cms',
 	
-		'users' => '/system',
-		'object' => '/system',
-	
-		'badge' => '/ignore',
-		'extended' => '/ignore',
-		'general' => '/ignore',
-		'default' => '/ignore'
-		
+		'users' => '/modules/_system',
+		'object' => '/modules/_system',
 );
 
 // ------ Data base -------------------------------------------------------------------------------

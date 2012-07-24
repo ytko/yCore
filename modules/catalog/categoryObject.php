@@ -9,6 +9,7 @@ class catalogCategoryObjectClass extends yObjectClass {
 			//->name('Каталог')
 			->field('id', 'id')
 			->field('pid', 'int')
+			->field('keyword', 'string')
 			->field('name', 'string');
 			/*->filter('id',
 					array(

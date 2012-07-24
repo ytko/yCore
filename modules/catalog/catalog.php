@@ -3,9 +3,18 @@
 yFactory::includeBean();
 
 class catalogClass extends yBeanClass {
-	public function cat() {
+	public function cat($categoryID = NULL) {
 		$object = yFactory::object('catalog')
 				->cat();
+		
+		if($categoryID)
+			$object->filter('category',
+				array(
+					'type' => 'field',
+					'field' => 'category',
+					'show' => false,
+					'value' => $categoryID)
+				);
 
 		$controller = yFactory::controller('object')
 				->get($object);
