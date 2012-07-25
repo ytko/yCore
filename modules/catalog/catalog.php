@@ -1,10 +1,10 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeBean();
+yCore::includeBean();
 
-class catalogClass extends yBeanClass {
+class catalogClass extends yBean {
 	public function cat($categoryID = NULL) {
-		$object = yFactory::object('catalog')
+		$object = yCore::object('catalog')
 				->cat();
 		
 		if($categoryID)
@@ -16,45 +16,45 @@ class catalogClass extends yBeanClass {
 					'value' => $categoryID)
 				);
 
-		$controller = yFactory::controller('object')
+		$controller = yCore::controller('object')
 				->get($object);
 
-		$model = yFactory::model('object')
+		$model = yCore::model('object')
 				->getCat($object);
 	
-		$template = yFactory::template('catalog')
+		$template = yCore::template('catalog')
 				->setObject($object);
 
 		return $template->cat();
 	}
 	
 	public function page() {
-		$object = yFactory::getObject('catalog')
+		$object = yCore::object('catalog')
 				->get();
 
-		$controller = yFactory::getController('object')
+		$controller = yCore::controller('object')
 				->get($object);
 
-		$model = yFactory::getModel('object')
+		$model = yCore::model('object')
 				->getCat($object);
 
-		$template = yFactory::getTemplate('catalog')
+		$template = yCore::template('catalog')
 				->setObject($object);
 		
 		return $template->page();		
 	}
 
 	public function catEdit() {
-		$object = yFactory::object('catalog')
+		$object = yCore::object('catalog')
 				->cat();
 
-		$controller = yFactory::controller('object')
+		$controller = yCore::controller('object')
 				->get($object);
 		
-		$model = yFactory::model('object')
+		$model = yCore::model('object')
 				->getCat($object);
 
-		$template = yFactory::template('catalog')
+		$template = yCore::template('catalog')
 				->setObject($object)
 				->setMode('admin');
 
@@ -62,17 +62,17 @@ class catalogClass extends yBeanClass {
 	}
 	
 	public function pageEdit() {
-		$object = yFactory::getObject('catalog')
+		$object = yCore::object('catalog')
 				->get();
 
-		$controller = yFactory::getController('object')
+		$controller = yCore::controller('object')
 				->get($object);
 
-		$model = yFactory::getModel('object')
+		$model = yCore::model('object')
 				->replace($object)
 				->get($object);
 
-		$template = yFactory::getTemplate('catalog')
+		$template = yCore::template('catalog')
 				->setObject($object)
 				->setMode('admin');
 		
@@ -80,16 +80,16 @@ class catalogClass extends yBeanClass {
 	}
 	
 	public function pageAdd() {
-		$object = yFactory::getObject('catalog')
+		$object = yCore::object('catalog')
 				->get();
 
-		$controller = yFactory::getController('object')
+		$controller = yCore::controller('object')
 				->get($object);
 
-		$model = yFactory::getModel('object')
+		$model = yCore::model('object')
 				->insert($object);
 
-		$template = yFactory::getTemplate('catalog')
+		$template = yCore::template('catalog')
 				->setObject($object)
 				->setMode('admin');
 		
@@ -97,18 +97,18 @@ class catalogClass extends yBeanClass {
 	}
 	
 	public function install() {
-		yFactory::getModel('object')->install(
-						yFactory::getObject('catalog')->get()
+		yCore::model('object')->install(
+						yCore::object('catalog')->get()
 				);
 		
-		yFactory::getModel('object')->install(
-						yFactory::getObject('catalog/category')->get()
+		yCore::model('object')->install(
+						yCore::object('catalog/category')->get()
 				);
 	}
 	
 	public function export() {
-		$object = yFactory::getObject('catalog')->get();
-		$model = yFactory::getModel('catalog')->export($object);		
+		$object = yCore::object('catalog')->get();
+		$model = yCore::model('catalog')->export($object);		
 	}
 }
 

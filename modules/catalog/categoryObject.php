@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeObject();
+yCore::includeObject();
 
-class catalogCategoryObjectClass extends yObjectClass {
+class catalogCategoryObject extends yObject {
 	public function get() {
 		$this
 			->table('catalog_category')

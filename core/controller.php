@@ -2,7 +2,7 @@
 
 @require_once 'base.php';
 
-class yControllerClass extends yBaseClass{
+class yController extends yBase{
 	public $post, $get, $url, $files;
 	public $controllerName;
 

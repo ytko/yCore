@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeController();
+yCore::includeController();
 
-class objectControllerClass extends yControllerClass {
+class objectController extends yController {
 	// sets values fo external filters from POST or GET
 	function get($object) {
 		if($object->fields) foreach($object->fields as $field) {

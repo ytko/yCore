@@ -2,9 +2,9 @@
 
 @require_once 'base.php';
 
-class yBeanClass extends yBaseClass{
+class yBean extends yBase{
 	public
-	// задаются при вызове из yFactory	
+	// задаются при вызове из yCore	
 		$moduleName,
 		$beanName,
 		
@@ -45,13 +45,13 @@ class yBeanClass extends yBaseClass{
 	}*/
 	
 	public function get () {
-		$controller = yFactory::getController($this->controller);
+		$controller = yCore::controller($this->controller);
 
-		$model = yFactory::getModel($this->modelName)
+		$model = yCore::model($this->modelName)
 				->setController($controller);
 
-		$view = yFactory::getView($this->viewName);
-		$template = yFactory::getTemplate($this->templateName)
+		$view = yCore::view($this->viewName);
+		$template = yCore::template($this->templateName)
 				->setModel($model);
 
 		return $view
@@ -86,20 +86,20 @@ class yBeanClass extends yBaseClass{
 		return $this;
 	}
 
-	// Подстановка параметров вызова yFactory
+	// Подстановка параметров вызова yCore
 	protected function doFactory($name, $func) {
-		yFactory::$func($name);
+		yCore::$func($name);
 		
 		
 		/*if (isset($name)) {
 			if ($name === false)
 				return NULL;
 			elseif ($name === '')
-				return yFactory::$func($this->moduleName, $this->moduleName);
+				return yCore::$func($this->moduleName, $this->moduleName);
 			else
-				return yFactory::$func($this->moduleName, $name);
+				return yCore::$func($this->moduleName, $name);
 		}
 		else
-			return yFactory::$func();		*/
+			return yCore::$func();		*/
 	}
 }

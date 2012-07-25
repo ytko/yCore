@@ -1,11 +1,11 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeObject();
+yCore::includeObject();
 
-class catalogObjectClass extends yObjectClass {
+class catalogObject extends yObject {
 	public function get() {
-		$categories = yFactory::db('object')
-				->select(yFactory::object('catalog/category')->get());
+		$categories = yCore::db('object')
+				->select(yCore::object('catalog/category')->get());
 
 		$categoriesList = array();
 		foreach ($categories as $key => $value) {
@@ -35,8 +35,8 @@ class catalogObjectClass extends yObjectClass {
 	}
 	
 	public function cat() {
-		$categories = yFactory::db('object')
-			->select(yFactory::object('catalog/category')->get());
+		$categories = yCore::db('object')
+			->select(yCore::object('catalog/category')->get());
 
 		$categoriesList = array();
 		$categoriesList[''] = 'Все';

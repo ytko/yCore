@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-class yBaseClass {
+class yBase {
 	public $owner = NULL;
 	
 	public function setOwner($owner) {

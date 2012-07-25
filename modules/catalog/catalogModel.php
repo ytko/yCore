@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeModel('object');
+yCore::includeModel('object');
 
-class catalogModelClass extends objectModelClass {
+class catalogModel extends objectModel {
 	function export($object) {
 		include_once 'ignore/include/csvloader.php';
 		$csv = new csvClass();
@@ -33,7 +33,7 @@ class catalogModelClass extends objectModelClass {
 		$object->values = $values;
 		
 		if ($object->values) 
-			echo yFactory::db('object')->replace($object);
+			echo yCore::db('object')->replace($object);
 		
 		return $this;
 	}

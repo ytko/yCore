@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeDb();
+yCore::includeDb();
 
-class objectDbClass extends yDbClass {
+class objectDb extends yDb {
 	public function filters($filters) { //TODO: make filter yFilterClass, and then rename methon to "where"
 		foreach($filters as $filter) // define WHERE from filters
 			if($filter->type == 'field' && $filter->value)
@@ -89,10 +89,10 @@ class objectDbClass extends yDbClass {
 // ---- replace methods (like insert or update) ---------------------------------------------------
 
 	public function replace($object = NULL, $mode = NULL) { // overrrides replace($object)
-		if (is_a($object, 'yObjectClass')) // if $object is child of yObjectClass
+		if (is_a($object, 'yObject')) // if $object is child of yObject
 			return $this->replaceObject($object, $mode);
 		else { // in other case do not override
-			$method = 'replace'.$mode; //TODO: yDbClass::replace()
+			$method = 'replace'.$mode; //TODO: yDb::replace()
 			return parent::$method($object);
 		}
 	}
@@ -126,10 +126,10 @@ class objectDbClass extends yDbClass {
 // ---- replace methods (like insert or update) ---------------------------------------------------
 
 	public function insert($object = NULL, $mode = NULL) { // overrrides replace($object)
-		if (is_a($object, 'yObjectClass')) // if $object is child of yObjectClass
+		if (is_a($object, 'yObject')) // if $object is child of yObject
 			return $this->replaceObject($object, $mode);
 		else { // in other case do not override
-			$method = 'insert'.$mode; //TODO: yDbClass::replace()
+			$method = 'insert'.$mode; //TODO: yDb::replace()
 			return parent::$method($object);
 		}
 	}
@@ -159,7 +159,7 @@ class objectDbClass extends yDbClass {
 // ---- select methods ----------------------------------------------------------------------------
 
 	public function select($object = NULL, $mode = 'Results') { // overrrides select($object)
-		if (is_a($object, 'yObjectClass')) // if $object is child of yObjectClass
+		if (is_a($object, 'yObject')) // if $object is child of yObject
 			return $this->selectObject($object, $mode);
 		else { // in other case do not override
 			$method = 'select'.$mode;

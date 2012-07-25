@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeTemplate('object');
+yCore::includeTemplate('object');
 
-class catalogTemplateClass extends objectTemplateClass {
+class catalogTemplate extends objectTemplate {
 	public function catItem($row) {
 		$category = $this->object->fields->category->values[$row->category];
 		return

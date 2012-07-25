@@ -2,7 +2,7 @@
 
 yCore::includeController('object');
 
-class structureTreeClass extends yControllerClass {
+class structureTreeClass extends yController {
 	public $moduleName = 'structure';
 
 	public function show() {

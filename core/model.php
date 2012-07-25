@@ -2,7 +2,7 @@
 
 @require_once 'base.php';
 
-class yModelClass extends yBaseClass {
+class yModel extends yBase {
 	public $db;
 	public $controller;
 	
@@ -10,7 +10,7 @@ class yModelClass extends yBaseClass {
 		if ($db)
 			$this->db = &$db;
 		else
-			$this->db = yFactory::getDb();
+			$this->db = yCore::db();
 	}
 	
 	// ---- set* methods -------------------------------------------------------
