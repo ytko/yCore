@@ -2,7 +2,7 @@
 
 @require_once 'base.php';
 
-class yBean extends yBase{
+class yBean extends yBase {
 	public
 	// задаются при вызове из yCore	
 		$moduleName,
@@ -17,11 +17,13 @@ class yBean extends yBase{
 		$templateName = NULL;
 
 	// При попытке вызвать свойство как функцию вызывает __invoke объекта, присвоенного свойству
-	function __call($name, $params) {
+	/*function __call($name, $args) {
+		parent::__call($name, $args);
+
 		if(is_callable($this->$name)) {
-			return call_user_func_array($this->$name, $params);
+			return call_user_func_array($this->$name, $args);
 		}
-	}	
+	}*/
 
 	public function __invoke() {
 		return $this->get();
