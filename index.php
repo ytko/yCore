@@ -10,7 +10,7 @@ require_once(ySettings::$corePath.'/factory.php');
 header('Content-type: text/html; charset=utf-8');
 
 //Получение контента страницы
-echo yFactory::get('structure')
+echo yCore::get('structure')
 		->get();
 
 //echo microtime() - $micro_start;

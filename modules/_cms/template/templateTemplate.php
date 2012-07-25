@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeTemplate();
+yCore::includeTemplate();
 
-class templateTemplateClass extends yTemplateClass {
+class templateTemplate extends yTemplate {
 	protected $content;
 	
 	function setContent($content) {

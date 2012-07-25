@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeTemplate('object');
+yCore::includeTemplate('object');
 
-class structureTreeTemplateClass extends objectTemplateClass {
+class structureTreeTemplate extends objectTemplate {
 	public
 		$key = 'keyword',
 		$value = 'name';

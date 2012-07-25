@@ -9,12 +9,12 @@ class yCore {
 		// если имя не передано, то подключается класс из ядра
 		if (!isset($name)) {
 			include_once ySettings::$corePath.'/'.$type.'.php';
-			$result = 'y'.ucfirst($type).'Class';
+			$result = 'y'.ucfirst($type);
 		}
 		// если имя передано, то подключается класс из соответствующего файла
 		else {
 			//если bean, то тип в пути и назввании опускается
-			$type = ($type == 'bean') ? '' : $type;
+			$type = ($type == 'bean') ? 'Class' : $type;
 			$Type = ucfirst($type); // первая буква заглавная
 			
 			// имя может быть готовым массивом, либо задано через '/'
@@ -32,8 +32,8 @@ class yCore {
 			else
 				$modulesPath = ySettings::$modulesPath;
 			
-			include_once ($modulesPath.'/'.$moduleName.'/'.$className.$Type.'.php');
-			$result = yFactory::getClassPrefix($moduleName, $className).$Type.'Class';
+			include_once ($modulesPath.'/'.$moduleName.'/'.$className.($Type != 'Class' ? $Type : NULL).'.php');
+			$result = yCore::getClassPrefix($moduleName, $className).$Type;
 		}
 		
 		return $result;
@@ -41,94 +41,90 @@ class yCore {
 
 	public static function includeBean($name = NULL) {
 		return
-			yFactory::includeComponent('bean', $name);		
+			yCore::includeComponent('bean', $name);		
 	}
 	
 	public static function includeController($name = NULL) {
 		return
-			yFactory::includeComponent('controller', $name);
+			yCore::includeComponent('controller', $name);
 	}
 
 	public static function includeModel($name = NULL) {
 		return
-			yFactory::includeComponent('model', $name);
+			yCore::includeComponent('model', $name);
 	}		
 
 	public static function includeTemplate($name = NULL) {
 		return
-			yFactory::includeComponent('template', $name);
+			yCore::includeComponent('template', $name);
 	}
 
 	public static function includeDb($name = NULL) {
 		return
-			yFactory::includeComponent('db', $name);	
+			yCore::includeComponent('db', $name);	
 	}
 	
 	public static function includeObject($name = NULL) {
 		return
-			yFactory::includeComponent('object', $name);	
+			yCore::includeComponent('object', $name);	
 	}
 
-	public static function getBean($name = NULL) { //alias get
-		$beanClassName = yFactory::includeBean($name);
+	public static function get($name = NULL) { //alias get
+		$beanClassName = yCore::includeBean($name);
 		return new $beanClassName();
 	}
 	
 	public static function getController($name = NULL) {
-		$controllerClassName = yFactory::includeController($name);
+		$controllerClassName = yCore::includeController($name);
 		return new $controllerClassName($controllerName);
 	}
 	
 	public static function getModel($name = NULL) {
-		$modelClassName = yFactory::includeModel($name);
+		$modelClassName = yCore::includeModel($name);
 		return new $modelClassName();
 	}
 		
 	public static function getTemplate($name = NULL) {
-		$templateClassName = yFactory::includeTemplate($name);
+		$templateClassName = yCore::includeTemplate($name);
 		return new $templateClassName();
 	}
 
 	public static function getDb($name = NULL) {
-		$dbClassName = yFactory::includeDb($name);
+		$dbClassName = yCore::includeDb($name);
 		return
 			new $dbClassName();
 	}
 	
 	public static function getObject($name = NULL) {
-		$objectClassName = yFactory::includeObject($name);
+		$objectClassName = yCore::includeObject($name);
 		return
 			new $objectClassName();
 	}
 	
 	// Aliases
 	
-	public static function get($name = NULL) {
-		return yFactory::getBean($name);
-	}
-	
 	public static function bean($name = NULL) {
-		return yFactory::getBean($name);
+		return yCore::get($name);
 	}
 	
 	public static function controller($name = NULL) {
-		return yFactory::getController($name);
+		return yCore::getController($name);
 	}
 	
 	public static function model($name = NULL) {
-		return yFactory::getModel($name);
+		return yCore::getModel($name);
 	}
 	
 	public static function template($name = NULL) {
-		return yFactory::getTemplate($name);
+		return yCore::getTemplate($name);
 	}
 	
 	public static function db($name = NULL) {
-		return yFactory::getDb($name);
+		return yCore::getDb($name);
 	}
 	
 	public static function object($name = NULL) {
-		return yFactory::getObject($name);
+		return yCore::getObject($name);
 	}
 	
 	function getClassPrefix($moduleName, $name) { //генерирует префикс названия класса из названия модуля и названия файла класса
@@ -147,7 +143,7 @@ class yCore {
 	
 	function safeName($name, $defaultName = NULL, $errorName = NULL) {
 		return strtolower($name ? (
-					yFactory::isFileNameSafe($name)
+					yCore::isFileNameSafe($name)
 						? $name
 						: $errorName )
 				: $defaultName);
@@ -162,7 +158,5 @@ class yCore {
 	
 	}
 }
-
-class yFactory extends yCore {} //TODO: rename yFactory to yCore in modules and delete this string
 
 ?>

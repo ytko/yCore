@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeTemplate();
+yCore::includeTemplate();
 
-class usersTemplateClass extends yTemplateClass {
+class usersTemplate extends yTemplate {
 
 	function head() {
 		

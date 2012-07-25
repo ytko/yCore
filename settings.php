@@ -18,11 +18,11 @@ ySettings::$corePath = ySettings::$path.'/core';		//Путь к ядру (core)
 
 ySettings::$modulesPath = ySettings::$path.'/modules';	//Путь к модулям
 ySettings::$altPaths = (object)array(
-		'structure' => '/modules/_cms',
-		'template' => '/modules/_cms',
+		'structure' => 'modules/_cms',
+		'template' => 'modules/_cms',
 	
-		'users' => '/modules/_system',
-		'object' => '/modules/_system',
+		'users' => 'modules/_system',
+		'object' => 'modules/_system',
 );
 
 // ------ Data base -------------------------------------------------------------------------------

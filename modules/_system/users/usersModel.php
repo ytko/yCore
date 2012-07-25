@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeModel();
+yCore::includeModel();
 
-class usersModelClass extends yModelClass {
+class usersModel extends yModel {
 	private static $userID, $login, $password; 
 	
 	public function getModel($controller) {

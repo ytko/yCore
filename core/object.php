@@ -2,7 +2,7 @@
 
 @require_once 'base.php';
 
-class yObjectClass extends yBaseClass {//TODO: implements
+class yObject extends yBase {//TODO: implements
 	public
 		$key,
 		$table,				// Table name

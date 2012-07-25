@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-class ySqlClass {
+class ySql {
 	public
 			$mode, // Can be 'select', 'insert', 'insert_or_update', etc. Changes with last ->select(), ->insert(), etc. method called.
 			$fields, // Used for SELECT
@@ -243,7 +243,7 @@ DELETE [LOW_PRIORITY] [QUICK] [IGNORE] FROM tbl_name
 	}
 }
 
-class yDbClass extends ySqlClass {
+class yDb extends ySql {
 	public $sql;
 	public static $static_sql;
 

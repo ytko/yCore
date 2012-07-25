@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yFactory::includeTemplate();
+yCore::includeTemplate();
 
-class objectTemplateClass extends yTemplateClass {
+class objectTemplate extends yTemplate {
 	public $object, $mode;
 	
 	public function setObject($object) {

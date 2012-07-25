@@ -2,7 +2,7 @@
 
 yCore::includeModel('object');
 
-class structureTreeModelClass extends objectModelClass {
+class structureTreeModel extends objectModel {
 	public function get($pid = NULL) {
 		$where = $pid ? "`pid` = $pid" : "`pid` IS NULL OR `pid` = 0";
 		$trunk = yCore::db('object')->where($where)->select($this->object);
