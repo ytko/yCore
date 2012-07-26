@@ -133,9 +133,9 @@ HEREDOC;
 				$value = $field->values[$value];
 			
 			if($value)
-				$result.= "<a href='page?id={$row->id}' class='$class'>{$name}: $value; </a>";
+				$result.= "<div class='$class'>{$name}: $value; </div>";
 		}
-		return '<div>'.$result.'</div>';
+		return "<div class='{$this->object->key}Page'>$result<a href='page?id={$row->id}' class='$class'>&gt;&gt;&gt;</a></div>";
 	}
 
 	protected function pagination($rad = 5) { //TODO: find by key
@@ -156,7 +156,7 @@ HEREDOC;
 			$name = $field->name;
 			$result.= "<div class='$class'>{$name}: $value; </div>";
 		}
-		return $result;
+		return "<div class='{$this->object->key}Page'>$result</div>";
 	}
 }
 /*

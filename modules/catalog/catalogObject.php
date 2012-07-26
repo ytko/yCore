@@ -10,62 +10,41 @@ class catalogObject extends yObject {
 				->select(yCore::catalogCategoryObject());
 
 		$categoriesList = array();
+		$categoriesList[0] = 'Выбрать';
 		foreach ($categories as $key => $value) {
 			$categoriesList[$value->id] = $value->name;
 		}
 
-		$this->
-			table('catalog')
-			//->name('Каталог')
+		$this
+			->table('catalog')
+			->name('Каталог')
 			->field('id', 'id')
-			->filter('id',
-						array('type' => 'field', 'field' => 'id', 'scope' => 'external')
-					)
-			->field('category', 'list',
-						array('values' => $categoriesList, 'name' => 'Категория')
-					)
+			->field('category', 'list',	array(
+				'values' => $categoriesList, 'name' => 'Категория') )
 			->field('price', 'currency', 'Цена')
 			->field('name', 'string', 'Название')
-			->field('description', 'text');
+			->field('description', 'text')
+			->field('extid', 'int', 'Внешний ID')
+			->field('distributor', 'string')
+			->field('vendor', 'string')
 
-		if(!$mode)
-			$this
-				->field('extid', 'int', 'Внешний ID')
-				->field('distributor', 'string')
-				->field('vendor', 'string');
-		
-		elseif($mode == 'cat') {
-			$this
-				->filter('name',
-						array(
-							'type' => 'field',
-							'field' => 'name',
-							'collation' => 'like',
-							'scope' => 'external',
-							'show' => true)
-						)
-				->filter('category',
-						array(
-							'type' => 'field',
-							'field' => 'category',
-							'scope' => 'external',
-							'show' => true)
-						)
-				->filter('price',
-						array(
-							'type' => 'order',
-							'field' => 'price',
-							'scope' => 'external',
-							'show' => true)
-						)
-				->filter('page',
-						array(
-							'type' => 'page',
-							'scope' => 'external',
-							'rows' => '5',
-							'show' => true)
-						);		
-		}
+			->filter('id', array(
+				'field' => 'id', 'type' => 'field', 'scope' => 'external') )
+
+			->filter('name', array(
+				'field' => 'name', 'type' => 'field', 'collation' => 'like',
+				'scope' => 'external', 'show' => true) )
+
+			->filter('category', array(
+				'field' => 'category', 'type' => 'field', 'scope' => 'external',
+				'show' => true) )
+
+			->filter('price', array(
+				'field' => 'price', 'type' => 'order', 'scope' => 'external',
+				'show' => true) )
+
+			->filter('page', array(
+				'type' => 'page', 'scope' => 'external', 'rows' => '5', 'show' => true) );
 	}
 }
 

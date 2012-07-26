@@ -4,7 +4,7 @@ yCore::load('object');
 
 class catalogClass extends objectClass {
 	public function catalog($categoryID = NULL) {
-		$object = yCore::catalogObject('cat');
+		$object = yCore::catalogObject();
 		if($categoryID)
 			$object->filter('category',
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
@@ -21,7 +21,7 @@ class catalogClass extends objectClass {
 	}
 
 	public function catalogEdit() {
-		$object = yCore::catalogObject('cat');
+		$object = yCore::catalogObject();
 		if($categoryID)
 			$object->filter('category',
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
