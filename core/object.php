@@ -77,6 +77,16 @@ class yObject extends yBase {//TODO: implements
 		$this->fields = (object)array();
 		return $this;
 	}
+	
+	public function fieldProperty($key, $property) {
+		if (!isset($this->fields->$key)) {
+			throw new Exception("Field '$key' not set in ".get_class($this));
+			return NULL;
+		}
+
+		$value = $this->fields->$key->$property;
+		return $value;
+	}
 
 // ---- filter set edit --------------------------------------------------------
 	
@@ -96,6 +106,29 @@ class yObject extends yBase {//TODO: implements
 		$this->filters = (object)array();
 		return $this;
 	}
+	
+	public function filterProperty($key, $property) {
+		if (!isset($this->filters->$key)) {
+			throw new Exception("Filter '$key' not set in ".get_class($this));
+			return NULL;
+		}
+
+		$filter = $this->filters->$key;
+		$value = $filter->$property;
+
+		// trying to get value from other places
+		if (!isset($value)) {
+			if ($filter->type == 'field') {
+				switch ($property) {
+					case 'name':
+						$value = $this->fieldProperty($filter->field, name) ?: NULL;
+					break;
+				}
+			}
+		}
+		
+		return $value;
+	}
 
 // ---- values set edit --------------------------------------------------------
 	
@@ -106,11 +139,6 @@ class yObject extends yBase {//TODO: implements
 		//if(isset($this->fields->$key)) //uncomment after debug
 			$this->values[$row]->$key = $value;
 		
-		return $this;
-	}
-	
-	public function clearValues() {
-		$this->values = array();
 		return $this;
 	}
 	
@@ -126,6 +154,11 @@ class yObject extends yBase {//TODO: implements
 	
 	public function deleteRow($row) {
 		unset($this->values[$row]);
+		return $this;
+	}
+	
+	public function clearValues() {
+		$this->values = array();
 		return $this;
 	}
 }

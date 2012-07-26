@@ -47,8 +47,13 @@ class catalogClass extends objectClass {
 	public function install() {
 		$object = yCore::catalogObject();
 		yCore::catalogModel()->install($object);
-		$object = yCore::catalogCategoryObject();
-		yCore::catalogModel()->install($object);
+		/*$object = yCore::catalogCategoryObject();
+		yCore::catalogModel()->install($object);*/
+	}
+	
+	public function uninstall() {
+		$object = yCore::catalogObject();
+		yCore::catalogModel()->uninstall($object);
 	}
 	
 	public function export() {

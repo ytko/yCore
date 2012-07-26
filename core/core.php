@@ -12,8 +12,12 @@
 class yCore {
 	public static function __callStatic($className, $arguments) {
 		if (substr($className,0,4) == 'load') {
-			$className = lcfirst(substr($className,7));
+			$className = lcfirst(substr($className,4));
 			return self::load($className);
+		}
+		elseif (substr($className,0,6) == 'create') {
+			$className = lcfirst(substr($className,6));
+			return self::create($className);
 		}
 		else
 			return self::create($className, $arguments);

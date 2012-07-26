@@ -29,22 +29,24 @@ class catalogObject extends yObject {
 			->field('vendor', 'string')
 
 			->filter('id', array(
-				'field' => 'id', 'type' => 'field', 'scope' => 'external') )
+				'field' => 'id', 'type' => 'field',
+				'scope' => 'external', 'show' => false) )
 
 			->filter('name', array(
 				'field' => 'name', 'type' => 'field', 'collation' => 'like',
-				'scope' => 'external', 'show' => true) )
+				'scope' => 'get', 'show' => true) )
 
 			->filter('category', array(
-				'field' => 'category', 'type' => 'field', 'scope' => 'external',
-				'show' => true) )
+				'field' => 'category', 'type' => 'field',
+				'scope' => 'get', 'show' => true) )
 
 			->filter('price', array(
-				'field' => 'price', 'type' => 'order', 'scope' => 'external',
-				'show' => true) )
+				'field' => 'price', 'type' => 'order',
+				'scope' => 'get', 'show' => true) )
 
 			->filter('page', array(
-				'type' => 'page', 'scope' => 'external', 'rows' => '5', 'show' => true) );
+				'type' => 'page', 'rows' => '5',
+				'scope' => 'get', 'show' => true) );
 	}
 }
 

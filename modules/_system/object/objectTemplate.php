@@ -95,7 +95,7 @@ HEREDOC;
 		foreach ($this->object->values as $row)
 			$items.= $this->catalogItem($row);
 
-		//search
+		// search
 		$search = $this->search();
 
 		// add button
@@ -104,13 +104,13 @@ HEREDOC;
 		// filters
 		$url = '';
 		$query = $_GET; //TODO: connect with controller!!!
-		
-		foreach ($this->object->filters as $filter)
+
+		foreach ($this->object->filters as $filterName => $filter)
 			if($filter->type == 'order' || $filter->type == 'sort')
-				$order =
-					$this->object->fields->{$filter->field}->name.': '.
-					"<a href='".self::getURI($url, $query, array($filter->field => 'asc'))."' title='по возрастанию'>&#9650;</a> ".
-					"<a href='".self::getURI($url, $query, array($filter->field => 'desc'))."' title='по убыванию'>&#9660;</a>";
+				$order.=
+					$this->object->filterProperty($filterName, 'name').': '.
+					"<a href='".self::getURI($url, $query, array($filterName => 'asc'))."' title='по возрастанию'>&#9650;</a> ".
+					"<a href='".self::getURI($url, $query, array($filterName => 'desc'))."' title='по убыванию'>&#9660;</a>";
 
 		return
 "<div class='catalog'>".

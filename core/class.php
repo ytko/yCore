@@ -40,6 +40,20 @@ class yClass extends yBase{
 		else
 			return NULL;
 	}
+	
+	public function getGet($key) {
+		$result = $_GET[$key];
+		if (is_array($result))
+			$result = (object)$result;
+		return $result;
+	}
+	
+	public function getPost($key) {
+		$result = $_POST[$key];
+		if (is_array($result))
+			$result = (object)$result;
+		return $result;
+	}
 		
 	public function isRequestSet($key) {
 		return (isset($this->post->$key) || isset($this->get->$key));

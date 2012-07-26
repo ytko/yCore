@@ -26,6 +26,9 @@ class structureClass extends yClass {
 			case '/install':
 				$content = yCore::catalogClass()->install();
 				break;
+			case '/uninstall':
+				$content = yCore::catalogClass()->uninstall();
+				break;
 		}
 				
 		return yCore::templateClass()->show($content);

@@ -7,26 +7,31 @@ class objectModel extends yModel {
 		yCore::objectDb()->create($object);
 		return $this;
 	}
-	
+
+	function uninstall($object) {
+		yCore::objectDb()->drop($object);
+		return $this;
+	}
+
 	function replace($object) {
 		if ($object->values)
 			yCore::objectDb()->replace($object);
 		return $this;
 	}
-	
+
 	function insert($object) {
 		if ($object->values)
 			yCore::objectDb()->insert($object);
 		return $this;
 	}
-	
+
 	//TODO: function updateObject($object)
-	
+
 	function catalog($object) {
 		$object->values = yCore::objectDb()->select($object);
 		return $this;
 	}
-	
+
 	function page($object) {
 		$object->values[0] = yCore::objectDb()->selectRow($object);
 		return $this;

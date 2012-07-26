@@ -4,19 +4,36 @@ yCore::load('yClass');
 
 class objectClass extends yClass {
 	// sets values fo external filters from POST or GET
-	function recieve($object) {
+	public function recieve($object, $row = 0) {
 		if($object->fields) foreach($object->fields as $field) {
 			if($value = $this->getRequest($field->key)) {
 				$object->value($field->key, $value, $row);
 			}
 		}
 		if($object->filters) foreach($object->filters as &$filter) {
-			if($filter->scope == 'external')
-				if($value = $this->getRequest($filter->key)) {
+			if($filter->scope == 'get' || $filter->scope == 'external')
+				if($value = $this->getGet($filter->key)) {
+					$filter->value = $value;
+				}
+			elseif($filter->scope == 'post' || $filter->scope == 'external')
+				if($value = $this->getPost($filter->key)) {
 					$filter->value = $value;
 				}
 		}
 		return $this;
+	}
+	
+	public
+		$objectName = 'catalog';
+
+	public function catalog($categoryID = NULL) {
+		$object = yCore::createObject($objectName);
+		if($categoryID)
+			$object->filter('category',
+				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
+		$this->recieve($object);
+		$model = yCore::catalogModel()->catalog($object);
+		return yCore::catalogTemplate($object)->catalog();
 	}
 }
 
