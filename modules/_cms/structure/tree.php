@@ -1,18 +1,18 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeController('object');
+yCore::load('yClass');
 
-class structureTreeClass extends yController {
+class structureTreeClass extends yClass {
 	public $moduleName = 'structure';
 
 	public function show() {
-		$object = yCore::object('catalog/category')->get();
+		$object = yCore::catalogCategoryObject()->get();
 
-		$model = yCore::model('structure/tree');
+		$model = yCore::structureTreeModel;
 		$model->object = $object;
 		$tree = $model->get(0);
 
-		$template = yCore::template('structure/tree');
+		$template = yCore::structureTreeTemplate();
 		return ($template->get($tree));	
 	}
 }

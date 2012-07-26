@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeModel('object');
+yCore::load('objectModel');
 
 class structureTreeModel extends objectModel {
 	public function get($pid = NULL) {

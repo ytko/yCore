@@ -10,14 +10,72 @@
  * Contains static methods generating objects components and including php-files.
  */
 class yCore {
-/** Includes component file
-  * \param type Type of component 
-  * \param name Name of component
+	public static function __callStatic($className, $arguments) {
+		if (substr($className,0,4) == 'load') {
+			$className = lcfirst(substr($className,7));
+			return self::load($className);
+		}
+		else
+			return self::create($className, $arguments);
+	}
+
+/** Creates class $className instance
+  * \param $className Name of class
+  * \param $arguments (optional) Array of arguments for constructor
   */
-	protected static function includeComponent($type, $name = NULL) {
-	/* include_once файла и возврат имени класса
+	public static function create($className, $arguments = NULL) {
+		self::load($className);
+
+		// Return class instance
+		if (empty($arguments))
+			return new $className();
+		else { // If arguments are set pass them to constructor
+			$classReflection = new ReflectionClass($className);
+			return $classReflection->newInstanceArgs($arguments);
+		}
+	}
+	
+	public static function load($className = NULL) {
+		// Split name by upper-case chars
+		$splittedName = preg_split('/(?=[[:upper:]])/', $className);
+		$moduleName = array_shift($splittedName);
+		$componentType = array_pop($splittedName);
+
+		// Genarating component's path+filename
+		if($moduleName == 'y') {		// Core component (e.g. yModel)
+			$componentPath = ySettings::$corePath.'/'.lcfirst($componentType).'.php';
+		}
+		else {
+			if(empty($splittedName)) {	// Simple class name (e.g. fooModel)
+				$componentPath = $moduleName.'/'.$moduleName;
+			} else {					// Long class name (e.g. fooBarModel)
+				foreach($splittedName as &$value)
+					$value = lcfirst($value);
+				$componentPath = $moduleName.'/'.implode('/', $splittedName);
+			}
+			$componentPath = self::modulePath($moduleName).$componentPath.($componentType != 'Class' ? $componentType : NULL).'.php';
+		}
+		
+		include_once ($componentPath);
+	}
+	
+	/// Returns path to current module depending on ySettings
+	protected static function modulePath($moduleName) {
+		if(isset(ySettings::$altPaths->$moduleName))
+			return ySettings::$path.'/'.ySettings::$altPaths->$moduleName.'/';
+		else
+			return ySettings::$modulesPath.'/';
+	}
+
+/* Includes component file
+  * \param type $type of component 
+  * \param name $name of component
+  */
+/* include_once файла и возврат имени класса
 	 * путь до файла и имени генерируется из $type ('model', 'view', etc) и $name вида '/module/name'
-	*/	
+	*/
+	protected static function includeComponent($type, $name = NULL) {
+	
 		
 		// если имя не передано, то подключается класс из ядра
 		if (!isset($name)) {
@@ -27,7 +85,7 @@ class yCore {
 		// если имя передано, то подключается класс из соответствующего файла
 		else {
 			//если bean, то тип в пути и назввании опускается
-			$type = ($type == 'bean') ? 'Class' : $type;
+			$type = ($type == 'controller') ? 'Class' : $type;
 			$Type = ucfirst($type); // первая буква заглавная
 			
 			// имя может быть готовым массивом, либо задано через '/'
@@ -51,26 +109,16 @@ class yCore {
 		
 		return $result;
 	}
-
-	public static function includeBean($name = NULL) {
-		return
-			yCore::includeComponent('bean', $name);		
-	}
 	
-	public static function includeController($name = NULL) {
+	public static function includeClass($name = NULL) {
 		return
-			yCore::includeComponent('controller', $name);
+			yCore::includeComponent('class', $name);
 	}
 
 	public static function includeModel($name = NULL) {
 		return
 			yCore::includeComponent('model', $name);
 	}		
-
-	public static function includeTemplate($name = NULL) {
-		return
-			yCore::includeComponent('template', $name);
-	}
 
 	public static function includeDb($name = NULL) {
 		return
@@ -83,13 +131,8 @@ class yCore {
 	}
 
 	public static function get($name = NULL) { //alias get
-		$beanClassName = yCore::includeBean($name);
-		return new $beanClassName();
-	}
-	
-	public static function controller($name = NULL) {
-		$controllerClassName = yCore::includeController($name);
-		return new $controllerClassName($controllerName);
+		$className = yCore::includeClass($name);
+		return new $className();
 	}
 	
 	public static function model($name = NULL) {
@@ -97,9 +140,9 @@ class yCore {
 		return new $modelClassName();
 	}
 		
-	public static function template($name = NULL) {
-		$templateClassName = yCore::includeTemplate($name);
-		return new $templateClassName();
+	public static function template($name) {
+		$modelClassName = yCore::includeTemplate($name);
+		return new $modelClassName();
 	}
 
 	public static function db($name = NULL) {

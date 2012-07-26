@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeTemplate('object');
+yCore::load('objectTemplate');
 
 class structureTreeTemplate extends objectTemplate {
 	public

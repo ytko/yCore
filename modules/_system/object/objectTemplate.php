@@ -1,15 +1,20 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeTemplate();
+yCore::load('yTemplate');
 
 class objectTemplate extends yTemplate {
 	public $object, $mode;
 	
-	public function setObject($object) {
-		$this->object = $object;
-		return $this;
+	public function __construct($object = NULL) {
+		$this->setObject($object);
 	}
 	
+	public function setObject($object = NULL) {
+		if(isset($object))
+			$this->object = $object;
+		return $this;
+	}
+		
 	public function setMode($mode) {
 		$this->mode = $mode;
 		return $this;
@@ -54,7 +59,9 @@ HEREDOC;
 			elseif	($field->type == 'list')		return self::listInput($field->key, $field->values, $field->name, $value).'<br />';		
 	}
 
-	public function form() {
+	public function edit($object = NULL) {
+		$this->setObject($object);
+		
 		foreach ($this->object->fields as $field) {
 			$value = htmlspecialchars(stripcslashes($this->object->values[0]->{$field->key}), ENT_QUOTES);
 			$field->name = htmlspecialchars(stripcslashes($field->name), ENT_QUOTES);
@@ -80,12 +87,13 @@ HEREDOC;
 
 // ---- Catalog View -----------------------------------------------------------
 
-	public function cat() {
+	public function catalog($object = NULL) {
+		$this->setObject($object);
 		$pagination = $this->pagination();
 
 		// rows
 		foreach ($this->object->values as $row)
-			$items.= $this->catItem($row);
+			$items.= $this->catalogItem($row);
 
 		//search
 		$search = $this->search();
@@ -115,7 +123,7 @@ HEREDOC;
 "</div>";
 	}
 
-	protected function catItem($row) {
+	protected function catalogItem($row) {
 		foreach($this->object->fields as $field) {
 			$value = $row->{$field->key};
 			$class = $field->key;
@@ -140,12 +148,13 @@ HEREDOC;
 					$rad);
 	}
 
-	public function page() {
+	public function page($object = NULL) {
+		$this->setObject($object);
 		foreach($this->object->fields as $field) {
 			$value = $this->object->values[0]->{$field->key};
 			$class = $field->key;
 			$name = $field->name;
-			$result.= "<span class='$class'>{$name}: $value; </span>";
+			$result.= "<div class='$class'>{$name}: $value; </div>";
 		}
 		return $result;
 	}
@@ -168,6 +177,4 @@ HEREDOC;
  * You should have received a copy of the GNU Lesser General Public License
  * along with yCore. If not, see http://www.gnu.org/licenses/.
  */
-
-
 ?>

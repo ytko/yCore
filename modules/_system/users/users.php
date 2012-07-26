@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::linkBean();
+yCore::load('yClass');
 
-class usersClass extends yBean {
+class usersClass extends yClass {
 	public
 		$modelName = 'users',
 		$templateName = 'users';

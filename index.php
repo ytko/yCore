@@ -1,6 +1,6 @@
 <?php
 
-//$micro_start = microtime();
+//$micro_start = microtime(true);
 
 define ('_YEXEC', ''); //Первая строка каждого php-файла фреймворка должена быть "<?php defined ('_YEXEC')  or  die();"
 
@@ -10,9 +10,8 @@ require_once(ySettings::$corePath.'/core.php');
 header('Content-type: text/html; charset=utf-8');
 
 //Получение контента страницы
-echo yCore::get('structure')
-		->get();
+echo yCore::structureClass()->show();
 
-//echo microtime() - $micro_start;
+//echo microtime(true) - $micro_start;
 
 ?>

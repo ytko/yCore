@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeModel();
+yCore::load('yModel');
 
 class usersModel extends yModel {
 	private static $userID, $login, $password; 

@@ -1,34 +1,34 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeModel();
+yCore::load('yModel');
 
 class objectModel extends yModel {
 	function install($object) {
-		yCore::db('object')->create($object);
+		yCore::objectDb()->create($object);
 		return $this;
 	}
 	
 	function replace($object) {
 		if ($object->values)
-			yCore::db('object')->replace($object);
+			yCore::objectDb()->replace($object);
 		return $this;
 	}
 	
 	function insert($object) {
 		if ($object->values)
-			yCore::db('object')->insert($object);
+			yCore::objectDb()->insert($object);
 		return $this;
 	}
 	
 	//TODO: function updateObject($object)
 	
-	function getCat($object) {
-		$object->values = yCore::db('object')->select($object);
+	function catalog($object) {
+		$object->values = yCore::objectDb()->select($object);
 		return $this;
 	}
 	
-	function get($object) {
-		$object->values[0] = yCore::db('object')->selectRow($object);
+	function page($object) {
+		$object->values[0] = yCore::objectDb()->selectRow($object);
 		return $this;
 	}
 }

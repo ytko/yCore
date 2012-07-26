@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeDb();
+yCore::load('yDb');
 
 class objectDb extends yDb {
 	public function filters($filters) { //TODO: make filter yFilterClass, and then rename methon to "where"

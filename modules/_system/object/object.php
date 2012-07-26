@@ -1,34 +1,22 @@
 <?php defined ('_YEXEC')  or  die();
 
-@require_once 'base.php';
+yCore::load('yClass');
 
-class yController extends yBase{
-	public $post, $get, $url, $files;
-	public $controllerName;
-
-	function __construct($controllerName = NULL) {	
-		$this->post = (object) $_POST;
-		$this->get = (object) $_GET;
-		$this->files = $_FILES;
-		$this->url = $_SERVER["REDIRECT_URL"];
-		$this->controllerName = $controllerName;
-	}
-	
-	public function getRequest($key) {
-		if (!empty($_POST[$key]))
-			return $_POST[$key];
-		elseif (!empty($_GET[$key]))
-			return $_GET[$key];
-		elseif (isset($_POST[$key]))
-			return $_POST[$key];
-		elseif (isset($_GET[$key]))
-			return $_GET[$key];
-		else
-			return NULL;
-	}
-		
-	public function isRequestSet($key) {
-		return (isset($this->post->$key) || isset($this->get->$key));
+class objectClass extends yClass {
+	// sets values fo external filters from POST or GET
+	function recieve($object) {
+		if($object->fields) foreach($object->fields as $field) {
+			if($value = $this->getRequest($field->key)) {
+				$object->value($field->key, $value, $row);
+			}
+		}
+		if($object->filters) foreach($object->filters as &$filter) {
+			if($filter->scope == 'external')
+				if($value = $this->getRequest($filter->key)) {
+					$filter->value = $value;
+				}
+		}
+		return $this;
 	}
 }
 

@@ -1,44 +1,34 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeBean();
+yCore::load('yClass');
 
-class structureClass extends yBean {
-	public $moduleName = 'structure';
-
-	public function get() {
-		switch ($_SERVER["REDIRECT_URL"]) {
+class structureClass extends yClass {
+	public function show() {
+		switch ($this->getUrl()) {
 			case '':
-				$content =
-					yCore::get('catalog')->cat();
+				$content = yCore::catalogClass()->catalog();
 				break;
 			case '/page':
-				$content =
-					yCore::get('catalog')->page();
+				$content = yCore::catalogClass()->page();
 				break;
-			case '/admin/':
-				$content =
-					yCore::get('catalog')->catEdit();
+			case '/admin':
+				$content = yCore::catalogClass()->catalogEdit();
 				break;
 			case '/admin/page':
-				$content =
-					yCore::get('catalog')->pageEdit();
+				$content = yCore::catalogClass()->pageEdit();
 				break;
 			case '/admin/add':
-				$content =
-					yCore::get('catalog')->pageAdd();
+				$content = yCore::catalogClass()->pageAdd();
 				break;
 			case '/export':
-				$content =
-					yCore::get('catalog')->export();
+				$content = yCore::catalogClass()->export();
 				break;
 			case '/install':
-				$content =
-					yCore::get('catalog')->install();
+				$content = yCore::catalogClass()->install();
 				break;
 		}
 				
-		return yCore::get('template')
-				->get($content);
+		return yCore::templateClass()->show($content);
 	}
 }
 

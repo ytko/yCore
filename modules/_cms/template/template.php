@@ -1,13 +1,13 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeBean();
+yCore::load('yClass');
 
-class templateClass extends yBean {
+class templateClass extends yClass {
 	public $moduleName = 'template';
 //	public $beanName = 'default';
 
-	public function get($content) {
-		$template = yCore::template($this->moduleName)
+	public function show($content) {
+		$template = yCore::create($this->moduleName.'Template')
 				->setContent($content);		//Получение контента
 
 		return $template->get();

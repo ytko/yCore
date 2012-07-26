@@ -11,6 +11,7 @@ class yBase {
                 $propertyValue = $args[0];
                 
                 if(!in_array($propertyName, $key_args)){
+					throw new Exception('Call to undefined method '.get_class($this).'::'.$func_name.'()');
                     return NULL;
                 };
                 
@@ -20,7 +21,8 @@ class yBase {
                     case 'set':
                         $this->$propertyName = $propertyValue;
                         return $this;
-                    default: 
+                    default:
+						throw new Exception('Call to undefined method '.get_class($this).'::'.$func_name.'()');
                         return NULL;
                 }
         }

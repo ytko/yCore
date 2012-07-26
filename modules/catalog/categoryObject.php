@@ -1,9 +1,11 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeObject();
+yCore::load('yObject');
 
 class catalogCategoryObject extends yObject {
-	public function get() {
+	public function __construct() {
+		parent::__construct();
+		
 		$this
 			->table('catalog_category')
 			//->name('Каталог')
@@ -23,7 +25,6 @@ class catalogCategoryObject extends yObject {
 						'field' => 'pid',
 						'scope' => 'external')
 					);*/
-		return $this;
 	}
 }
 

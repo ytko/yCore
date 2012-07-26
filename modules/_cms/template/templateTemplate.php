@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeTemplate();
+yCore::load('yTemplate');
 
 class templateTemplate extends yTemplate {
 	protected $content;

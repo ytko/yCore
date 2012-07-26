@@ -1,9 +1,9 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::includeTemplate('object');
+yCore::load('objectTemplate');
 
 class catalogTemplate extends objectTemplate {
-	public function catItem($row) {
+	public function catalogItem($row) {
 		$category = $this->object->fields->category->values[$row->category];
 		return
 <<<HEREDOC
