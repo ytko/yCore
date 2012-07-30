@@ -17,19 +17,19 @@ class yCore {
 		}
 		elseif (substr($className,0,6) == 'create') {
 			$className = lcfirst(substr($className,6));
-			return self::create($className);
+			return self::createArgs($className, $arguments);
 		}
 		else
-			return self::create($className, $arguments);
+			return self::createArgs($className, $arguments);
 	}
 
 /** Creates class $className instance
  * \param $className Name of class
  * \param $arguments (optional) Array of arguments for constructor
  */
-	public static function create($className, $arguments = NULL) {
+	public static function createArgs($className, $arguments = NULL) {
 		self::load($className);
-
+		
 		// Return class instance
 		if (empty($arguments))
 			return new $className();
@@ -37,6 +37,18 @@ class yCore {
 			$classReflection = new ReflectionClass($className);
 			return $classReflection->newInstanceArgs($arguments);
 		}
+	}
+
+/** Creates class $className instance
+ * \param $className Name of class
+ * \param $argument1 (optional) First argument for constructor
+ * \param $argument2 (optional) Second argument for constructor
+ * \param (...)
+ */	
+	public static function create($className) {
+		$arguments = func_get_args();
+		array_shift($arguments);
+		return self::createArgs($className, $arguments);
 	}
 	
 /** Includes file with class $className
