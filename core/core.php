@@ -29,7 +29,7 @@ class yCore {
  */
 	public static function createArgs($className, $arguments = NULL) {
 		self::load($className);
-		
+
 		// Return class instance
 		if (empty($arguments))
 			return new $className();
@@ -74,8 +74,13 @@ class yCore {
 			}
 			$componentPath = self::modulePath($moduleName).$componentPath.($componentType != 'Class' ? $componentType : NULL).'.php';
 		}
-		
-		include_once ($componentPath);
+
+		$result = include_once($componentPath);
+
+		if(!$result)
+			throw new Exception("Can't load class '$className' from '$componentPath'.");
+
+		return ;
 	}
 	
 	/// Returns path to current module depending on ySettings
