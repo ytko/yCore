@@ -105,7 +105,7 @@ class objectDb extends yDb {
 		foreach($object->values as $row) { // go through array of rows to insert
 			$this
 				->clearValues() // reset array of values
-				->valuesFromRow($row, $object->fields); // set values
+				->values($row, $object->fields); // set values
 
 			// UPDATE if has where clause and INSERT if not
 			if ($this->where)

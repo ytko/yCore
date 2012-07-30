@@ -63,7 +63,7 @@ class catalogClass extends objectClass {
 
 	public function export() {
 		$object = yCore::create($this->objectClass);
-		$model = yCore::catalogModel()->export($object);		
+		$model = yCore::create($this->modelClass)->export($object, 'input.csv');		
 	}
 }
 /*
