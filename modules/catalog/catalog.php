@@ -4,63 +4,65 @@ yCore::load('objectClass');
 
 class catalogClass extends objectClass {
 	public
-		$templateClass = 'catalogTemplate';
+		$modelClass = 'catalogModel',
+		$templateClass = 'catalogTemplate',
+		$objectClass = 'catalogObject';
 
 	public function catalog($categoryID = NULL) {
-		$object = yCore::catalogObject();
+		$object = yCore::create($this->objectClass);
 		if($categoryID)
 			$object->filter('category',
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
 		$this->recieve($object);
-		$model = yCore::catalogModel()->catalog($object);
+		$model = yCore::create($this->modelClass)->catalog($object);
 		return yCore::create($this->templateClass, $object)->catalog();
 	}
 
 	public function page() {
-		$object = yCore::catalogObject();
+		$object = yCore::create($this->objectClass);
 		$this->recieve($object);
-		yCore::objectModel()->page($object);
+		yCore::create($this->modelClass)->page($object);
 		return yCore::create($this->templateClass, $object)->page();
 	}
 
 	public function catalogEdit() {
-		$object = yCore::catalogObject();
+		$object = yCore::create($this->objectClass);
 		if($categoryID)
 			$object->filter('category',
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
 		$this->recieve($object);
-		$model = yCore::catalogModel()->catalog($object);
+		$model = yCore::create($this->modelClass)->catalog($object);
 		return yCore::create($this->templateClass, $object)->setMode('admin')->catalog();
 	}
 
 	public function pageEdit() {
-		$object = yCore::catalogObject();
+		$object = yCore::create($this->objectClass);
 		$this->recieve($object);
-		$model = yCore::catalogModel()->replace($object)->page($object);
+		$model = yCore::create($this->modelClass)->replace($object)->page($object);
 		return yCore::create($this->templateClass, $object)->setMode('admin')->edit();
 	}
 
 	public function pageAdd() {
-		$object = yCore::catalogObject();
+		$object = yCore::create($this->objectClass);
 		$this->recieve($object);
-		$model = yCore::catalogModel()->insert($object);
+		$model = yCore::create($this->modelClass)->insert($object);
 		return yCore::create($this->templateClass, $object)->setMode('admin')->edit();
 	}
 
 	public function install() {
-		$object = yCore::catalogObject();
-		yCore::catalogModel()->install($object);
+		$object = yCore::create($this->objectClass);
+		yCore::create($this->modelClass)->install($object);
 		/*$object = yCore::catalogCategoryObject();
 		yCore::catalogModel()->install($object);*/
 	}
 
 	public function uninstall() {
-		$object = yCore::catalogObject();
-		yCore::catalogModel()->uninstall($object);
+		$object = yCore::create($this->objectClass);
+		yCore::create($this->modelClass)->uninstall($object);
 	}
 
 	public function export() {
-		$object = yCore::catalogObject();
+		$object = yCore::create($this->objectClass);
 		$model = yCore::catalogModel()->export($object);		
 	}
 }

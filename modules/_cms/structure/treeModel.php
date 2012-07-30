@@ -19,6 +19,7 @@ class structureTreeModel extends objectModel {
 	}
 	
 	public function categoryID($object, $key1, $key2 = NULL) {
+
 		$id = yCore::objectDb()->where("`keyword` LIKE '$key1'")->field('id')->selectCell($object);
 
 		if(isset($key2))

@@ -3,11 +3,11 @@
 yCore::load('yObject');
 
 class catalogCategoryObject extends yObject {
-	public function __construct() {
+	public function __construct($table = 'catalog_category') {
 		parent::__construct();
 		
 		$this
-			->table('catalog_category')
+			->table($table)
 			//->name('Каталог')
 			->field('id', 'id')
 			->field('pid', 'int')
