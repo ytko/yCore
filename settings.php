@@ -17,13 +17,7 @@ ySettings::$corePath = ySettings::$path.'/core';		//Путь к ядру (core)
 // ------ Base path and alternative paths for modules (redirection) --------------------------------
 
 ySettings::$modulesPath = ySettings::$path.'/modules';	//Путь к модулям
-ySettings::$altPaths = (object)array(
-		'structure' => 'modules/_cms',
-		'template' => 'modules/_cms',
-	
-		'users' => 'modules/_system',
-		'object' => 'modules/_system',
-);
+ySettings::$altPaths = (object)array();
 
 // ------ Data base -------------------------------------------------------------------------------
 ySettings::$db = (object)array(
