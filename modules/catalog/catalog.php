@@ -7,13 +7,24 @@ class catalogClass extends objectClass {
 		$modelClass = 'catalogModel',
 		$templateClass = 'catalogTemplate',
 		$objectClass = 'catalogObject',
-		$object = NULL;
-		
-	public function __construct($object = NULL) {
-		parent::__construct();
+		$object = NULL,
+		$admin = false;
+	
+	protected 
+		$url = array();
 
-		if(isSet($object))
-			$this->setObject($object);
+// $params is array of parameters; $params keys:
+	// - objectClass: name of object class //TODO: objectClass instance as parameter
+	// - url: inner path (string or splitted to array)
+	public function __construct($params = NULL) {
+		//parent::__construct();
+		if(is_array($params) || is_object($params)) {
+			$params = (object)$params;
+			if (isset($params->objectClass)) $this->setObjectClass($params->objectClass);
+			if (isset($params->url)) $this->setUrl($params->url);
+		}
+		
+		$this->object = yCore::create($this->objectClass);
 	}
 		
 	public function setObject($object = NULL) {
@@ -49,7 +60,45 @@ class catalogClass extends objectClass {
 		$model = yCore::create($this->modelClass)->catalog($object);
 		return yCore::create($this->templateClass, $object)->catalog();
 	}
+	
+	public function setUrl($url) {
+		if (is_string($url))
+			$this->url = explode('/', $url);
+		elseif (is_array($url))
+			$this->url = $url;
+		return $this;
+	}
+	
+	// selects method depending on $this->url
+	public function get($url = NULL) {
+		if (isset($url)) $this->setUrl($url);
+		$page = end($this->url);
 
+		if(!$this->admin)
+			switch ($page) {
+				case 'page':
+					return $this->page();
+				default:
+					return $this->catalog($this->url);
+			}
+		else {
+			switch ($page) {
+				case 'page':
+					return $this->edit();
+				case 'add':
+					return $this->pageAdd();
+				case 'install':
+					return $this->install();
+				case 'uninstall':
+					return $this->uninstall();
+				case 'export':
+					return $this->export();
+				default:
+					return $this->catalogEdit($this->url);
+			}
+		}
+	}
+	
 	public function page() {
 		$object = $this->getObject();
 		$this->recieve($object);

@@ -25,8 +25,7 @@ ySettings::$db = (object)array(
 		'name' => 'j1',
 		'user' => 'j1',
 		'password' => '12345',
-		'prefix' => 'j7_ytko',	//TODO: использовать
-		'type' => 'mysql'		//Тип БД.
+		'type' => 'mysql'
 );
 
 ?>

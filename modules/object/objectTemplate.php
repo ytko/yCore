@@ -3,7 +3,7 @@
 yCore::load('yTemplate');
 
 class objectTemplate extends yTemplate {
-	public $object, $mode;
+	public $object, $admin;
 	
 	public function __construct($object = NULL) {
 		$this->setObject($object);

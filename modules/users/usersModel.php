@@ -5,6 +5,7 @@ yCore::load('yModel');
 class usersModel extends yModel {
 	private static $userID, $login, $password; 
 	
+	/* TODO: check this old methods: */
 	public function getModel($controller) {
 		$this->controller = $controller;
 		

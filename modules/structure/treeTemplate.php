@@ -10,8 +10,10 @@ class structureTreeTemplate extends objectTemplate {
 	public function get($trunk, $level = 1, $path = '') {
 		$result = "<ul class='level{$level}'>";
 		
+		$path = $path ? $path.'/' : NULL;
+		
 		foreach($trunk as $node) {
-			$result.= "<li id='{$node->{$this->key}}'><a href='$path/{$node->{$this->key}}'>{$node->{$this->value}}</a>";
+			$result.= "<li id='{$node->{$this->key}}'><a href='{$path}{$node->{$this->key}}'>{$node->{$this->value}}</a>";
 
 			if($node->children)
 				$result.= $this->get($node->children, $level+1, $path.'/'.$node->{$this->key});

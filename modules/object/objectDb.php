@@ -38,26 +38,51 @@ class objectDb extends yDb {
 		return $this;
 	}
 
+	public function query_addField($field) {
+		$null = ' NOT NULL';
+		
+		if		($field->type == 'int')			$type = "INT";
+		elseif	($field->type == 'id')			$type = "INT AUTO_INCREMENT";
+		elseif	($field->type == 'float')		$type = "FLOAT";
+		elseif	($field->type == 'currency')	$type = "DECIMAL(18,2)";
+		elseif	($field->type == 'string')		$type = "VARCHAR(255)";
+		elseif	($field->type == 'text')		$type = "TEXT";
+		elseif	($field->type == 'list')		$type = "INT";
+		
+		if($field->key && $type)
+			$query = "`{$field->key}` {$type}{$null}";
+
+		return $query;
+	}
+	
+	/*public function alterAdd($object) { // create table
+		$query = NULL;
+		foreach($object->fields as $field) {
+			$query.=
+				"ALTER TABLE `{$object->table}` ADD IF NOT EXISTS ".
+				$this->query_addField($field).
+				';';
+		}
+				
+		$this->sql->query($query);
+		
+		return $this;
+	}*/
+	
 	public function create($object) { // create table
 		$unique = array();
 		$primary = array();
 		
 		$query = NULL;
 		foreach($object->fields as $field) {
-			//echo print_r($field, 1).'<br />';
-			if ($query) $query.= ', ';
+			$query.=
+				($query ? ', ' : NULL).
+				$this->query_addField($field);
 			
-			if		($field->type == 'int')		$query.= "`{$field->key}` INT NOT NULL";
-			elseif	($field->type == 'id') {
-				$query.= "`{$field->key}` INT NOT NULL AUTO_INCREMENT";
-				$unique[] = $field->key;
+			if	($field->type == 'id') {
+				//$unique[] = $field->key;
 				$primary[] = $field->key;
 			}
-			elseif	($field->type == 'float')		$query.= "`{$field->key}` FLOAT NOT NULL";
-			elseif	($field->type == 'currency')	$query.= "`{$field->key}` DECIMAL(18,2) NOT NULL";
-			elseif	($field->type == 'string')		$query.= "`{$field->key}` VARCHAR(255) NOT NULL";
-			elseif	($field->type == 'text')		$query.= "`{$field->key}` TEXT NOT NULL";
-			elseif	($field->type == 'list')		$query.= "`{$field->key}` INT NOT NULL";
 		}
 
 		if($primary) {
