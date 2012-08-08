@@ -5,6 +5,9 @@
 class yClass extends yBase{
 	private $post, $get, $request, $url, $files;
 	
+	function __construct() {
+	}
+	
 	function __get($propertyName) {
 		switch ($propertyName) {
 			case 'post':

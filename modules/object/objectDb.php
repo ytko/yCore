@@ -3,7 +3,7 @@
 yCore::load('yDb');
 
 class objectDb extends yDb {
-	public function filters($filters) { //TODO: make filter yFilterClass, and then rename methon to "where"
+	public function filters($filters) { //TODO: make filter yFilterClass, and then rename method to "where"
 		foreach($filters as $filter) // define WHERE from filters
 			if($filter->type == 'field' && $filter->value)
 				$this->where($filter->field,
@@ -103,6 +103,11 @@ class objectDb extends yDb {
 			->filters($object->filters); // set where
 
 		foreach($object->values as $row) { // go through array of rows to insert
+			foreach($object->fields as $field) { // search for multiselect input
+				if ($field->type == 'multilist' && is_array($row->{$field->key}))
+					$row->{$field->key} = implode(',', $row->{$field->key});
+			}
+
 			$this
 				->clearValues() // reset array of values
 				->values($row, $object->fields); // set values
@@ -113,6 +118,17 @@ class objectDb extends yDb {
 			else
 				$method = 'insert'.$mode;
 			$iResult = parent::$method();
+			
+			/*i$insert = parent::insertQuery();
+			$update = parent::updateQuery();
+			
+			$query = rtrim($insert,';').' ON DUPLICATE KEY '.$update;
+			echo $query;
+			if ($mode == 'Query')
+				return $query;
+			else
+				return $this->sql->query($query);*/
+			
 			if (is_string($iResult)) $result.= $iResult;
 		}
 
@@ -186,9 +202,37 @@ class objectDb extends yDb {
 			}
 			
 			$method = 'select'.$mode; // method to use: selectResults, selectRow, etc.
-			return parent::$method();
+			$result = parent::$method();
+			
+			// TODO: make for arrays of objects too
+			foreach($object->fields as $field) { // search for multiselect input
+				if ($field->type == 'multilist') 
+					if(is_object($result))
+						$result->{$field->key} = explode(',', $result->{$field->key});
+			}
+			
+			return $result;
 	}
+	
+	// Nightly-version
+	// Generates object of yObject class
+	public function selectNewObject() {
+		$object = yCore::yObject();
+		$object->table($this->table);
 
+		//getting field list
+		//TODO: make this not indian
+		//TODO: get row type
+		$row = $this->selectRow();
+		foreach($row as $field => $value) {
+			$object->field($field, 'string', $field);
+		}
+
+		$object->values = $this->selectObject($object);
+
+		return $object;
+	}
+	
 	// Aliases
 
 	public function selectResults($object = NULL) { //alias

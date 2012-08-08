@@ -3,7 +3,7 @@
 yCore::load('yClass');
 
 class objectClass extends yClass {
-	// sets values fo external filters from POST or GET
+	// sets values for external filters from POST or GET
 	public function recieve($object, $row = 0) {
 		if($object->fields) foreach($object->fields as $field) {
 			if($value = $this->getRequest($field->key)) {

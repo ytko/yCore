@@ -15,7 +15,7 @@ class structureClass extends yClass {
 				$content = yCore::catalogClass()->catalogEdit();
 				break;
 			case '/admin/page':
-				$content = yCore::catalogClass()->pageEdit();
+				$content = yCore::catalogClass()->edit();
 				break;
 			case '/admin/add':
 				$content = yCore::catalogClass()->pageAdd();

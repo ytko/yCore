@@ -4,16 +4,16 @@
 
 class yTemplate extends yBase{
 	public $model;
-	
+
 	public function setModel($model) {
 		$this->model = $model;
 		return $this;
 	}
-	
+
 	public function head(&$_) {}
-	
+
 	public function body(&$_) {}
-	
+
 	static function getURI($base, $query, $modify = NULL) {
 		$result = $base;
 
@@ -39,13 +39,9 @@ class yTemplate extends yBase{
 	
 	static protected function input($type, $key, $value, $name = NULL) {
 		return <<<HEREDOC
-<div class='{$type}InputWrap inputWrap {$key}InputWrap'>
-	<div class='label {$key}InputLabel'>
+<div class='{$type}Input {$key}Input inputWrap'>
 		<label for='{$key}Input'>$name</label>
-	</div>
-	<div class='input'>
 		<input type='text' name='$key' id='{$key}Input' value='$value' />
-	</div>
 </div>
 HEREDOC;
 	}
@@ -74,27 +70,42 @@ HEREDOC;
 	static public function textInput($key, $value, $name = NULL) {
 				return <<<HEREDOC
 <div class='textInputWrap inputWrap {$key}InputWrap'>
-	<div class='label {$key}InputLabel'>
 		<label for='{$key}Input'>$name</label>
-	</div>
-	<div class='input'>
 		<textarea name='$key' id='{$key}Input'>$value</textarea>
-	</div>
 </div>
 HEREDOC;
 	}
 	
-	static public function listInput($key, $values, $name = NULL, $active = NULL) {
-		$result.= "{$name}:<br /><select name='{$key}'>";
-			if(isset($values)) foreach ($values as $iKey => $iName) {
-				$iKey = htmlspecialchars($iKey, ENT_QUOTES);
-				$iName = htmlspecialchars($iName, ENT_QUOTES);
-				$iSelected = ($iKey == $active) ? ' selected' : NULL;
-				$result.= "<option value='$iKey'{$iSelected}>$iName</option>";
-			}
-		$result.= "</select>";
-				
-		return $result;
+	static public function selectInput($key, $values, $name = NULL, $active = NULL) {
+		if(isset($values)) foreach ($values as $iKey => $iName) {
+			$iKey = htmlspecialchars($iKey, ENT_QUOTES);
+			$iName = htmlspecialchars($iName, ENT_QUOTES);
+			$iSelected = ($iKey == $active) ? ' selected' : NULL;
+			$result.= "<option value='$iKey'{$iSelected}>$iName</option>";
+		}
+
+		return <<<HEREDOC
+<div class='selectInputWrap inputWrap {$key}InputWrap'>
+		<label for='{$key}Input'>$name</label>
+		<select name='$key' id='{$key}Input'>$result</select>
+</div>
+HEREDOC;
+	}
+	
+	static public function multiselectInput($key, $values, $name = NULL, $active = NULL) {
+		if(isset($values)) foreach ($values as $iKey => $iName) {
+			$iKey = htmlspecialchars($iKey, ENT_QUOTES);
+			$iName = htmlspecialchars($iName, ENT_QUOTES);
+			$iSelected = (is_array($active) && in_array($iKey, $active)) ? ' selected' : NULL;
+			$result.= "<option value='$iKey'{$iSelected}>$iName</option>";
+		}
+
+		return <<<HEREDOC
+<div class='selectInputWrap inputWrap {$key}InputWrap'>
+		<label for='{$key}Input'>$name</label>
+		<select multiple='multiple' name='{$key}[]' id='{$key}Input'>$result</select>
+</div>
+HEREDOC;
 	}
 
 	// ----- PAGINATION ---------------------------------------------------------------------------

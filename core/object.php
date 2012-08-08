@@ -37,32 +37,111 @@ class yObject extends yBase {//TODO: implements
 		return $this;
 	}
 
-// -----------------------------------------------------------------------------
-	
-	protected function makeRecord($key, $type = NULL, $properties = NULL) { // compile field or filter record
-		// overriding emulation:
-		if (is_array($type) or is_object($type))
-			$properties = $type;
-		
-		if (is_array($properties) or is_object($properties)) {
-			// taking properties from $properties array
-			$properties = (object)$properties;
+// ---- complex methods --------------------------------------------------------
+
+	/** Renames field and appropriate values
+	* @param string $oldKey
+	* @param string $newKey
+	* @param bool $clone = false Clones field if true
+	* @return $this
+	*/
+	public function renameCol($oldKey, $newKey, $clone = false) {
+		// Copying values
+		foreach($this->values as $row) {
+			if(isSet($row->$oldKey)) {
+				if(!isSet($row->$newKey)) {
+					$row->$newKey = $row->$oldKey;
+					// unset old value in rename mode
+					if(!$clone)
+						unset($row->$oldKey);
+				} else {
+					//TODO: exception;
+				}
+			}
 		}
-		else {
-			// taking properties from function parameters
-			$properties = (object)array('key' => $key, 'type' => $type, 'name' => $properties);
+		
+		// Copying field parametors
+		if (isSet($this->fields->$oldKey)) {
+			if(!isSet($this->fields->$newKey)) {
+				// clone field description in clone mode
+				if($clone)
+					$this->fields->$newKey = clone $this->fields->$oldKey;
+				// copy and unset old field description in rename mode
+				else {
+					$this->fields->$newKey = $this->fields->$oldKey;
+					unset($this->fields->$oldKey);
+				}
+				$this->fields->$newKey->key = $newKey;
+			} else {
+				//TODO: exception;
+			}
+		}
+		
+		return $this;
+	}
+
+	/** Clones field and appropriate values
+	* @param string $oldKey
+	* @param string $newKey
+	* @return $this
+	*/
+	public function cloneCol($oldKey, $newKey) {
+		return $this->renameCol($oldKey, $newKey, true);	
+	}
+	
+	/** Deletes field and appropriate values
+	* @param string $key
+	* @return $this
+	*/
+	public function deleteCol($key) {
+		// Deleting values
+		foreach($this->values as $row) {
+			if(isSet($row->$key)) unset($row->$key);
 		}
 
-		if ($properties->key === NULL) $properties->key = $key;
-		if ($properties->name === NULL) $properties->name = $key;
+		// Deleting field parametors
+		if(isSet($this->fields->$key)) {
+			unset($this->fields->$key);
+		}
+
+		return $this;
+	}
+	
+// -----------------------------------------------------------------------------
+	
+	protected function makeRecord($key, $type = NULL, $name = NULL, $properties = NULL) { // compile field or filter record
+		// overriding emulation:
+		if(!isSet($properties)) {
+			if(is_array($name) or is_object($name)) {
+				$properties = (object)$name;
+				unset($name);
+			} elseif(is_array($type) or is_object($type)) {
+				$properties = (object)$type;
+				unset($type);
+			} elseif(is_array($key) or is_object($key)) {
+				$properties = (object)$key;
+				unset($key);
+			// taking properties from function parameters
+			} else {
+				$properties = (object)array();
+			}
+		}
 		
-		return array($key, $properties);
+		// $properties should be stdObject
+		if(is_array($properties)) $properties = (object)$properties;
+
+		if(isSet($key)) $properties->key = $key;
+		if(isSet($type)) $properties->type = $type;
+		if(isSet($name)) $properties->name = $name;
+				
+		return $properties;
 	}
 
 // ---- field set edit ---------------------------------------------------------
 
-	public function field($key, $type = NULL, $properties = NULL) {
-		list($key, $properties) = $this->makeRecord($key, $type, $properties);
+	public function field($key, $type = NULL, $name = NULL, $properties = NULL) {
+		$properties = $this->makeRecord($key, $type, $name, $properties);
+		$key = $properties->key;
 		if ($properties->type === NULL) $properties->type = $type ? $type : 'string'; // default value of type is 'string'
 		$this->fields->$key = $properties;
 		return $this;
@@ -87,11 +166,12 @@ class yObject extends yBase {//TODO: implements
 		$value = $this->fields->$key->$property;
 		return $value;
 	}
-
+	
 // ---- filter set edit --------------------------------------------------------
 	
-	public function filter($key, $type = NULL, $properties = NULL) {
-		list($key, $properties) = $this->makeRecord($key, $type, $properties);
+	public function filter($key, $type = NULL, $name = NULL, $properties = NULL) {
+		$properties = $this->makeRecord($key, $type, $name, $properties);
+		$key = $properties->key;
 		if ($properties->type === NULL) $properties->type = $type ? $type : 'field'; // default value of type is 'field'
 		$this->filters->$key = $properties;
 		return $this;

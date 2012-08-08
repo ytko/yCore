@@ -48,25 +48,30 @@ HEREDOC;
 // ------ FORMS ----------------------------------------------------------------
 
 	static public function fieldInput($field, $value = NULL) {
-			if (!isset($value)) $value = $field->value;
+			if(!isset($value)) $value = $field->value;
+			if($field->display == 'none') return NULL;
 			
-			if		($field->type == 'int')			return self::intInput($field->key, $value, $field->name).'<br />';
-			elseif	($field->type == 'id')			return self::hiddenInput($field->key, $value);
-			elseif	($field->type == 'string')		return self::stringInput($field->key, $value, $field->name).'<br />';
-			elseif	($field->type == 'float')		return self::floatInput($field->key, $value, $field->name).'<br />';
-			elseif	($field->type == 'currency')	return self::currencyInput($field->key, $value, $field->name).'<br />';
-			elseif	($field->type == 'text')		return self::textInput($field->key, $value, $field->name).'<br />';
-			elseif	($field->type == 'list')		return self::listInput($field->key, $field->values, $field->name, $value).'<br />';		
+			if		($field->type == 'int')			return static::intInput($field->key, $value, $field->name);
+			elseif	($field->type == 'id' || $field->type == 'hidden')			return static::hiddenInput($field->key, $value);
+			elseif	($field->type == 'string')		return static::stringInput($field->key, $value, $field->name);
+			elseif	($field->type == 'float')		return static::floatInput($field->key, $value, $field->name);
+			elseif	($field->type == 'currency')	return static::currencyInput($field->key, $value, $field->name);
+			elseif	($field->type == 'text')		return static::textInput($field->key, $value, $field->name);
+			elseif	($field->type == 'list')		return static::selectInput($field->key, $field->values, $field->name, $value);
+			elseif	($field->type == 'multilist')	return static::multiselectInput($field->key, $field->values, $field->name, $value);
 	}
 
 	public function edit($object = NULL) {
 		$this->setObject($object);
 		
 		foreach ($this->object->fields as $field) {
-			$value = htmlspecialchars(stripcslashes($this->object->values[0]->{$field->key}), ENT_QUOTES);
+			$value = $this->object->values[0]->{$field->key}; //TODO: use proper method
+			if($field->type != 'multilist')
+				$value = htmlspecialchars(stripcslashes($value), ENT_QUOTES);
+
 			$field->name = htmlspecialchars(stripcslashes($field->name), ENT_QUOTES);
 			
-			$result.= self::fieldInput($field, $value);
+			$result.= static::fieldInput($field, $value);
 		}
 		
 		return "<form method='post' action=''>$result<input type='submit' value='Отправить'></form>";
