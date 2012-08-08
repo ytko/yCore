@@ -3,35 +3,60 @@
 yCore::load('yClass');
 
 class structureClass extends yClass {
-	public function show() {
-		switch ($this->getUrl()) {
-			case '':
-				$content = yCore::catalogClass()->catalog();
-				break;
-			case '/page':
-				$content = yCore::catalogClass()->page();
-				break;
-			case '/admin':
-				$content = yCore::catalogClass()->catalogEdit();
-				break;
-			case '/admin/page':
-				$content = yCore::catalogClass()->pageEdit();
-				break;
-			case '/admin/add':
-				$content = yCore::catalogClass()->pageAdd();
-				break;
-			case '/export':
-				$content = yCore::catalogClass()->export();
-				break;
-			case '/install':
-				$content = yCore::catalogClass()->install();
-				break;
-			case '/uninstall':
-				$content = yCore::catalogClass()->uninstall();
-				break;
+	public
+		$structure = array(
+			'' => 'catalogClass',
+			'catalog' => 'catalogClass',
+			/*array(
+				'class' => 'catalogClass',
+				'methods' => array('' => 'catalog', 'page' => 'page')
+			),*/
+		),
+		$adminStructure = array(
+			'' => 'catalogClass',
+			'catalog' => 'catalogClass'
+		);
+	
+	public function content() {
+		// splitted url
+		$urlArray = $this->urlArray();
+
+		if (reset($urlArray) == 'admin') {
+			array_shift($urlArray); // delete 'admin'
+
+			if (array_key_exists('', $this->adminStructure))
+				$current = '';
+			else
+				$current = array_shift($urlArray);
+			
+			return yCore::create($this->adminStructure[$current])
+				->setUrl($urlArray)
+				->setAdmin(true)
+				->get();
 		}
-				
-		return yCore::templateClass()->show($content);
+		else {
+			if (array_key_exists('', $this->structure))
+				$current = '';
+			else
+				$current = array_shift($urlArray);
+			
+			if(array_key_exists($current, $this->structure)) {
+				return yCore::create($this->structure[$current])
+					->setUrl($urlArray)
+					->get();
+			}
+		}		
+	}
+
+	public function menu() {
+		return yCore::structureTreeClass()->show();
+	}
+	
+	public function show() {
+		$content = $this->content();
+		$menu =  $this->menu();
+		return yCore::templateTemplate()->setMenu($menu)->get($content);
+		
 	}
 }
 

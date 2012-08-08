@@ -25,7 +25,12 @@ class yClass extends yBase{
 	}
 	
 	public function getUrl() {
-		return rtrim($_SERVER[REDIRECT_URL], '/');
+		$uri = explode('?', $_SERVER['REQUEST_URI']);
+		return trim($uri[0], '/');
+	}
+	
+	public function urlArray() {
+		return explode('/', $this->getUrl());
 	}
 	
 	public function getRequest($key) {

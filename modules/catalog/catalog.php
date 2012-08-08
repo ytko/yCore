@@ -6,64 +6,106 @@ class catalogClass extends objectClass {
 	public
 		$modelClass = 'catalogModel',
 		$templateClass = 'catalogTemplate',
-		$objectClass = 'catalogObject';
+		$objectClass = 'catalogObject',
+		$admin = false;
+	
+	protected 
+		$url = array();
 
-	public function catalog($categoryID = NULL) {
-		$object = yCore::create($this->objectClass);
-		if($categoryID)
-			$object->filter('category',
-				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
-		$this->recieve($object);
-		$model = yCore::create($this->modelClass)->catalog($object);
-		return yCore::create($this->templateClass, $object)->catalog();
+// $params is array of parameters; $params keys:
+	// - objectClass: name of object class //TODO: objectClass instance as parameter
+	// - url: inner path (string or splitted to array)
+	public function __construct($params = NULL) {
+		//parent::__construct();
+		if(is_array($params) || is_object($params)) {
+			$params = (object)$params;
+			if (isset($params->objectClass)) $this->setObjectClass($params->objectClass);
+			if (isset($params->url)) $this->setUrl($params->url);
+		}
+		
+		$this->object = yCore::create($this->objectClass);
+	}
+	
+	public function setUrl($url) {
+		if (is_string($url))
+			$this->url = explode('/', $url);
+		elseif (is_array($url))
+			$this->url = $url;
+		return $this;
+	}
+	
+	// selects method depending on $this->url
+	public function get($url = NULL) {
+		if (isset($url)) $this->setUrl($url);
+		$page = end($this->url);
+
+		if(!$this->admin)
+			switch ($page) {
+				case 'page':
+					return $this->page();
+				default:
+					return $this->catalog($this->url);
+			}
+		else {
+			switch ($page) {
+				case 'page':
+					return $this->pageEdit();
+				case 'add':
+					return $this->pageAdd();
+				case 'install':
+					return $this->install();
+				case 'uninstall':
+					return $this->uninstall();
+				case 'export':
+					return $this->export();
+				default:
+					return $this->catalogEdit($this->url);
+			}
+		}
+	}
+	
+	public function catalog() {
+		$this->recieve($this->object);
+		$model = yCore::create($this->modelClass)->catalog($this->object);
+		return yCore::create($this->templateClass, $this->object)->catalog();
 	}
 
 	public function page() {
-		$object = yCore::create($this->objectClass);
-		$this->recieve($object);
-		yCore::create($this->modelClass)->page($object);
-		return yCore::create($this->templateClass, $object)->page();
+		$this->recieve($this->object);
+		yCore::create($this->modelClass)->page($this->object);
+		return yCore::create($this->templateClass, $this->object)->page();
 	}
 
 	public function catalogEdit() {
-		$object = yCore::create($this->objectClass);
-		if($categoryID)
-			$object->filter('category',
-				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
-		$this->recieve($object);
-		$model = yCore::create($this->modelClass)->catalog($object);
-		return yCore::create($this->templateClass, $object)->setMode('admin')->catalog();
+		$this->recieve($this->object);
+		$model = yCore::create($this->modelClass)->catalog($this->object);
+		return yCore::create($this->templateClass, $this->object)->setAdmin(true)->catalog();
 	}
 
 	public function pageEdit() {
-		$object = yCore::create($this->objectClass);
-		$this->recieve($object);
-		$model = yCore::create($this->modelClass)->replace($object)->page($object);
-		return yCore::create($this->templateClass, $object)->setMode('admin')->edit();
+		$this->recieve($this->object);
+		$model = yCore::create($this->modelClass)->replace($this->object)->page($this->object);
+		return yCore::create($this->templateClass, $this->object)->setAdmin(true)->edit();
 	}
 
 	public function pageAdd() {
-		$object = yCore::create($this->objectClass);
-		$this->recieve($object);
-		$model = yCore::create($this->modelClass)->insert($object);
-		return yCore::create($this->templateClass, $object)->setMode('admin')->edit();
+		$this->recieve($this->object);
+		$model = yCore::create($this->modelClass)->insert($this->object);
+		return yCore::create($this->templateClass, $this->object)->setAdmin(true)->edit();
 	}
 
 	public function install() {
-		$object = yCore::create($this->objectClass);
-		yCore::create($this->modelClass)->install($object);
-		/*$object = yCore::catalogCategoryObject();
-		yCore::catalogModel()->install($object);*/
+		yCore::create($this->modelClass)->install($this->object);
+		/*$this->object = yCore::catalogCategoryObject();
+		yCore::catalogModel()->install($this->object);*/
 	}
 
 	public function uninstall() {
-		$object = yCore::create($this->objectClass);
-		yCore::create($this->modelClass)->uninstall($object);
+		yCore::create($this->modelClass)->uninstall($this->object);
 	}
 
 	public function export() {
-		$object = yCore::create($this->objectClass);
-		$model = yCore::create($this->modelClass)->export($object, 'input.csv');		
+		$model = yCore::create($this->modelClass)->export($this->object, 'input.csv');		
 	}
 }
 /*

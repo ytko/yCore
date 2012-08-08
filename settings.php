@@ -22,11 +22,10 @@ ySettings::$altPaths = (object)array();
 // ------ Data base -------------------------------------------------------------------------------
 ySettings::$db = (object)array(
 		'host' => 'localhost',
-		'name' => 'j1',
-		'user' => 'j1',
+		'name' => 'yg',
+		'user' => 'yg',
 		'password' => '12345',
-		'prefix' => 'j7_ytko',	//TODO: использовать
-		'type' => 'mysql'		//Тип БД.
+		'type' => 'mysql'
 );
 
 ?>

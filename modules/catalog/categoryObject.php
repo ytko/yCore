@@ -12,7 +12,8 @@ class catalogCategoryObject extends yObject {
 			->field('id', 'id')
 			->field('pid', 'int')
 			->field('keyword', 'string')
-			->field('name', 'string');
+			->field('name', 'string')
+			->field('enabled', 'int');
 			/*->filter('id',
 					array(
 						'type' => 'field',
