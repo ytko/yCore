@@ -4,10 +4,10 @@
 
 class yClass extends yBase{
 	private $post, $get, $request, $url, $files;
-	
+
 	function __construct() {
 	}
-	
+
 	function __get($propertyName) {
 		switch ($propertyName) {
 			case 'post':
@@ -26,16 +26,26 @@ class yClass extends yBase{
 		
 		return NULL;
 	}
-	
-	public function getUrl() {
-		$uri = explode('?', $_SERVER['REQUEST_URI']);
+
+	public function getUrlString() {
+		if(!isSet($url)) $url = $_SERVER['REQUEST_URI'];
+		$uri = explode('?', $url);
 		return trim($uri[0], '/');
 	}
-	
-	public function urlArray() {
-		return explode('/', $this->getUrl());
+
+	public function getUrl() {
+		if	(isSet($this->url))	return $this->url;
+		else					return explode('/', $this->getUrlString($url));
 	}
-	
+
+	public function setUrl($url) {
+		if		(is_array($url))	$this->url = $url;
+		elseif	(is_string($url))	$this->url = explode('/', $url);
+		else						throw new Exception("\$url must be string, array or NULL");
+
+		return $this;
+	}
+
 	public function getRequest($key) {
 		if (!empty($_POST[$key]))
 			return $_POST[$key];
@@ -48,21 +58,21 @@ class yClass extends yBase{
 		else
 			return NULL;
 	}
-	
+
 	public function getGet($key) {
 		$result = $_GET[$key];
 		if (is_array($result))
 			$result = (object)$result;
 		return $result;
 	}
-	
+
 	public function getPost($key) {
 		$result = $_POST[$key];
 		if (is_array($result))
 			$result = (object)$result;
 		return $result;
 	}
-		
+	
 	public function isRequestSet($key) {
 		return (isset($this->post->$key) || isset($this->get->$key));
 	}

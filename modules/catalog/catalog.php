@@ -61,14 +61,6 @@ class catalogClass extends objectClass {
 		return yCore::create($this->templateClass, $object)->catalog();
 	}
 	
-	public function setUrl($url) {
-		if (is_string($url))
-			$this->url = explode('/', $url);
-		elseif (is_array($url))
-			$this->url = $url;
-		return $this;
-	}
-	
 	// selects method depending on $this->url
 	public function get($url = NULL) {
 		if (isset($url)) $this->setUrl($url);

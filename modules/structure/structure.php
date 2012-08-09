@@ -17,46 +17,30 @@ class structureClass extends yClass {
 			'catalog' => 'catalogClass'
 		);
 	
-	public function content() {
+	public function moduleName($url = NULL) {
 		// splitted url
-		$urlArray = $this->urlArray();
+		if(!isSet($url)) $url = $this->getUrl();
 
-		if (reset($urlArray) == 'admin') {
-			array_shift($urlArray); // delete 'admin'
+		if (reset($url) == 'admin') {
+			array_shift($url); // delete 'admin'
 
 			if (array_key_exists('', $this->adminStructure))
 				$current = '';
 			else
-				$current = array_shift($urlArray);
+				$current = array_shift($url);
 			
-			return yCore::create($this->adminStructure[$current])
-				->setUrl($urlArray)
-				->setAdmin(true)
-				->get();
+			return array($this->adminStructure[$current], $url);
 		}
 		else {
 			if (array_key_exists('', $this->structure))
 				$current = '';
 			else
-				$current = array_shift($urlArray);
+				$current = array_shift($url);
 			
 			if(array_key_exists($current, $this->structure)) {
-				return yCore::create($this->structure[$current])
-					->setUrl($urlArray)
-					->get();
+				return array($this->structure[$current], $url);
 			}
 		}		
-	}
-
-	public function menu() {
-		return yCore::structureTreeClass()->show();
-	}
-	
-	public function show() {
-		$content = $this->content();
-		$menu =  $this->menu();
-		return yCore::templateTemplate()->setMenu($menu)->get($content);
-		
 	}
 }
 
