@@ -13,10 +13,18 @@ header('Content-type: text/html; charset=utf-8');
 
 // Getting content of page depending on url
 $structure = yCore::structureClass();
-list($moduleName, $url) = $structure->moduleName();
-$content = yCore::create($moduleName)->setUrl($url);
+
+$structure->structure = array(
+	'' => function() use ($structure) {return yCore::catalogClass()->get($structure->tail);},
+	'admin' => array(
+		'' => function() use ($structure) {return yCore::catalogClass()->setAdmin(true)->get($structure->tail);},
+	),
+);
+
+$contentClosure = $structure->get();
+$content = $contentClosure();
 $menu = yCore::structureTreeClass()->show();
-echo yCore::templateTemplate()->setMenu($menu)->get($content->get());
+echo yCore::templateTemplate()->setMenu($menu)->get($content);
 
 //echo microtime(true) - $micro_start;
 

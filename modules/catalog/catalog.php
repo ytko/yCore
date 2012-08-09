@@ -9,9 +9,6 @@ class catalogClass extends objectClass {
 		$objectClass = 'catalogObject',
 		$object = NULL,
 		$admin = false;
-	
-	protected 
-		$url = array();
 
 // $params is array of parameters; $params keys:
 	// - objectClass: name of object class //TODO: objectClass instance as parameter
@@ -63,7 +60,7 @@ class catalogClass extends objectClass {
 	
 	// selects method depending on $this->url
 	public function get($url = NULL) {
-		if (isset($url)) $this->setUrl($url);
+		if(isSet($url)) $this->setUrl($url);
 		$page = end($this->url);
 
 		if(!$this->admin)

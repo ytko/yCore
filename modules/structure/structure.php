@@ -4,43 +4,33 @@ yCore::load('yClass');
 
 class structureClass extends yClass {
 	public
-		$structure = array(
-			'' => 'catalogClass',
-			'catalog' => 'catalogClass',
-			/*array(
-				'class' => 'catalogClass',
-				'methods' => array('' => 'catalog', 'page' => 'page')
-			),*/
-		),
-		$adminStructure = array(
-			'' => 'catalogClass',
-			'catalog' => 'catalogClass'
-		);
-	
-	public function moduleName($url = NULL) {
-		// splitted url
-		if(!isSet($url)) $url = $this->getUrl();
+		$structure = array(),
+		$tail;
 
-		if (reset($url) == 'admin') {
-			array_shift($url); // delete 'admin'
+	public function get($url = NULL, $structure = NULL) {
+		// define variables for non-recursive call
+		if(!isSet($url))		$url = $this->getUrl();
+		if(!isSet($structure))	$structure = $this->structure;
+		// define current directory in url
+		$dir = reset($url) ?: '';
 
-			if (array_key_exists('', $this->adminStructure))
-				$current = '';
-			else
-				$current = array_shift($url);
-			
-			return array($this->adminStructure[$current], $url);
+		// define current node
+		if(array_key_exists($dir, $structure) && $dir != '') {
+			$node = $structure[array_shift($url)];
+		} elseif(array_key_exists('', $structure)) {
+			$node = $structure[''];
+		} else {
+			return function(){echo 404;}; //404 error
 		}
-		else {
-			if (array_key_exists('', $this->structure))
-				$current = '';
-			else
-				$current = array_shift($url);
-			
-			if(array_key_exists($current, $this->structure)) {
-				return array($this->structure[$current], $url);
-			}
-		}		
+
+		// if node is array make recursive call of this method
+		if(is_array($node))
+			$node = $this->get($url, $node);
+
+		$this->tail = $url;
+		
+		// return value of node
+		return $node;
 	}
 }
 

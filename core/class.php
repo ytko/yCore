@@ -3,28 +3,20 @@
 @require_once 'base.php';
 
 class yClass extends yBase{
-	private $post, $get, $request, $url, $files;
+	private $post, $get, $request, $files, $url;
 
 	function __construct() {
 	}
 
 	function __get($propertyName) {
 		switch ($propertyName) {
-			case 'post':
-				return (object)$_POST;
-				break;
-			case 'get':
-				return (object)$_GET;
-				break;
-			case 'request':
-				return (object)array_merge($_POST, $_GET);
-				break;
-			case 'files':
-				return (object)$_FILES;
-				break;
+			case 'post':	return (object)$_POST;
+			case 'get':		return (object)$_GET;
+			case 'request':	return (object)array_merge($_POST, $_GET);
+			case 'files':	return (object)$_FILES;
+			case 'url':		return $this->getUrl();
+			default:		return NULL;
 		}
-		
-		return NULL;
 	}
 
 	public function getUrlString() {
@@ -35,7 +27,7 @@ class yClass extends yBase{
 
 	public function getUrl() {
 		if	(isSet($this->url))	return $this->url;
-		else					return explode('/', $this->getUrlString($url));
+		else					return explode('/', $this->getUrlString());
 	}
 
 	public function setUrl($url) {
@@ -47,16 +39,11 @@ class yClass extends yBase{
 	}
 
 	public function getRequest($key) {
-		if (!empty($_POST[$key]))
-			return $_POST[$key];
-		elseif (!empty($_GET[$key]))
-			return $_GET[$key];
-		elseif (isset($_POST[$key]))
-			return $_POST[$key];
-		elseif (isset($_GET[$key]))
-			return $_GET[$key];
-		else
-			return NULL;
+		if (!empty($_POST[$key]))		return $_POST[$key];
+		elseif (!empty($_GET[$key]))	return $_GET[$key];
+		elseif (isset($_POST[$key]))	return $_POST[$key];
+		elseif (isset($_GET[$key]))		return $_GET[$key];
+		else							return NULL;
 	}
 
 	public function getGet($key) {
