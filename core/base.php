@@ -5,22 +5,22 @@ class yBase {
 		$vars_args = get_class_vars(get_class($this));
 		$key_args = array_keys($vars_args);
 		
-		if (!strncmp($functionName, 'get', 3) ||
-			!strncmp($functionName, 'set', 3) ||
-			!strncmp($functionName, 'add', 3)) {
+		if (!strncmp($func_name, 'get', 3) ||
+			!strncmp($func_name, 'set', 3) ||
+			!strncmp($func_name, 'add', 3)) {
 				$cutLength = 3;
 		} elseif (
-			!strncmp($functionName, 'delete', 6)) {
+			!strncmp($func_name, 'delete', 6)) {
 				$cutLength = 6;
 		}
 
 		if ($cutLength) {
 			$functionName = substr($func_name, 0, $cutLength);
 			$propertyName = lcfirst(substr($func_name, $cutLength));
-			if ($functionName == 'add' || $functionName = 'delete') $propertyName.= 's';
+			if ($functionName == 'add' || $functionName == 'delete') $propertyName.= 's';
 		}
 
-		if($propertyName && in_array($propertyName, $key_args) {
+		if($propertyName && in_array($propertyName, $key_args)) {
 			switch ($functionName){
 				case 'get':
 					return $this->getProperty($propertyName);
