@@ -1,40 +1,77 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yBase {
-    public function __call($func_name, $args) {
-		$vars_args = get_class_vars(get_class($this));
-		$key_args = array_keys($vars_args);
-		
-		if (!strncmp($func_name, 'get', 3) ||
-			!strncmp($func_name, 'set', 3) ||
-			!strncmp($func_name, 'add', 3)) {
-				$cutLength = 3;
-		} elseif (
-			!strncmp($func_name, 'delete', 6)) {
-				$cutLength = 6;
-		}
+    public function __call($methodName, $arguments) {
+		if($this->bindedClasses && is_array($this->bindedClasses)) {
+			// Call methods from binded classes
+			foreach ($this->bindedClasses as $bindedClass) {
+				if (method_exists($bindedClass, $methodName)) {
+					return call_user_func_array(array($bindedClass, $methodName), $arguments);
+				}
+			}
+		} else {
+			// Call 'magic' methods get*/set*/add*/delete*
+			$vars_args = get_class_vars(get_class($this));
+			$key_args = array_keys($vars_args);
 
-		if ($cutLength) {
-			$functionName = substr($func_name, 0, $cutLength);
-			$propertyName = lcfirst(substr($func_name, $cutLength));
-			if ($functionName == 'add' || $functionName == 'delete') $propertyName.= 's';
-		}
+			if (!strncmp($methodName, 'get', 3) ||
+				!strncmp($methodName, 'set', 3) ||
+				!strncmp($methodName, 'add', 3)) {
+					$cutLength = 3;
+			} elseif(
+				!strncmp($methodName, 'delete', 6)) {
+					$cutLength = 6;
+			}
 
-		if($propertyName && in_array($propertyName, $key_args)) {
-			switch ($functionName){
-				case 'get':
-					return $this->getProperty($propertyName);
-				case 'set':
-					return $this->setProperty($propertyName, $args[0]);
-				case 'add':
-					return $this->addToProperty($propertyName, $args[0], $args[1]);
-				case 'delete':
-					return $this->deleteFromProperty($propertyName, $args[0]);
+			if($cutLength) {
+				$functionName = substr($methodName, 0, $cutLength);
+				$propertyName = lcfirst(substr($methodName, $cutLength));
+				if($functionName == 'add' || $functionName == 'delete') $propertyName.= 's';
+
+				if($propertyName && in_array($propertyName, $key_args)) {
+					switch ($functionName){
+						case 'get':
+							return $this->getProperty($propertyName);
+						case 'set':
+							return $this->setProperty($propertyName, $arguments[0]);
+						case 'add':
+							return $this->addToProperty($propertyName, $arguments[0], $arguments[1]);
+						case 'delete':
+							return $this->deleteFromProperty($propertyName, $arguments[0]);
+					}
+				}
 			}
 		}
-
+		
 		throw new Exception('Call to undefined method '.get_class($this).'::'.$func_name.'()');
 		return NULL;
+	}
+/*
+	public function __set($name, $value) {
+		if($this->bindedClasses && is_array($this->bindedClasses)) {
+			foreach ($this->bindedClasses as $bindedClass) {
+				if (property_exists($bindedClass, $name)) {
+					return $bindedClass->{$name};
+				} else {
+					$this->bindedClasses[$name] = $value;
+				}
+			}
+		}
+	}
+        
+	public function __get($name) {
+		if($this->bindedClasses && is_array($this->bindedClasses)) {
+			if (array_key_exists($name, $this->bindedClasses)) {
+				return $this->bindedClasses[$name];
+			}
+		}
+	}
+*/	
+	// Bind objects
+	public function bind() {
+		if(!$this->bindedClasses) $this->bindedClasses = array();
+		$this->bindedClasses = array_merge($this->bindedClasses, func_get_args());
+		return $this;
 	}
 	
 	public function deleteFromProperty($property, $key) {
@@ -72,7 +109,7 @@ class yBase {
 }
 
 /*
- * Copyright 2012 Roman Exempliarov and Maxim Denisov. 
+ * Copyright 2012 Roman Exempliarov, Maxim Denisov and Anna Chachaeva.
  *
  * This file is part of yCore framework.
  *
