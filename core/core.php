@@ -51,10 +51,14 @@ class yCore {
 		return self::createArgs($className, $arguments);
 	}
 	
-/** Includes file with class $className
+/** Includes file with class $className if class doesn't defined yet
  * \param $className Name of class
+ * \return $componentPath or NULL if class already defined
  */
 	public static function load($className = NULL) {
+		if(class_exists($className))
+			return NULL;
+		
 		// Split name by upper-case chars
 		$splittedName = preg_split('/(?=[[:upper:]])/', $className);
 		$moduleName = array_shift($splittedName);
@@ -80,7 +84,7 @@ class yCore {
 		if(!$result)
 			throw new Exception("Can't load class '$className' from '$componentPath'.");
 
-		return ;
+		return $componentPath;
 	}
 	
 	/// Returns path to current module depending on ySettings

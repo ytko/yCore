@@ -1,32 +1,70 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yBase {
-	public $owner;
-        
     public function __call($func_name, $args) {
-                $vars_args = get_class_vars(get_class($this));
-                $key_args = array_keys($vars_args);
-                $functionName = substr($func_name,0,3);
-                $propertyName = lcfirst(substr($func_name,3));
-                $propertyValue = $args[0];
-                
-                if(!in_array($propertyName, $key_args)){
-					throw new Exception('Call to undefined method '.get_class($this).'::'.$func_name.'()');
-                    return NULL;
-                };
-                
-                switch ($functionName){
-                    case 'get':
-                        return $this->$propertyName;
-                    case 'set':
-                        $this->$propertyName = $propertyValue;
-                        return $this;
-                    default:
-						throw new Exception('Call to undefined method '.get_class($this).'::'.$func_name.'()');
-                        return NULL;
-                }
-        }
+		$vars_args = get_class_vars(get_class($this));
+		$key_args = array_keys($vars_args);
 		
+		if (!strncmp($functionName, 'get', 3) ||
+			!strncmp($functionName, 'set', 3) ||
+			!strncmp($functionName, 'add', 3)) {
+				$cutLength = 3;
+		} elseif (
+			!strncmp($functionName, 'delete', 6)) {
+				$cutLength = 6;
+		}
+
+		if ($cutLength) {
+			$functionName = substr($func_name, 0, $cutLength);
+			$propertyName = lcfirst(substr($func_name, $cutLength));
+			if ($functionName == 'add' || $functionName = 'delete') $propertyName.= 's';
+		}
+
+		if($propertyName && in_array($propertyName, $key_args) {
+			switch ($functionName){
+				case 'get':
+					return $this->getProperty($propertyName);
+				case 'set':
+					return $this->setProperty($propertyName, $args[0]);
+				case 'add':
+					return $this->addToProperty($propertyName, $args[0], $args[1]);
+				case 'delete':
+					return $this->deleteFromProperty($propertyName, $args[0]);
+			}
+		}
+
+		throw new Exception('Call to undefined method '.get_class($this).'::'.$func_name.'()');
+		return NULL;
+	}
+	
+	public function deleteFromProperty($property, $key) {
+		if(is_array($this->$property)) {
+			unSet($this->$property[$key]);
+		} elseif(is_object($this->$property)) {
+			unSet($this->$property->$key);
+		} else {
+			$class = get_class($this);
+			throw new Exception("Can't delete key $key from $class::$property: property $class::$property() is not iterable.");
+		}
+		return $this;
+	}
+	
+	public function addToProperty($property, $key, $value) {
+		if(is_array($this->$property)) {
+			$this->$property[$key] = $value;
+		} elseif(is_object($this->$property)) {
+			$this->$property->$key = $value;
+		} else {
+			$class = get_class($this);
+			throw new Exception("Can't add key $key to $class::$property: property $class::$property() is not iterable.");
+		}
+		return $this;
+	}
+	
+	public function getProperty($key) {
+		return $this->$key;
+	}
+	
 	public function setProperty($key, $value) {
 		$this->$key = $value;
 		return $this;
