@@ -2,6 +2,38 @@
 
 @require_once 'yBase.php';
 
+class yObjectField extends yBase {
+	public
+		$key, $type = 'string', $name, $value, $values;
+	
+	public function __construct($properties = NULL) {
+		if(is_array($properties) || is_object($properties))
+			parent::__construct($properties);
+		elseif(is_string($properties))
+			$this->key = $properties;
+	}
+}
+
+class yObjectFilter extends yBase {
+	public
+		$key, $field, $name, $value, $values, $rows,
+		$scope = 'get',
+		$show = true,
+		$collation = '=',
+		$type = 'field';
+
+	public function __construct($key = NULL) {
+		$this->setKey($key);
+	}
+
+	public function setKey($key) {
+		$this->key = $key;
+		if (!isSet($this->field)) $this->field = $key;
+		if (!isSet($this->name)) $this->name = $key;
+		return $this;
+	}
+}
+
 class yObject extends yBase {//TODO: implements
 	public
 		$key,
@@ -139,11 +171,17 @@ class yObject extends yBase {//TODO: implements
 
 // ---- field set edit ---------------------------------------------------------
 
-	public function field($key, $type = NULL, $name = NULL, $properties = NULL) {
-		$properties = $this->makeRecord($key, $type, $name, $properties);
-		$key = $properties->key;
-		if ($properties->type === NULL) $properties->type = $type ? $type : 'string'; // default value of type is 'string'
-		$this->fields->$key = $properties;
+	public function field($objectField, $type = NULL, $name = NULL, $properties = NULL) {
+		if(is_a($objectField, 'yObjectField')) {
+			$this->addField($objectField->key, $objectField);
+		} else {
+			$key = $objectField;
+			$properties = $this->makeRecord($key, $type, $name, $properties);
+			if ($properties->type === NULL) $properties->type = $type ? $type : 'string'; // default value of type is 'string'
+			$objectField = new yObjectField($properties);
+			$this->addField($key, $objectField);
+		}
+
 		return $this;
 	}
 	
@@ -169,11 +207,15 @@ class yObject extends yBase {//TODO: implements
 	
 // ---- filter set edit --------------------------------------------------------
 	
-	public function filter($key, $type = NULL, $name = NULL, $properties = NULL) {
-		$properties = $this->makeRecord($key, $type, $name, $properties);
-		$key = $properties->key;
-		if ($properties->type === NULL) $properties->type = $type ? $type : 'field'; // default value of type is 'field'
-		$this->filters->$key = $properties;
+	public function filter($objectFilter, $type = NULL, $name = NULL, $properties = NULL) {
+		if(is_a($objectFilter, 'yObjectFilter')) {
+			$this->addFilter($objectFilter->key, $objectFilter);
+		} else {
+			$key = $objectFilter;
+			$properties = $this->makeRecord($key, $type, $name, $properties);
+			$objectFilter = new yObjectField($properties);
+			$this->addFilter($key, $objectFilter);
+		}
 		return $this;
 	}
 	

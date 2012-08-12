@@ -25,9 +25,9 @@ class yCore {
 			return self::createArgs($className, $arguments);
 	}
 
-/** Creates class $className instance
- * \param $className Name of class
- * \param $arguments (optional) Array of arguments for constructor
+/** Creates class $className instance.
+ * @param string $className Name of class
+ * @param array $arguments (optional) Arguments for constructor
  */
 	public static function createArgs($className, $arguments = NULL) {
 		self::load($className);
@@ -41,11 +41,11 @@ class yCore {
 		}
 	}
 
-/** Creates class $className instance
- * \param $className Name of class
- * \param $argument1 (optional) First argument for constructor
- * \param $argument2 (optional) Second argument for constructor
- * \param (...)
+/** Creates class $className instance.
+ * @param string $className Name of class
+ * @param mixed $argument1 (optional) First argument for constructor
+ * @param mixed $argument2 (optional) Second argument for constructor
+ * @param mixed (...)
  */	
 	public static function create($className) {
 		$arguments = func_get_args();
@@ -53,10 +53,10 @@ class yCore {
 		return self::createArgs($className, $arguments);
 	}
 	
-/** Includes file with class $className if class doesn't defined yet
- * \param $className Name of class
- * \param $componentPath (optional) Path to file with class relatively to framework root
- * \return $componentPath or NULL if class already defined
+/** Includes file with class $className if class doesn't defined yet.
+ * @param string $className Name of class
+ * @param string $componentPath (optional) Path to file with class relatively to framework root
+ * @return string $componentPath or NULL if class already defined
  */
 	public static function load($className, $componentPath = NULL) {
 		if(class_exists($className))
@@ -89,7 +89,12 @@ class yCore {
 
 		return $componentPath;
 	}
-	
+
+/** Returns path to tempalte for $moduleName module.
+ * @param string $moduleName Name of module
+ * @param string $page Name of template page (file)
+ * @return string path to template file
+ */
 	public static function template($moduleName, $page) {
 		// Split name by upper-case chars
 

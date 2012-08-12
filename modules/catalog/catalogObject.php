@@ -15,12 +15,19 @@ class catalogObject extends yObject {
 			$categoriesList[$value->id] = $value->name;
 		}
 
+		$id = yCore::yObjectField()
+			->setKey('id')
+			->setType('id');
+
 		$this
 			->table('catalog')
 			->name('Каталог')
+
 			->field('id', 'id')
-			->field('category', 'list',	array(
-				'values' => $categoriesList, 'name' => 'Категория') )
+			->field(yCore::yObjectField('category')
+						->setType('list')
+						->setName('Категория')
+						->setValues($categoriesList))
 			->field('price', 'currency', 'Цена')
 			->field('name', 'string', 'Название')
 			->field('description', 'text')
@@ -28,25 +35,17 @@ class catalogObject extends yObject {
 			->field('distributor', 'string')
 			->field('vendor', 'string')
 
-			->filter('id', array(
-				'field' => 'id', 'type' => 'field',
-				'scope' => 'external', 'show' => false) )
+			->filter(yCore::yObjectFilter('id')
+						->setScope('external'))
+			->filter(yCore::yObjectFilter('name')
+						->setCollation('like'))
+			->filter(yCore::yObjectFilter('category'))
+			->filter(yCore::yObjectFilter('price')
+						->setType('order'))
+			->filter(yCore::yObjectFilter('page')
+						->setType('page')
+						->setRows(5));
 
-			->filter('name', array(
-				'field' => 'name', 'type' => 'field', 'collation' => 'like',
-				'scope' => 'get', 'show' => true) )
-
-			->filter('category', array(
-				'field' => 'category', 'type' => 'field',
-				'scope' => 'get', 'show' => true) )
-
-			->filter('price', array(
-				'field' => 'price', 'type' => 'order',
-				'scope' => 'get', 'show' => true) )
-
-			->filter('page', array(
-				'type' => 'page', 'rows' => '5',
-				'scope' => 'get', 'show' => true) );
 	}
 }
 

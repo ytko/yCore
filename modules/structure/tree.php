@@ -12,7 +12,7 @@ class structureTreeClass extends yClass {
 		$tree = $model->get($object);
 
 		$view = yCore::structureTreeView();
-		return ($view->get($tree));	
+		return ($view->render($tree));	
 	}
 }
 

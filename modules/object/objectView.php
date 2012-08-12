@@ -14,11 +14,6 @@ class objectView extends yView {
 			$this->object = $object;
 		return $this;
 	}
-		
-	public function setMode($mode) {
-		$this->mode = $mode;
-		return $this;
-	}
 	
 // ----- HEAD ------------------------------------------------------------------
 	public function head() {
@@ -84,13 +79,15 @@ HEREDOC;
 	}
 
 	public function search($filters = NULL) {
-		$filters = $filters ? $filters : $this->object->filters;
-		if($filters) foreach($filters as $filter) {
+		$filters = $filters ?: $this->object->filters;
+		if($filters){
 			$result = '';
-			if($filter->show && $filter->type == 'field') { //maybe: $filter->scope == 'external'
-				$value = isSet($filter->value) ? htmlspecialchars(stripcslashes($filter->value), ENT_QUOTES) : NULL;
-				$field = $this->object->fields->{$filter->field};
-				$result.= self::fieldInput($field, $value);
+			foreach($filters as $filter) {
+				if($filter->show && $filter->type == 'field') { //maybe: $filter->scope == 'external'
+					$value = isSet($filter->value) ? htmlspecialchars(stripcslashes($filter->value), ENT_QUOTES) : NULL;
+					$field = $this->object->gainField($filter->field);
+					$result.= self::fieldInput($field, $value);
+				}
 			}
 		}
 		
@@ -118,8 +115,8 @@ HEREDOC;
 		$url = '';
 		$query = $_GET; //TODO: connect with controller!!!
 
+		$order = '';
 		foreach ($this->object->filters as $filterName => $filter) {
-			$order = '';
 			if($filter->type == 'order' || $filter->type == 'sort')
 				$order.=
 					$this->object->filterProperty($filterName, 'name').': '.

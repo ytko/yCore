@@ -1,6 +1,15 @@
 <?php defined ('_YEXEC')  or  die();
 
 class yBase {
+	public function __construct($properties = NULL) {
+		if(is_array($properties) || is_object($properties)) {
+			foreach($properties as $key => $value) {
+				if(isSet($value))
+					$this->setProperty($key, $value);
+			}
+		}
+	}
+	
     public function __call($methodName, $arguments) {
 		if(isSet($this->bindedClasses) && is_array($this->bindedClasses)) {
 			// Call methods from binded classes
@@ -18,15 +27,20 @@ class yBase {
 				!strncmp($methodName, 'set', 3) ||
 				!strncmp($methodName, 'add', 3)) {
 					$cutLength = 3;
-			} elseif(
-				!strncmp($methodName, 'delete', 6)) {
+			} elseif(!strncmp($methodName, 'is', 2)) {
+					$cutLength = 2;
+			} elseif(!strncmp($methodName, 'gain', 4)) {
+					$cutLength = 4;
+			} elseif(!strncmp($methodName, 'remove', 6)) {
 					$cutLength = 6;
 			}
 
 			if(!empty($cutLength)) {
 				$functionName = substr($methodName, 0, $cutLength);
 				$propertyName = lcfirst(substr($methodName, $cutLength));
-				if($functionName == 'add' || $functionName == 'delete') $propertyName.= 's';
+				if ($functionName == 'add' ||
+					$functionName == 'remove' ||
+					$functionName == 'gain') $propertyName.= 's';
 
 				if($propertyName && in_array($propertyName, $key_args)) {
 					switch ($functionName){
@@ -36,7 +50,11 @@ class yBase {
 							return $this->setProperty($propertyName, $arguments[0]);
 						case 'add':
 							return $this->addToProperty($propertyName, $arguments[0], $arguments[1]);
-						case 'delete':
+						case 'gain':
+							return $this->gainProperty($propertyName, $arguments[0]);
+						case 'is':
+							return $this->isProperty($propertyName, $arguments[0]);
+						case 'remove':
 							return $this->deleteFromProperty($propertyName, $arguments[0]);
 					}
 				}
@@ -74,7 +92,7 @@ class yBase {
 		return $this;
 	}
 	
-	public function deleteFromProperty($property, $key) {
+	public function removeFromProperty($property, $key) {
 		if(is_array($this->$property)) {
 			unSet($this->$property[$key]);
 		} elseif(is_object($this->$property)) {
@@ -98,6 +116,17 @@ class yBase {
 		return $this;
 	}
 	
+	public function gainProperty($property, $key) {
+		if(is_array($this->$property)) {
+			return isSet($this->$property[$key]) ? $this->$property[$key] : NULL;
+		} elseif(is_object($this->$property)) {
+			return isSet($this->$property->$key) ? $this->$property->$key : NULL;
+		} else {
+			$class = get_class($this);
+			throw new Exception("Can't get key $key from $class::$property: property $class::$property() is not iterable.");
+		}
+	}
+	
 	public function getProperty($key) {
 		return $this->$key;
 	}
@@ -105,6 +134,13 @@ class yBase {
 	public function setProperty($key, $value) {
 		$this->$key = $value;
 		return $this;
+	}
+	
+	public function isProperty($key, $value) {
+		if(!isSet($this->$key))
+			return NULL;
+		else
+			return ($this->$key == $value);
 	}
 }
 

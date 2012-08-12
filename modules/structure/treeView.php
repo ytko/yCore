@@ -4,43 +4,18 @@ yCore::load('objectView');
 
 class structureTreeView extends objectView {
 	public
+		$tempalteName = 'structure',
+		$pageName = 'recursive';
+	public
 		$key = 'keyword',
 		$value = 'name';
 	
-	public function get($trunk, $level = 1, $path = '') {
-		$result = "<ul class='level{$level}'>";
-		
+	public function render($trunk = array(), $level = 1, $path = '') {
 		$path = $path ? $path.'/' : NULL;
-		
-		foreach($trunk as $node) {
-			$result.= "<li id='{$node->{$this->key}}'><a href='{$path}{$node->{$this->key}}'>{$node->{$this->value}}</a>";
 
-			if(!empty($node->children))
-				$result.= $this->get($node->children, $level+1, $path.'/'.$node->{$this->key});
-			
-			$result.= "</li>";
-		}
-		
-		$result.= '</ul>';
-		
+		include(yCore::template($this->tempalteName, $this->pageName));
+
 		return $result;
-		
-		/*
-		foreach($categories as $category) {
-			$subCategories = yCore::db('object')->where("`pid` = {$category->id}")->select($object);
-			
-			echo "<li id='{$category->keyword}'><a href='/{$category->keyword}'>{$category->name}</a>";
-			echo "<ul class='level2'>";
-			
-				foreach($subCategories as $subCategory) {
-					echo "<li id='{$subCategory->keyword}'><a href='/{$category->keyword}/{$subCategory->keyword}'>{$subCategory->name}</a>";
-					echo "</li>";
-				}
-			
-			echo "</ul>";
-			echo "</li>";
-			//print_r($subCategories);
-		}*/
 	}
 }
 

@@ -3,13 +3,50 @@
 @require_once 'yBase.php';
 
 class yView extends yBase{
-	public $model;
+	public 
+		$tempalteName = 'template',
+		$pageName = 'page';
+	static public
+		$script = array(),
+		$css = array();
 
-	public function setModel($model) {
-		$this->model = $model;
-		return $this;
+	public function render($pageName = NULL) {
+		$pageName = $pageName ?: $this->pageName;
+		ob_start();
+		include(yCore::template($this->tempalteName, $pageName));
+		$result = ob_get_contents();
+		ob_end_clean();
+		return $result;
 	}
-
+	
+	public function addScript($key, $value) {
+		self::$script[$key] = $value;
+	}
+	
+	public function addCss($key, $value) {
+		self::$css[$key] = $value;
+	}
+	
+	// ---- inner template methods ---------------------------------------------------------------
+	
+	protected function renderScript() {
+		$result = '';
+		foreach(self::$script as $script) {
+			$result.= $script."\n";
+		}
+		return $result;
+	}
+	
+	protected function renderCss() {
+		$result = '';
+		foreach(self::$css as $css) {
+			$result.= $css."\n";
+		}
+		return $result;		
+	}
+	
+	// ---- old methods ---------------------------------------------------------------------------
+	
 	public function head() {}
 
 	public function body() {}
