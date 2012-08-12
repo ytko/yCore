@@ -3,14 +3,13 @@
 yCore::load('yClass');
 
 class templateClass extends yClass {
-	public $moduleName = 'template';
+	public $moduleName = 'template', $view;
 //	public $beanName = 'default';
 
-	public function show($content) {
-		$template = yCore::create($this->moduleName.'Template')
-				->setContent($content);		//Получение контента
-
-		return $template->get();
+	public function __construct() {
+		parent::__construct();
+		
+		//$this->bind(yCore::create($this->moduleName.'View'));
 	}
 }
 

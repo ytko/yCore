@@ -5,7 +5,7 @@ yCore::load('yClass');
 class usersClass extends yClass {
 	public
 		$modelName = 'users',
-		$templateName = 'users';
+		$viewName = 'users';
 }
 
 ?>

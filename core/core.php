@@ -90,6 +90,18 @@ class yCore {
 		return $componentPath;
 	}
 	
+	public static function template($moduleName, $page) {
+		// Split name by upper-case chars
+
+		// Genarating component's path+filename
+		$componentPath = self::modulePath($moduleName).$moduleName.'/template/'.$page.'.php';
+
+		/*if(!$result)
+			throw new Exception("Can't load class '$className' from '$componentPath'.");*/
+
+		return $componentPath;
+	}
+	
 	/// Returns path to current module depending on ySettings
 	protected static function modulePath($moduleName) {
 		if(isset(ySettings::$altPaths->$moduleName))

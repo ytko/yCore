@@ -2,7 +2,7 @@
 
 @require_once 'yBase.php';
 
-class yTemplate extends yBase{
+class yView extends yBase{
 	public $model;
 
 	public function setModel($model) {

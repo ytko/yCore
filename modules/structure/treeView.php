@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::load('objectTemplate');
+yCore::load('objectView');
 
-class structureTreeTemplate extends objectTemplate {
+class structureTreeView extends objectView {
 	public
 		$key = 'keyword',
 		$value = 'name';

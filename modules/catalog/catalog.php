@@ -5,7 +5,7 @@ yCore::load('objectClass');
 class catalogClass extends objectClass {
 	public
 		$modelClass = 'catalogModel',
-		$templateClass = 'catalogTemplate',
+		$viewClass = 'catalogView',
 		$objectClass = 'catalogObject',
 		$object = NULL,
 		$admin = false;
@@ -55,7 +55,7 @@ class catalogClass extends objectClass {
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
 		$this->recieve($object);
 		$model = yCore::create($this->modelClass)->catalog($object);
-		return yCore::create($this->templateClass, $object)->catalog();
+		return yCore::create($this->viewClass, $object)->catalog();
 	}
 	
 	// selects method depending on $this->url
@@ -93,7 +93,7 @@ class catalogClass extends objectClass {
 		$object = $this->getObject();
 		$this->recieve($object);
 		yCore::create($this->modelClass)->page($object);
-		return yCore::create($this->templateClass, $object)->page();
+		return yCore::create($this->viewClass, $object)->page();
 	}
 
 	public function catalogEdit() {
@@ -103,21 +103,21 @@ class catalogClass extends objectClass {
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
 		$this->recieve($object);
 		$model = yCore::create($this->modelClass)->catalog($object);
-		return yCore::create($this->templateClass, $object)->setMode('admin')->catalog();
+		return yCore::create($this->viewClass, $object)->setMode('admin')->catalog();
 	}
 
 	public function edit() {
 		$object = $this->getObject();
 		$this->recieve($object);
 		$model = yCore::create($this->modelClass)->replace($object)->page($object);
-		return yCore::create($this->templateClass, $object)->setMode('admin')->edit();
+		return yCore::create($this->viewClass, $object)->setMode('admin')->edit();
 	}
 
 	public function add() {
 		$object = $this->getObject();
 		$this->recieve($object);
 		$model = yCore::create($this->modelClass)->insert($object);
-		return yCore::create($this->templateClass, $object)->setMode('admin')->edit();
+		return yCore::create($this->viewClass, $object)->setMode('admin')->edit();
 	}
 
 	public function install() {

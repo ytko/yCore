@@ -34,7 +34,7 @@ class objectClass extends yClass {
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
 		$this->recieve($object);
 		$model = yCore::catalogModel()->catalog($object);
-		return yCore::catalogTemplate($object)->catalog();
+		return yCore::catalogView($object)->catalog();
 	}
 }
 

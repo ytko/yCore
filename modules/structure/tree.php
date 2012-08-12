@@ -11,8 +11,8 @@ class structureTreeClass extends yClass {
 		$model = yCore::structureTreeModel();
 		$tree = $model->get($object);
 
-		$template = yCore::structureTreeTemplate();
-		return ($template->get($tree));	
+		$view = yCore::structureTreeView();
+		return ($view->get($tree));	
 	}
 }
 

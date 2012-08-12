@@ -27,7 +27,16 @@ $structure->structure = array(
 $contentClosure = $structure->get();
 $content = $contentClosure();
 $menu = yCore::structureTreeClass()->show();
-echo yCore::templateTemplate()->setMenu($menu)->get($content);
+//echo yCore::templateView()->setMenu($menu)->get($content);
+
+$frame = yCore::templateClass()
+		->setView(
+				yCore::templateView()
+					->setMenu($menu)
+					->setContent($content)
+		);
+
+echo $frame->view->render();
 
 //echo microtime(true) - $micro_start;
 

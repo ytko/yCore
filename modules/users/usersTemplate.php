@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::load('yTemplate');
+yCore::load('yView');
 
-class usersTemplate extends yTemplate {
+class usersView extends yView {
 
 	function head() {
 		

@@ -1,8 +1,8 @@
 <?php defined ('_YEXEC')  or  die();
 
-yCore::load('yTemplate');
+yCore::load('yView');
 
-class objectTemplate extends yTemplate {
+class objectView extends yView {
 	public $object, $mode;
 	
 	public function __construct($object = NULL) {

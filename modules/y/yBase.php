@@ -2,7 +2,7 @@
 
 class yBase {
     public function __call($methodName, $arguments) {
-		if($this->bindedClasses && is_array($this->bindedClasses)) {
+		if(isSet($this->bindedClasses) && is_array($this->bindedClasses)) {
 			// Call methods from binded classes
 			foreach ($this->bindedClasses as $bindedClass) {
 				if (method_exists($bindedClass, $methodName)) {
