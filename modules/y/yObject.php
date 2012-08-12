@@ -1,6 +1,6 @@
 <?php defined ('_YEXEC')  or  die();
 
-@require_once 'base.php';
+@require_once 'yBase.php';
 
 class yObject extends yBase {//TODO: implements
 	public

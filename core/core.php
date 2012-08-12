@@ -5,6 +5,8 @@
  * Contains yCore class
  */
 
+spl_autoload_register(array('yCore', 'load'));
+
 /// Factory static class
 /**
  * Contains static methods generating objects components and including php-files.
@@ -70,19 +72,14 @@ class yCore {
 			$componentType = array_pop($splittedName);
 		
 			// Genarating component's path+filename
-			if($moduleName == 'y') {		// Core component (e.g. yModel)
-				$componentPath = ySettings::$corePath.'/'.lcfirst($componentType).'.php';
+			if(empty($splittedName)) {	// Simple class name (e.g. fooModel)
+				$componentPath = $moduleName.'/'.$moduleName;
+			} else {					// Long class name (e.g. fooBarModel)
+				foreach($splittedName as &$value)
+					$value = lcfirst($value);
+				$componentPath = $moduleName.'/'.implode('/', $splittedName);
 			}
-			else {
-				if(empty($splittedName)) {	// Simple class name (e.g. fooModel)
-					$componentPath = $moduleName.'/'.$moduleName;
-				} else {					// Long class name (e.g. fooBarModel)
-					foreach($splittedName as &$value)
-						$value = lcfirst($value);
-					$componentPath = $moduleName.'/'.implode('/', $splittedName);
-				}
-				$componentPath = self::modulePath($moduleName).$componentPath.($componentType != 'Class' ? $componentType : NULL).'.php';
-			}
+			$componentPath = self::modulePath($moduleName).$componentPath.($componentType != 'Class' ? $componentType : NULL).'.php';
 		}
 
 		$result = include_once($componentPath);
