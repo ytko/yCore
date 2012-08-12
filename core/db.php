@@ -30,7 +30,8 @@ class ySql {
 			if (is_array($args) or is_object($args)) {
 				$args = (object)$args;
 				$value = $args->value;
-				if(isset($args->collation)) $collation = $args->collation;
+				if(isset($args->collation))	$collation = $args->collation;
+				else						$collation = '=';
 			} else {
 				$value = $args;
 				$collation = '=';
@@ -43,7 +44,8 @@ class ySql {
 				$collation = '=';
 			}
 
-			$value = $this->quote($value);
+			if(is_string($value)) $value = $this->quote($value);
+
 			$this->where.= ($this->where ? ' AND ' : '')."`$key` $collation '$value'";
 		}
 		// function has one argument: use it as simple string

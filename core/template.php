@@ -10,9 +10,9 @@ class yTemplate extends yBase{
 		return $this;
 	}
 
-	public function head(&$_) {}
+	public function head() {}
 
-	public function body(&$_) {}
+	public function body() {}
 
 	static function getURI($base, $query, $modify = NULL) {
 		$result = $base;
@@ -77,6 +77,7 @@ HEREDOC;
 	}
 	
 	static public function selectInput($key, $values, $name = NULL, $active = NULL) {
+		$result = '';
 		if(isset($values)) foreach ($values as $iKey => $iName) {
 			$iKey = htmlspecialchars($iKey, ENT_QUOTES);
 			$iName = htmlspecialchars($iName, ENT_QUOTES);
@@ -143,7 +144,7 @@ HEREDOC;
 			$url = '';
 			$query = $_GET; //TODO: connect with controller!!!
 
-			$result.=
+			$result =
 				($pagination->first != $pagination->current)
 					? "<a href='".self::getURI($url, $query, array('page' => $pagination->first))."'>&#9668;&#9668;</a> "
 					: NULL;

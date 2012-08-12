@@ -114,13 +114,13 @@ class yObject extends yBase {//TODO: implements
 		if(!isSet($properties)) {
 			if(is_array($name) or is_object($name)) {
 				$properties = (object)$name;
-				unset($name);
+				$name = NULL;
 			} elseif(is_array($type) or is_object($type)) {
 				$properties = (object)$type;
-				unset($type);
+				$type = NULL;
 			} elseif(is_array($key) or is_object($key)) {
 				$properties = (object)$key;
-				unset($key);
+				$key = NULL;
 			// taking properties from function parameters
 			} else {
 				$properties = (object)array();
@@ -194,10 +194,12 @@ class yObject extends yBase {//TODO: implements
 		}
 
 		$filter = $this->filters->$key;
-		$value = $filter->$property;
 
-		// trying to get value from other places
-		if (!isset($value)) {
+		if (isSet($filter->$property)) {
+			$value = $filter->$property;
+		}
+		else {
+			// trying to get value from other places
 			if ($filter->type == 'field') {
 				switch ($property) {
 					case 'name':
@@ -206,6 +208,8 @@ class yObject extends yBase {//TODO: implements
 				}
 			}
 		}
+
+		if(!isSet($value)) $value = NULL;
 		
 		return $value;
 	}
@@ -213,12 +217,12 @@ class yObject extends yBase {//TODO: implements
 // ---- values set edit --------------------------------------------------------
 	
 	public function value($key, $value, $row = 0) {
-		if (!is_object($this->values[$row]))
+		if (!isSet($this->values[$row]))
 			$this->values[$row] = (object)array();
-		
+
 		//if(isset($this->fields->$key)) //uncomment after debug
 			$this->values[$row]->$key = $value;
-		
+
 		return $this;
 	}
 	

@@ -7,6 +7,7 @@ class structureTreeModel extends objectModel {
 		$where = $pid ? "`pid` = $pid" : "`pid` IS NULL OR `pid` = 0";
 		$where = "($where) AND `enabled` = 1";
 		$trunk = yCore::objectDb()->where($where)->select($object);
+		$tree = array();
 
 		foreach($trunk as $node) {
 			$children = $this->get($object, $node->id);

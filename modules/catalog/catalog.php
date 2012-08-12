@@ -61,7 +61,8 @@ class catalogClass extends objectClass {
 	// selects method depending on $this->url
 	public function get($url = NULL) {
 		if(isSet($url)) $this->setUrl($url);
-		$page = end($this->url);
+		$url = $this->url;
+		$page = end($url);
 
 		if(!$this->admin)
 			switch ($page) {
@@ -75,7 +76,7 @@ class catalogClass extends objectClass {
 				case 'page':
 					return $this->edit();
 				case 'add':
-					return $this->pageAdd();
+					return $this->add();
 				case 'install':
 					return $this->install();
 				case 'uninstall':
@@ -97,7 +98,7 @@ class catalogClass extends objectClass {
 
 	public function catalogEdit() {
 		$object = $this->getObject();
-		if($categoryID)
+		if(!empty($categoryID))
 			$object->filter('category',
 				array('type' => 'field', 'field' => 'category', 'show' => false, 'value' => $categoryID) );
 		$this->recieve($object);

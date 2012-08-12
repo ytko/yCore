@@ -23,7 +23,7 @@ class yBase {
 					$cutLength = 6;
 			}
 
-			if($cutLength) {
+			if(!empty($cutLength)) {
 				$functionName = substr($methodName, 0, $cutLength);
 				$propertyName = lcfirst(substr($methodName, $cutLength));
 				if($functionName == 'add' || $functionName == 'delete') $propertyName.= 's';
@@ -43,7 +43,7 @@ class yBase {
 			}
 		}
 		
-		throw new Exception('Call to undefined method '.get_class($this).'::'.$func_name.'()');
+		throw new Exception('Call to undefined method '.get_class($this).'::'.$methodName.'()');
 		return NULL;
 	}
 /*

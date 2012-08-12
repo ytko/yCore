@@ -15,7 +15,7 @@ class structureTreeTemplate extends objectTemplate {
 		foreach($trunk as $node) {
 			$result.= "<li id='{$node->{$this->key}}'><a href='{$path}{$node->{$this->key}}'>{$node->{$this->value}}</a>";
 
-			if($node->children)
+			if(!empty($node->children))
 				$result.= $this->get($node->children, $level+1, $path.'/'.$node->{$this->key});
 			
 			$result.= "</li>";

@@ -11,14 +11,15 @@ class objectClass extends yClass {
 			}
 		}
 		if($object->filters) foreach($object->filters as &$filter) {
-			if($filter->scope == 'get' || $filter->scope == 'external')
-				if($value = $this->getGet($filter->key)) {
-					$filter->value = $value;
-				}
-			elseif($filter->scope == 'post' || $filter->scope == 'external')
-				if($value = $this->getPost($filter->key)) {
-					$filter->value = $value;
-				}
+			if(isSet($filter->scope))
+				if($filter->scope == 'get' || $filter->scope == 'external')
+					if($value = $this->getGet($filter->key)) {
+						$filter->value = $value;
+					}
+				elseif($filter->scope == 'post' || $filter->scope == 'external')
+					if($value = $this->getPost($filter->key)) {
+						$filter->value = $value;
+					}
 		}
 		return $this;
 	}

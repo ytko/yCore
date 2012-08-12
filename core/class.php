@@ -39,24 +39,32 @@ class yClass extends yBase{
 	}
 
 	public function getRequest($key) {
-		if (!empty($_POST[$key]))		return $_POST[$key];
-		elseif (!empty($_GET[$key]))	return $_GET[$key];
-		elseif (isset($_POST[$key]))	return $_POST[$key];
-		elseif (isset($_GET[$key]))		return $_GET[$key];
+		if (!empty($_POST[$key]))		return $this->getPost($key);
+		elseif (!empty($_GET[$key]))	return $this->getGet($key);
+		elseif (isset($_POST[$key]))	return $this->getPost($key);
+		elseif (isset($_GET[$key]))		return $this->getGet($key);
 		else							return NULL;
 	}
 
 	public function getGet($key) {
-		$result = $_GET[$key];
-		if (is_array($result))
-			$result = (object)$result;
+		if(isSet($_GET[$key])) {
+			$result = $_GET[$key];
+			if(is_array($result))
+				$result = (object)$result;
+		} else {
+			$result = NULL;
+		}
 		return $result;
 	}
 
 	public function getPost($key) {
-		$result = $_POST[$key];
-		if (is_array($result))
-			$result = (object)$result;
+		if(isSet($_POST[$key])) {
+			$result = $_POST[$key];
+			if(is_array($result))
+				$result = (object)$result;
+		} else {
+			$result = NULL;
+		}
 		return $result;
 	}
 	

@@ -3,7 +3,7 @@
 yCore::load('yTemplate');
 
 class objectTemplate extends yTemplate {
-	public $object, $admin;
+	public $object, $mode;
 	
 	public function __construct($object = NULL) {
 		$this->setObject($object);
@@ -48,31 +48,37 @@ HEREDOC;
 // ------ FORMS ----------------------------------------------------------------
 
 	static public function fieldInput($field, $value = NULL) {
-			if(!isset($value)) $value = $field->value;
-			if($field->display == 'none') return NULL;
+			if(@$field->display == 'none') return NULL;
+			$key = $field->key;
+			$name = @$field->name;
+			$value = isSet($value) ? $value : @$field->value;
+			$values = @$field->values;
 			
-			if		($field->type == 'int')			return static::intInput($field->key, $value, $field->name);
-			elseif	($field->type == 'id' || $field->type == 'hidden')			return static::hiddenInput($field->key, $value);
-			elseif	($field->type == 'string')		return static::stringInput($field->key, $value, $field->name);
-			elseif	($field->type == 'float')		return static::floatInput($field->key, $value, $field->name);
-			elseif	($field->type == 'currency')	return static::currencyInput($field->key, $value, $field->name);
-			elseif	($field->type == 'text')		return static::textInput($field->key, $value, $field->name);
-			elseif	($field->type == 'list')		return static::selectInput($field->key, $field->values, $field->name, $value);
-			elseif	($field->type == 'multilist')	return static::multiselectInput($field->key, $field->values, $field->name, $value);
+			if		($field->type == 'int')			return static::intInput($key, $value, $name);
+			elseif	($field->type == 'id' ||
+					 $field->type == 'hidden')		return static::hiddenInput($key, $value);
+			elseif	($field->type == 'string')		return static::stringInput($key, $value, $name);
+			elseif	($field->type == 'float')		return static::floatInput($key, $value, $name);
+			elseif	($field->type == 'currency')	return static::currencyInput($key, $value, $name);
+			elseif	($field->type == 'text')		return static::textInput($key, $value, $name);
+			elseif	($field->type == 'list')		return static::selectInput($key, $values, $name, $value);
+			elseif	($field->type == 'multilist')	return static::multiselectInput($key, $values, $name, $value);
 	}
 
 	public function edit($object = NULL) {
 		$this->setObject($object);
 		
-		foreach ($this->object->fields as $field) {
-			$value = $this->object->values[0]->{$field->key}; //TODO: use proper method
-			if($field->type != 'multilist')
-				$value = htmlspecialchars(stripcslashes($value), ENT_QUOTES);
+		$result = '';
+		if(isSet($this->object->fields))
+			foreach ($this->object->fields as $field) {
+				@$value = $this->object->values[0]->{$field->key}; //TODO: use proper method
+				if($field->type != 'multilist')
+					$value = htmlspecialchars(stripcslashes($value), ENT_QUOTES);
 
-			$field->name = htmlspecialchars(stripcslashes($field->name), ENT_QUOTES);
-			
-			$result.= static::fieldInput($field, $value);
-		}
+				$field->name = htmlspecialchars(stripcslashes(@$field->name), ENT_QUOTES);
+
+				$result.= static::fieldInput($field, $value);
+			}
 		
 		return "<form method='post' action=''>$result<input type='submit' value='Отправить'></form>";
 	}
@@ -80,8 +86,9 @@ HEREDOC;
 	public function search($filters = NULL) {
 		$filters = $filters ? $filters : $this->object->filters;
 		if($filters) foreach($filters as $filter) {
+			$result = '';
 			if($filter->show && $filter->type == 'field') { //maybe: $filter->scope == 'external'
-				$value = htmlspecialchars(stripcslashes($filter->value), ENT_QUOTES);
+				$value = isSet($filter->value) ? htmlspecialchars(stripcslashes($filter->value), ENT_QUOTES) : NULL;
 				$field = $this->object->fields->{$filter->field};
 				$result.= self::fieldInput($field, $value);
 			}
@@ -97,6 +104,7 @@ HEREDOC;
 		$pagination = $this->pagination();
 
 		// rows
+		$items = '';
 		foreach ($this->object->values as $row)
 			$items.= $this->catalogItem($row);
 
@@ -110,12 +118,14 @@ HEREDOC;
 		$url = '';
 		$query = $_GET; //TODO: connect with controller!!!
 
-		foreach ($this->object->filters as $filterName => $filter)
+		foreach ($this->object->filters as $filterName => $filter) {
+			$order = '';
 			if($filter->type == 'order' || $filter->type == 'sort')
 				$order.=
 					$this->object->filterProperty($filterName, 'name').': '.
 					"<a href='".self::getURI($url, $query, array($filterName => 'asc'))."' title='по возрастанию'>&#9650;</a> ".
 					"<a href='".self::getURI($url, $query, array($filterName => 'desc'))."' title='по убыванию'>&#9660;</a>";
+		}
 
 		return
 "<div class='catalog'>".
@@ -129,10 +139,11 @@ HEREDOC;
 	}
 
 	protected function catalogItem($row) {
+		$result = '';
 		foreach($this->object->fields as $field) {
 			$value = $row->{$field->key};
 			$class = $field->key;
-			$name = $field->name;
+			$name = (isSet($field->name) ? $field->name : $field->key);
 			
 			if($field->type == 'list')
 				$value = $field->values[$value];
@@ -155,10 +166,11 @@ HEREDOC;
 
 	public function page($object = NULL) {
 		$this->setObject($object);
+		$result = '';
 		foreach($this->object->fields as $field) {
 			$value = $this->object->values[0]->{$field->key};
 			$class = $field->key;
-			$name = $field->name;
+			@$name = $field->name;
 			$result.= "<div class='$class'>{$name}: $value; </div>";
 		}
 		return "<div class='{$this->object->key}Page'>$result</div>";

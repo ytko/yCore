@@ -2,6 +2,9 @@
 
 //$micro_start = microtime(true);
 
+// Clean code required =)
+error_reporting(E_ALL | E_STRICT);
+
 // First line of each php-file should be "<?php defined ('_YEXEC')  or  die();"
 define ('_YEXEC', '');
 

@@ -5,25 +5,26 @@ yCore::load('yDb');
 class objectDb extends yDb {
 	public function filters($filters) { //TODO: make filter yFilterClass, and then rename method to "where"
 		foreach($filters as $filter) // define WHERE from filters
-			if($filter->type == 'field' && $filter->value)
-				$this->where($filter->field,
-						array(
-							'value' => "$filter->value",
-							'collation' => $filter->collation,
-						));
-			elseif($filter->type == 'page') {
-				if(!$filter->value) $filter->value = 1;
-				$this->limit($filter->rows, $filter->rows*($filter->value-1));
-			}
-			elseif($filter->type == 'order' || $filter->type == 'sort') {
-				if($filter->direction)
-					$direction = $filter->direction;
-				else
-					$direction = $filter->value; // safe, because order() checks $direction argument
-				
-				if ($direction)
-					$this->order($filter->field, $direction);
-			}
+			if(isSet($filter->type))
+				if($filter->type == 'field' && isSet($filter->value))
+					$this->where($filter->field,
+							array(
+								'value' => $filter->value,
+								'collation' => (isSet($filter->collation) ? $filter->collation : NULL),
+							));
+				elseif($filter->type == 'page') {
+					if(!isSet($filter->value)) $filter->value = 1;
+					$this->limit($filter->rows, $filter->rows*($filter->value-1));
+				}
+				elseif($filter->type == 'order' || $filter->type == 'sort') {
+					if(!empty($filter->direction))
+						$direction = $filter->direction;
+					else
+						$direction = (isSet($filter->value) ? $filter->value : NULL); // safe, because order() checks $direction argument
+
+					if ($direction)
+						$this->order($filter->field, $direction);
+				}
 
 		return $this;
 	}
@@ -127,6 +128,7 @@ class objectDb extends yDb {
 			->table($object->table) // define table
 			->filters($object->filters); // set where
 
+		$result = '';
 		foreach($object->values as $row) { // go through array of rows to insert
 			foreach($object->fields as $field) { // search for multiselect input
 				if ($field->type == 'multilist' && is_array($row->{$field->key}))
@@ -193,8 +195,11 @@ class objectDb extends yDb {
 		return $result;
 	}
 
-	public function insertQuery($object) { //alias
-		return $this->insert($object, 'Query');
+	public function insertQuery($object = NULL) { //alias
+		if(isSet($object))
+			return $this->insert($object, 'Query');
+		else
+			return parent::insertQuery();
 	}	
 
 // ---- select methods ----------------------------------------------------------------------------
