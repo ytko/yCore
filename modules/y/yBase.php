@@ -118,7 +118,8 @@ class yBase {
 	
 	public function gainProperty($property, $key) {
 		if(is_array($this->$property)) {
-			return isSet($this->$property[$key]) ? $this->$property[$key] : NULL;
+			$values = $this->$property;
+			return isSet($values[$key]) ? $values[$key] : NULL;
 		} elseif(is_object($this->$property)) {
 			return isSet($this->$property->$key) ? $this->$property->$key : NULL;
 		} else {
