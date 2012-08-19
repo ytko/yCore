@@ -4,7 +4,7 @@
 
 class yObjectField extends yBase {
 	public
-		$key, $type = 'string', $name, $value, $values;
+		$key, $type = 'string', $name, $value, $values, $display;
 	
 	public function __construct($properties = NULL) {
 		if(is_array($properties) || is_object($properties))

@@ -2,6 +2,10 @@
 
 yCore::load('yDb');
 
+function is_iterable($var) {
+	return (is_array($var) || is_object($var));
+}
+
 class objectDb extends yDb {
 	public function filters($filters) { //TODO: make filter yFilterClass, and then rename method to "where"
 		foreach($filters as $filter) // define WHERE from filters
@@ -131,8 +135,8 @@ class objectDb extends yDb {
 		$result = '';
 		foreach($object->values as $row) { // go through array of rows to insert
 			foreach($object->fields as $field) { // search for multiselect input
-				if ($field->type == 'multilist' && is_array($row->{$field->key}))
-					$row->{$field->key} = implode(',', $row->{$field->key});
+				if ($field->type == 'multilist' && is_iterable($row->{$field->key}))
+					$row->{$field->key} = implode(',', (array)($row->{$field->key}));
 			}
 
 			$this
@@ -144,6 +148,7 @@ class objectDb extends yDb {
 				$method = 'update'.$mode;
 			else
 				$method = 'insert'.$mode;
+
 			$iResult = parent::$method();
 			
 			/*i$insert = parent::insertQuery();
